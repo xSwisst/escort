@@ -1,0 +1,49 @@
+:root {
+  color-scheme: dark;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  /* Escort V1 Authentic Dark Canvas */
+  --bg: 20 20 20;
+  --bg-elevated: 28 28 28;
+  --bg-soft: 40 39 39;
+  --border: 58 58 58;
+  --text-primary: 255 255 255;
+  --text-secondary: 109 109 113;
+  --color-background: #141414;
+  --color-background-secondary: rgba(40, 39, 39, 0.65);
+  --color-background-secondary-2: #3a3a3a;
+  --block-surface: rgba(40, 39, 39, 0.65);
+  --block-surface-soft: rgba(28, 28, 28, 0.8);
+  --lg-bg: rgba(40, 39, 39, 0.65);
+  --lg-radius: 42px;
+  --sheet-radius: 48px;
+
+  /* Elite Luxury Red Replacing Blue (#1689ff -> Luxury Red) */
+  --accent: 186 28 47;
+  --accent-red: #BA1C2F;
+  --accent-red-hover: #D72638;
+  --accent-red-deep: #8E0E18;
+  --accent-soft: #3a3a3a;
+  --success: 105 174 130;
+  --danger: 206 77 77;
+  --favorite-active: #ff3b5c;
+
+  /* Escort V1 Signature Inset 3D Lighting Shadows */
+  --squircle-inset:
+    inset 1.8px 3px 0 -2px rgba(255, 255, 255, 0.06),
+    inset 2px 2px 0 -2px rgba(255, 255, 255, 0.09),
+    inset -2px -2px 2px -2px rgba(255, 255, 255, 0.09),
+    inset -1.8px -3px 0 -2px rgba(255, 255, 255, 0.06);
+
+  --squircle-inset-input:
+    inset 1.8px 3px 0 -1px rgba(255, 255, 255, 0.06),
+    inset 2px 2px 0 -1px rgba(255, 255, 255, 0.09),
+    inset -2px -2px 2px -1px rgba(255, 255, 255, 0.09),
+    inset -1.8px -3px 0 -1px rgba(255, 255, 255, 0.06);
+
+  /* Safe Area / Spacing */
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+}

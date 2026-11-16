@@ -1,0 +1,804 @@
+back:
+  text: ‹ Назад
+  icon_custom_emoji_id: null
+  color: null
+confirm:
+  text: ✅ Подтвердить
+  icon_custom_emoji_id: null
+  color: null
+cancel:
+  text: Отмена
+  icon_custom_emoji_id: null
+  color: null
+close:
+  text: Закрыть
+  icon_custom_emoji_id: null
+  color: null
+confirm_yes_delete:
+  text: ✅ Да, удалить
+  icon_custom_emoji_id: null
+  color: null
+confirm_create:
+  text: ✅ Создать
+  icon_custom_emoji_id: null
+  color: null
+confirm_send:
+  text: Отправить
+  icon_custom_emoji_id: null
+  color: null
+refresh:
+  text: Обновить
+  icon_custom_emoji_id: null
+  color: null
+nav_prev:
+  text: ‹
+  icon_custom_emoji_id: null
+  color: null
+nav_next:
+  text: ›
+  icon_custom_emoji_id: null
+  color: null
+delete:
+  text: 🗑 Удалить
+  icon_custom_emoji_id: null
+  color: null
+forms_btn:
+  text: 📋 Анкеты
+  icon_custom_emoji_id: null
+  color: null
+clients_btn:
+  text: 👥 Клиенты
+  icon_custom_emoji_id: null
+  color: null
+promos_btn:
+  text: 🎟 Промокоды
+  icon_custom_emoji_id: null
+  color: null
+agreements_btn:
+  text: 📄 Соглашения
+  icon_custom_emoji_id: null
+  color: null
+cards:
+  text: 💳 Карты
+  icon_custom_emoji_id: null
+  color: null
+malling_btn:
+  text: 📢 Рассылка
+  icon_custom_emoji_id: null
+  color: null
+search_clients:
+  text: 🔎 Поиск клиентов
+  icon_custom_emoji_id: null
+  color: null
+recent_clients:
+  text: 👥 Последние клиенты
+  icon_custom_emoji_id: null
+  color: null
+search_again:
+  text: Новый поиск
+  icon_custom_emoji_id: null
+  color: null
+ban_client:
+  text: Бан
+  icon_custom_emoji_id: null
+  color: null
+unban_client:
+  text: Разбан
+  icon_custom_emoji_id: null
+  color: null
+send_message:
+  text: Сообщение
+  icon_custom_emoji_id: null
+  color: null
+change_agreement:
+  text: Соглашение
+  icon_custom_emoji_id: null
+  color: null
+new_model:
+  text: Новая модель
+  icon_custom_emoji_id: null
+  color: null
+edit_form:
+  text: Редактировать
+  icon_custom_emoji_id: null
+  color: null
+manage_photos:
+  text: 📷 Фотографии
+  icon_custom_emoji_id: null
+  color: null
+manage_reviews:
+  text: Отзывы
+  icon_custom_emoji_id: null
+  color: null
+manage_services:
+  text: 🛎 Услуги
+  icon_custom_emoji_id: null
+  color: null
+manage_additionals:
+  text: ➕ Доп. услуги
+  icon_custom_emoji_id: null
+  color: null
+change_city:
+  text: В другой город
+  icon_custom_emoji_id: null
+  color: null
+delete_model:
+  text: Удалить модель
+  icon_custom_emoji_id: null
+  color: null
+pos_move_up:
+  text: ⬆
+  icon_custom_emoji_id: null
+  color: null
+pos_move_down:
+  text: ⬇
+  icon_custom_emoji_id: null
+  color: null
+edit_name:
+  text: ✏️ Имя
+  icon_custom_emoji_id: null
+  color: null
+edit_age:
+  text: ✏️ Возраст
+  icon_custom_emoji_id: null
+  color: null
+edit_height:
+  text: ✏️ Рост
+  icon_custom_emoji_id: null
+  color: null
+edit_bust:
+  text: 🎀 Грудь
+  icon_custom_emoji_id: null
+  color: null
+edit_caption:
+  text: 📝 Описание
+  icon_custom_emoji_id: null
+  color: null
+edit_price1:
+  text: ✏️ Цена 1ч
+  icon_custom_emoji_id: null
+  color: null
+edit_price2:
+  text: ✏️ Цена 3ч
+  icon_custom_emoji_id: null
+  color: null
+edit_price3:
+  text: ✏️ Ночь
+  icon_custom_emoji_id: null
+  color: null
+edit_price_night:
+  text: 💰 Ночь
+  icon_custom_emoji_id: null
+  color: null
+toggle_visibility_show:
+  text: 👁 Показать
+  icon_custom_emoji_id: null
+  color: null
+toggle_visibility_hide:
+  text: 🙈 Скрыть
+  icon_custom_emoji_id: null
+  color: null
+toggle_verification:
+  text: 🟢 Верификация
+  icon_custom_emoji_id: null
+  color: null
+toggle_medical:
+  text: 🩺 Мед. справка
+  icon_custom_emoji_id: null
+  color: null
+photos_delete_current:
+  text: 🗑 Удалить
+  icon_custom_emoji_id: null
+  color: null
+photos_add:
+  text: ➕ Добавить фото
+  icon_custom_emoji_id: null
+  color: null
+add_review_btn:
+  text: ➕ Добавить отзыв
+  icon_custom_emoji_id: null
+  color: null
+add_service_btn:
+  text: ➕ Добавить услугу
+  icon_custom_emoji_id: null
+  color: null
+add_additional_btn:
+  text: ➕ Добавить доп. услугу
+  icon_custom_emoji_id: null
+  color: null
+new_promo:
+  text: Новый промокод
+  icon_custom_emoji_id: null
+  color: null
+new_agreement:
+  text: ➕ Новое соглашение
+  icon_custom_emoji_id: null
+  color: null
+va_malling_all_clients:
+  text: Всем клиентам
+  icon_custom_emoji_id: null
+  color: null
+va_malling_new_7d:
+  text: Новые за 7 дней
+  icon_custom_emoji_id: null
+  color: null
+va_malling_new_14d:
+  text: Новые за 14 дней
+  icon_custom_emoji_id: null
+  color: null
+va_malling_new_30d:
+  text: Новые за 30 дней
+  icon_custom_emoji_id: null
+  color: null
+preview:
+  text: Предпросмотр
+  icon_custom_emoji_id: null
+  color: null
+add_media:
+  text: Добавить медиа
+  icon_custom_emoji_id: null
+  color: null
+add_button:
+  text: 🔗 Добавить кнопку
+  icon_custom_emoji_id: null
+  color: null
+clear_buttons:
+  text: 🗑 Очистить кнопки
+  icon_custom_emoji_id: null
+  color: null
+send_broadcast_btn:
+  text: 🚀 Запустить рассылку
+  icon_custom_emoji_id: null
+  color: null
+hide:
+  text: Скрыть
+  icon_custom_emoji_id: null
+  color: null
+copy_referral_link:
+  text: Скопировать ссылку
+  icon_custom_emoji_id: null
+  color: null
+select_va:
+  text: ESCORT V1
+  icon_custom_emoji_id: null
+  color: null
+select_cf:
+  text: TRADE V1
+  icon_custom_emoji_id: null
+  color: null
+cf_client_list:
+  text: Клиенты
+  icon_custom_emoji_id: null
+  color: null
+cf_manage_promo:
+  text: Промокоды
+  icon_custom_emoji_id: null
+  color: null
+cf_malling:
+  text: Рассылка
+  icon_custom_emoji_id: null
+  color: null
+cf_ltp:
+  text: ЛТП
+  icon_custom_emoji_id: null
+  color: null
+cf_manage_logs:
+  text: Логи
+  icon_custom_emoji_id: null
+  color: null
+cf_log_open_client:
+  text: Открыть клиента
+  icon_custom_emoji_id: null
+  color: null
+cf_log_manage_client:
+  text: Управлять
+  icon_custom_emoji_id: null
+  color: null
+cf_log_pay:
+  text: Оплатить
+  icon_custom_emoji_id: null
+  color: null
+cf_log_approve:
+  text: Подтвердить
+  icon_custom_emoji_id: null
+  color: null
+cf_log_reject:
+  text: Отклонить
+  icon_custom_emoji_id: null
+  color: null
+cf_log_paid:
+  text: ✅ Оплачено
+  icon_custom_emoji_id: null
+  color: null
+cf_log_approved:
+  text: ✅ Подтверждено
+  icon_custom_emoji_id: null
+  color: null
+cf_log_rejected:
+  text: ❌ Отклонено
+  icon_custom_emoji_id: null
+  color: null
+cf_settings:
+  text: Настройки
+  icon_custom_emoji_id: null
+  color: null
+cf_client_lucky:
+  text: Удача
+  icon_custom_emoji_id: null
+  color: null
+cf_client_balance:
+  text: Баланс
+  icon_custom_emoji_id: null
+  color: null
+cf_client_min_deposit:
+  text: Мин. депозит
+  icon_custom_emoji_id: null
+  color: null
+cf_client_block_bets:
+  text: Заблокировать ставки
+  icon_custom_emoji_id: null
+  color: null
+cf_client_unblock_bets:
+  text: Разблокировать ставки
+  icon_custom_emoji_id: null
+  color: null
+cf_client_block_withdraw:
+  text: Заблокировать вывод
+  icon_custom_emoji_id: null
+  color: null
+cf_client_unblock_withdraw:
+  text: Разблокировать вывод
+  icon_custom_emoji_id: null
+  color: null
+cf_client_change_stats:
+  text: Изменить статистику
+  icon_custom_emoji_id: null
+  color: null
+cf_client_stop_limit_on:
+  text: Включить стоп-лимит
+  icon_custom_emoji_id: null
+  color: null
+cf_client_stop_limit_off:
+  text: Выключить стоп-лимит
+  icon_custom_emoji_id: null
+  color: null
+cf_client_stop_limit_sum:
+  text: Сумма стоп-лимита
+  icon_custom_emoji_id: null
+  color: null
+cf_client_verified_on:
+  text: Верифицировать
+  icon_custom_emoji_id: null
+  color: null
+cf_client_verified_off:
+  text: Снять верификацию
+  icon_custom_emoji_id: null
+  color: null
+cf_client_unbind:
+  text: Отвязать клиента
+  icon_custom_emoji_id: null
+  color: null
+worker_positions:
+  text: Позиции
+  icon_custom_emoji_id: null
+  color: null
+forms_worker:
+  text: Список моделей
+  icon_custom_emoji_id: null
+  color: null
+va_admin:
+  text: Админ
+  icon_custom_emoji_id: null
+  color: null
+va_admin_forms:
+  text: Управление анкетами
+  icon_custom_emoji_id: null
+  color: null
+va_admin_agreements:
+  text: Соглашения
+  icon_custom_emoji_id: null
+  color: null
+va_admin_stats:
+  text: Статистика
+  icon_custom_emoji_id: null
+  color: null
+va_admin_search_worker:
+  text: Поиск воркера
+  icon_custom_emoji_id: null
+  color: null
+client_list:
+  text: Клиенты
+  icon_custom_emoji_id: null
+  color: null
+default_forms_enabled:
+  text: 'Дефолт. анкеты: ВКЛ'
+  icon_custom_emoji_id: null
+  color: null
+default_forms_disabled:
+  text: 'Дефолт. анкеты: ВЫКЛ'
+  icon_custom_emoji_id: null
+  color: null
+manage_promo:
+  text: Промокоды
+  icon_custom_emoji_id: null
+  color: null
+malling:
+  text: Рассылка
+  icon_custom_emoji_id: null
+  color: null
+service_params:
+  text: Настройки
+  icon_custom_emoji_id: null
+  color: null
+va_settings_btn_logging:
+  text: Логирование
+  icon_custom_emoji_id: null
+  color: null
+ltp:
+  text: ЛТП
+  icon_custom_emoji_id: null
+  color: null
+manage_logs:
+  text: Логи
+  icon_custom_emoji_id: null
+  color: null
+enable_all_logs:
+  text: Включить все
+  icon_custom_emoji_id: null
+  color: null
+disable_all_logs:
+  text: Отключить все
+  icon_custom_emoji_id: null
+  color: null
+log_label_new_client:
+  text: Новый клиент
+  icon_custom_emoji_id: null
+  color: null
+log_label_city_set:
+  text: Указал город
+  icon_custom_emoji_id: null
+  color: null
+log_label_model_opened:
+  text: Открыл модель
+  icon_custom_emoji_id: null
+  color: null
+log_label_model_found:
+  text: Нашёл модель
+  icon_custom_emoji_id: null
+  color: null
+log_label_payment_request:
+  text: Заявка на пополнение
+  icon_custom_emoji_id: null
+  color: null
+log_label_address_added:
+  text: Добавил адрес
+  icon_custom_emoji_id: null
+  color: null
+log_label_address_deleted:
+  text: Удалил адрес
+  icon_custom_emoji_id: null
+  color: null
+log_label_bot_blocked:
+  text: Заблокировал бота
+  icon_custom_emoji_id: null
+  color: null
+log_label_bot_unblocked:
+  text: Разблокировал бота
+  icon_custom_emoji_id: null
+  color: null
+log_label_promo_activated:
+  text: Активировал промокод
+  icon_custom_emoji_id: null
+  color: null
+cf_log_label_new_client:
+  text: Новый клиент
+  icon_custom_emoji_id: null
+  color: null
+cf_log_label_new_deal:
+  text: Новая сделка
+  icon_custom_emoji_id: null
+  color: null
+cf_log_label_exchanger_buy:
+  text: Покупка в обменнике
+  icon_custom_emoji_id: null
+  color: null
+cf_log_label_exchanger_swap:
+  text: Обмен в обменнике
+  icon_custom_emoji_id: null
+  color: null
+cf_log_label_wallet_deposit_attempt:
+  text: Попытка пополнения
+  icon_custom_emoji_id: null
+  color: null
+cf_log_label_wallet_withdraw_attempt:
+  text: Попытка вывода
+  icon_custom_emoji_id: null
+  color: null
+manage_services_short:
+  text: Услуги
+  icon_custom_emoji_id: null
+  color: null
+manage_additionals_short:
+  text: Доп. услуги
+  icon_custom_emoji_id: null
+  color: null
+manage_private_channel:
+  text: Приватный канал
+  icon_custom_emoji_id: null
+  color: null
+form_link:
+  text: 🔗 Ссылка на анкету
+  icon_custom_emoji_id: null
+  color: null
+copy_form_link:
+  text: Скопировать ссылку
+  icon_custom_emoji_id: null
+  color: null
+private_channel_price:
+  text: 💰 Цена
+  icon_custom_emoji_id: null
+  color: null
+private_channel_description:
+  text: 📝 Описание
+  icon_custom_emoji_id: null
+  color: null
+private_channel_enable:
+  text: 🟢 Включить
+  icon_custom_emoji_id: null
+  color: null
+private_channel_disable:
+  text: 🔴 Выключить
+  icon_custom_emoji_id: null
+  color: null
+new_review:
+  text: Добавить
+  icon_custom_emoji_id: null
+  color: null
+new_service:
+  text: Добавить
+  icon_custom_emoji_id: null
+  color: null
+new_additional:
+  text: Добавить
+  icon_custom_emoji_id: null
+  color: null
+edit_rating:
+  text: ⭐ Рейтинг
+  icon_custom_emoji_id: null
+  color: null
+edit_orders:
+  text: 📦 Кол-во заказов
+  icon_custom_emoji_id: null
+  color: null
+edit_channel:
+  text: 📢 Канал
+  icon_custom_emoji_id: null
+  color: null
+edit_additional:
+  text: ➕ Допы
+  icon_custom_emoji_id: null
+  color: null
+toggle_document:
+  text: 🏥 Справка
+  icon_custom_emoji_id: null
+  color: null
+toggle_dynamic:
+  text: 🔄 Динамика
+  icon_custom_emoji_id: null
+  color: null
+toggle_visibility:
+  text: 👁 Видимость
+  icon_custom_emoji_id: null
+  color: null
+toggle_show:
+  text: Скрыть
+  icon_custom_emoji_id: null
+  color: null
+toggle_hide:
+  text: Показать
+  icon_custom_emoji_id: null
+  color: null
+edit_default_name:
+  text: 👤 Имя
+  icon_custom_emoji_id: null
+  color: null
+edit_default_age:
+  text: 📅 Возраст
+  icon_custom_emoji_id: null
+  color: null
+edit_default_height:
+  text: 📏 Рост
+  icon_custom_emoji_id: null
+  color: null
+edit_default_tits:
+  text: 🎀 Грудь
+  icon_custom_emoji_id: null
+  color: null
+edit_default_price1:
+  text: 💰 Час
+  icon_custom_emoji_id: null
+  color: null
+edit_default_price_two_hours:
+  text: 💰 2 часа
+  icon_custom_emoji_id: null
+  color: null
+edit_default_price2:
+  text: 💰 3 часа
+  icon_custom_emoji_id: null
+  color: null
+edit_default_price3:
+  text: 💰 Ночь
+  icon_custom_emoji_id: null
+  color: null
+edit_review_author:
+  text: ✏️ Автор
+  icon_custom_emoji_id: null
+  color: null
+edit_review_text:
+  text: ✏️ Текст
+  icon_custom_emoji_id: null
+  color: null
+edit_review_score:
+  text: ✏️ Оценка
+  icon_custom_emoji_id: null
+  color: null
+edit_service_name:
+  text: ✏️ Название
+  icon_custom_emoji_id: null
+  color: null
+edit_tits:
+  text: ✏️ Грудь
+  icon_custom_emoji_id: null
+  color: null
+buttons:
+  text: Кнопки
+  icon_custom_emoji_id: null
+  color: null
+button_type_url:
+  text: URL
+  icon_custom_emoji_id: null
+  color: null
+button_type_callback:
+  text: Callback
+  icon_custom_emoji_id: null
+  color: null
+button_type_copy:
+  text: Copy
+  icon_custom_emoji_id: null
+  color: null
+row_info:
+  text: '{text}'
+  icon_custom_emoji_id: null
+  color: null
+add:
+  text: ➕ Добавить
+  icon_custom_emoji_id: null
+  color: null
+cf_malling_all_clients:
+  text: Всем клиентам
+  icon_custom_emoji_id: null
+  color: null
+cf_malling_new_7d:
+  text: Новые за 7 дней
+  icon_custom_emoji_id: null
+  color: null
+cf_malling_new_14d:
+  text: Новые за 14 дней
+  icon_custom_emoji_id: null
+  color: null
+cf_malling_new_30d:
+  text: Новые за 30 дней
+  icon_custom_emoji_id: null
+  color: null
+ltp_setup:
+  text: ➕ Настроить LTP
+  icon_custom_emoji_id: null
+  color: null
+hide_message:
+  text: Скрыть
+  icon_custom_emoji_id: null
+  color: null
+log_history:
+  text: История логов
+  icon_custom_emoji_id: null
+  color: null
+ltp_set:
+  text: Установить ЛТП
+  icon_custom_emoji_id: null
+  color: null
+ltp_remove:
+  text: Удалить ЛТП
+  icon_custom_emoji_id: null
+  color: null
+req_method_card:
+  text: Карта
+  icon_custom_emoji_id: null
+  color: null
+req_method_crypto:
+  text: Криптовалюта
+  icon_custom_emoji_id: null
+  color: null
+req_method_sbp:
+  text: СБП
+  icon_custom_emoji_id: null
+  color: null
+req_method_qr:
+  text: QR
+  icon_custom_emoji_id: null
+  color: null
+req_currency:
+  text: Валюта
+  icon_custom_emoji_id: null
+  color: null
+req_add:
+  text: ➕ Добавить реквизиты
+  icon_custom_emoji_id: null
+  color: null
+req_edit:
+  text: ✏️ Изменить реквизиты
+  icon_custom_emoji_id: null
+  color: null
+req_delete:
+  text: 🗑 Удалить реквизиты
+  icon_custom_emoji_id: null
+  color: null
+cf_fake_req_enable:
+  text: 🟢 Включить
+  icon_custom_emoji_id: null
+  color: null
+cf_fake_req_disable:
+  text: 🔴 Выключить
+  icon_custom_emoji_id: null
+  color: null
+req_fallback_on:
+  text: 🟢 Реквизиты ERD
+  icon_custom_emoji_id: null
+  color: null
+req_fallback_off:
+  text: 🔴 Реквизиты ERD
+  icon_custom_emoji_id: null
+  color: null
+card_setup:
+  text: ➕ Установить карту
+  icon_custom_emoji_id: null
+  color: null
+card_edit:
+  text: ✏️ Изменить карту
+  icon_custom_emoji_id: null
+  color: null
+card_limits:
+  text: 💰 Изменить лимиты
+  icon_custom_emoji_id: null
+  color: null
+card_enable:
+  text: 🟢 Включить карту
+  icon_custom_emoji_id: null
+  color: null
+card_disable:
+  text: 🔴 Выключить карту
+  icon_custom_emoji_id: null
+  color: null
+card_delete:
+  text: 🗑 Удалить карту
+  icon_custom_emoji_id: null
+  color: null
+check_confirm:
+  text: ✅ Подтвердить
+  icon_custom_emoji_id: null
+  color: null
+check_reject:
+  text: ❌ Отклонить
+  icon_custom_emoji_id: null
+  color: null
+support:
+  text: Поддержка
+  icon_custom_emoji_id: null
+  color: null
+city_first:
+  text: Первый город
+  icon_custom_emoji_id: null
+  color: null
+city_second:
+  text: Второй город
+  icon_custom_emoji_id: null
+  color: null

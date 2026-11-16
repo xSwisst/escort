@@ -1,0 +1,445 @@
+# COMMON
+butterfly_emoji: "<tg-emoji emoji-id='5278305989769076414'>✨</tg-emoji>"
+main_menu_caption: |
+  <tg-emoji emoji-id="5275981239935871999">✨</tg-emoji> <b>Добро пожаловать в Elegant Agency</b> — место, где встречаются стиль, красота и приятное общение.
+
+  <b>Выбирайте моделей, которые вам понравились, изучайте их анкеты и находите подходящий вариант для вашего вечера.</b>
+
+  <i>— Откройте каталог и сделайте свой выбор. Всё необходимое уже собрано здесь.</i>
+
+agreement_caption: |
+  <blockquote><tg-emoji emoji-id="5276017699913245391">✨</tg-emoji> <b>Пользовательское соглашение</b></blockquote>
+
+  Для использования сервиса необходимо ознакомиться и согласиться с пользовательским соглашением.
+
+  <b>Нажимая кнопку подтверждения, вы подтверждаете, что:</b>
+  • ознакомились с условиями сервиса
+  • согласны с правилами использования
+  • вам исполнилось 18 лет
+
+text_dash: "—"
+
+# INFO
+info_main: |-
+  <blockquote><b><tg-emoji emoji-id="5276323389915570402">✨</tg-emoji> Информация</b></blockquote>
+
+  <b>Elegant Agency</b> — предлагает быстрый и удобный поиск, позволяя легко и оперативно найти идеального партнера для любого мероприятия.
+
+  Наши услуги предназначены для тех, кто ищет элегантного и надежного партнера для особых мероприятий, деловых встреч или просто приятного времяпрепровождения.
+
+  Мы понимаем, что у каждого клиента свои уникальные потребности и пожелания. Наши специалисты готовы предложить индивидуальные решения, чтобы каждая встреча соответствовала вашим ожиданиям и предпочтениям.
+
+  Мы гарантируем, что каждая встреча с нашими эскорт-партнерами станет для вас незабываемым событием, полным позитивных эмоций и комфорта. Ваша удовлетворенность — наш главный приоритет.
+
+info_faq_1: |-
+  <blockquote><b>Как я могу быть уверен в вашей легальности и соблюдении законов?</b></blockquote>
+  <i>Elegant Agency работает в строгом соответствии с законодательством, имея все необходимые лицензии и разрешения. Мы обеспечиваем безопасность клиентов, используя современные системы защиты данных и сотрудничая с проверенными службами безопасности.</i>
+
+  <blockquote><b>Какие гарантии конфиденциальности вы предоставляете, и как защищаете мои личные данные?</b></blockquote>
+  <i>Мы гарантируем полную защиту ваших данных с помощью современных методов шифрования и строгой политики конфиденциальности. Вся информация хранится в безопасности и не передается третьим лицам.</i>
+
+  <blockquote><b>Как вы проверяете и отбираете девушек, с которыми сотрудничаете, и какие гарантии их безопасно сти и здоровья?</b></blockquote>
+  <i>Каждая девушка проходит тщательный отбор, включая проверку документов и медицинские осмотры. Мы гарантируем их безопасность и здоровье, предоставляя справки об отсутствии заболеваний, передающихся половым путем.</i>
+
+info_faq_2: |-
+  <blockquote><b>Как проходит процесс оплаты, и какие гарантии безопасности транзакций вы обеспечиваете?</  b></blockquote>
+  <i>Elegant Agency предлагает несколько удобных способов оплаты: наличными, банковский перевод или криптовалютой. Мы гарантируем полную безопасность всех транзакций, используя передовые технологии шифрования и международные стандарты безопасности.</i>
+
+  <blockquote><b>Какие фотографии на сайте - актуальные и реальные, и как я могу получить больше информации о конкретной девушке?</b></blockquote>
+  <i>Все фотографии на сайте актуальны и подлинны. Мы регулярно обновляем фотогалереи, чтобы вы могли видеть точное изображение представительниц. Для получения дополнительной информации о девушке, мы готовы предоставить все необходимые данные.</i>
+
+  <blockquote><b>Какие виды услуг вы предлагаете, и какие действия допустимы во время встречи?</b></blockquote>
+  <i>Мы предлагаем широкий спектр услуг, включая сопровождение на мероприятия, ужины и более личные встречи, в зависимости от ваших пожеланий. Все услуги согласуются с вашими желаниями и соответствуют нашим стандартам.</i>
+
+info_faq_3: |-  
+  <blockquote><b>Где обычно проходят встречи, и могу ли я выбрать место?</b></blockquote>
+  <i>Встречи проходят в апартаментах представительницы, отельных номерах или других согласованных местах. Место выбираете вы — мы учтём все пожелания.</i>
+
+  <blockquote><b>Какова политика отмены и условия возврата средств?</b></blockquote>
+  <i>Оплата не возвращается, если отмена не по вине модели или ожидания не оправдались в первые 15 минут. При срыве встречи по вине модели — полный возврат. Перенос даты и времени возможен по согласованию.</i>
+
+  <blockquote><b>Какие гарантии вы даёте, и как связаться с вами при возникновении проблем?</b></blockquote>
+  <i>Мы гарантируем оперативное решение любых вопросов и всегда готовы предложить оптимальный выход. Обратитесь в круглосуточную техническую поддержку Elegant Agency Support.</i>
+
+info_guarantees: |-
+  <blockquote><tg-emoji emoji-id="5276017699913245391">✨</tg-emoji> <b>Гарантии и открытость</b></blockquote>
+
+  <b>Мы всегда на вашей стороне и гарантируем оперативное решение любых вопросов.</b>
+  <i>Поддержка Elegant Agency работает круглосуточно.</i>
+
+  <blockquote><tg-emoji emoji-id="5276398246900576181">🏁</tg-emoji> <b>Наша компания</b></blockquote>
+  ООО "Модельное Агентство «Модус»"
+  ИНН/КПП: 7715915866/771501001
+  Москва, Большая Новодмитровская ул., д. 36 стр. 1, эт. 2
+
+  <blockquote><tg-emoji emoji-id="5276356040256960827">✨</tg-emoji> <b>Офис в Москва-Сити</b></blockquote>
+  Пресненская наб., д. 12, Башня "Федерация", 42 эт., офис №3
+  ПН-ПТ: 14:00–18:00 · только по предварительной заявке
+
+  <i><tg-emoji emoji-id="5276186784185755393">✨</tg-emoji> Если возникнут вопросы — смело обращайтесь. Мы всегда рядом.</i>
+
+info_additionals: |-
+  <blockquote><tg-emoji emoji-id="5276501897346328643">✨</tg-emoji> <b>Дополнительные услуги</b></blockquote>
+
+  Помимо повседневных встреч с моделями, мы предлагаем Вам дополнительные услуги.
+
+  <blockquote><b>Съёмки</b> — каталоги/реклама/UGC; бриф и смета; NDA по запросу
+  <b>Промо</b> — выставки/ивенты/road-show; KPI и скрипты; от 3 ч
+  <b>Сопровождение</b> — деловые встречи/ужины/выезды; дресс-код; безопасность
+  <b>Отношения</b> — приватные встречи по взаимному согласию; конфиденциальность
+  <b>Хостес</b> — встреча/регистрация/навигация; языки по запросу</blockquote>
+
+  <blockquote><tg-emoji emoji-id="5276092273430405442">✨</tg-emoji> <b>Условия</b></blockquote>
+  • Предоплата фиксирует слот; тайминг и состав согласовываются заранее
+  • Перенос/отмена — по правилам договора
+
+  <blockquote><tg-emoji emoji-id="5276366717545655436">✨</tg-emoji> <b>Нет нужной услуги</b></blockquote>
+  <b>Персональный консьерж</b> по желанию: решим любой нестандартный запрос — от бронирований и логистики до подбора команды и площадок.
+
+  <i>Выберите раздел ниже или опишите задачу в техническую поддержку — вернёмся с предложением и расчётом.</i>
+
+info_additionals_info: |-
+  <blockquote><tg-emoji emoji-id="5276037869079666921">✨</tg-emoji> <b>Дополнительные услуги</b></blockquote>
+
+  <b>Мы предлагаем расширенные опции для максимального комфорта:</b>
+  • Сопровождение на мероприятия
+  • Ужин или деловая встреча
+  • Ночной формат
+  • Индивидуальные сценарии
+
+  <i>Полный список доступных доп. услуг уточняйте у поддержки или при оформлении. Мы адаптируем предложение под ваши пожелания.</i>
+
+info_additionals_shootings: |
+  <blockquote><b><tg-emoji emoji-id="5276187965301764847">✨</tg-emoji>Профессиональные съёмки</b></blockquote>
+
+  • Фото/видео: соцсети, каталоги, реклама, клипы, backstage
+  • Что входит: подбор модели, локации, стилистика; договор NDA по запросу
+  • Смены: от 2 часов; ретушь/монтаж - отдельно
+
+  <i>Напишите нам, чтобы получить бриф и смету.</i>
+
+info_additionals_accompaniment: |-
+  <blockquote><tg-emoji emoji-id="5276374238033391568">✨</tg-emoji> <b>Сопровождение</b></blockquote>
+
+  • Деловые встречи, мероприятия, ужины, выезды
+  • Дресс-код и этикет, внимательное соответствие вашему формату
+  • Конфиденциальность, безопасность, отбор под задачу
+
+  <i>Уточните дату, город и формат - мы предложим кандидатов.</i>
+
+info_additionals_relations: |-
+  <blockquote><tg-emoji emoji-id="5278305989769076414">✨</tg-emoji> <b>Отношения</b></blockquote>
+
+  • Персональное общение и приватные встречи по взаимному согласию
+  • Матчинг по предпочтениям, ненавязчивая модерация
+  • Конфиденциальность на первом месте
+
+  <i>Опишите ожидания - подберём комфортный формат.</i>
+
+info_additionals_promo: |-
+  <blockquote><tg-emoji emoji-id="5276079581802046778">✨</tg-emoji> <b>Промо</b></blockquote>
+
+  • Презентации, выставки, road-show, бренд-активации
+  • Бриф, KPI и скрипты - подготовим и отработаем
+  • Внешние требования и дресс-код - соблюдаем
+
+  <i>Пришлите бриф - рассчитаем команду и тайминг.</i>
+
+info_additionals_hostess: |-
+  <blockquote><tg-emoji emoji-id="5276152647785687414">✨</tg-emoji> <b>Хостес</b></blockquote>
+
+  • Встреча гостей, регистрация, навигация, забота о гостях
+  • Коммуникации на площадке, помощь оргкоманде
+  • Языки и дресс-код - по запросу
+
+  <i>Назовите площадку и расписание - подберём состав.</i>
+
+info_section_unavailable: "Раздел временно недоступен."
+
+# SUPPORT
+support_caption: |
+  <blockquote><tg-emoji emoji-id="5276247746951554630">✨</tg-emoji> <b>Техническая поддержка</b></blockquote>
+
+  Возник вопрос или что-то пошло не так? Мы рядом и готовы помочь.
+
+  <blockquote><tg-emoji emoji-id="5276092273430405442">✨</tg-emoji> <b>Как быстрее получить решение</b></blockquote>
+  • Опишите ситуацию простыми словами — чем подробнее, тем быстрее разберёмся.
+  • При необходимости приложите скриншоты или детали.
+  • Общайтесь вежливо — с вашей стороны это ускоряет процесс, с нашей — гарантирует максимальное внимание
+
+  <tg-emoji emoji-id="5276186784185755393">✨</tg-emoji> <b>Мы ценим ваше время и стараемся отвечать максимально быстро.</b>
+
+  <i>Просто напишите нам — и мы сразу возьмёмся за ваш вопрос!</i>
+
+# PROFILE
+profile_caption: |
+  <blockquote><tg-emoji emoji-id="5276374238033391568">👤</tg-emoji> <b>Личный кабинет</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5278520656529498073">✨</tg-emoji> Профиль</b></blockquote>
+  ├ Ваш ID: <code>{id}</code>
+  ├ Ваш город: <b>{city}</b>
+  └ Денежный баланс: <b>{balance}</b>
+
+  <blockquote><b><tg-emoji emoji-id="5276404753776029449">✨</tg-emoji> Прочее</b></blockquote>
+  ├ Промокод: <b>{promo_status}</b>
+  ├ Заказы: <b>{orders}</b>
+  └ Рейтинг: <b>{rating}</b>
+
+  <i>Дата регистрации: <b>{registered}</b></i>
+
+profile_promo_active: "Активирован"
+profile_promo_inactive: "Не активирован"
+profile_favorites_caption: "<tg-emoji emoji-id='5275981239935871999'>❤️</tg-emoji> <b>Избранные</b>"
+profile_favorites_empty: "Избранное пока пусто."
+profile_promo_enter: "<tg-emoji emoji-id='5276095911267706208'>💌</tg-emoji> Введите промокод:"
+profile_promo_not_found: "<tg-emoji emoji-id='5278314532459028193'>😔</tg-emoji> Промокод <b>{code}</b> не найден."
+profile_promo_activated: "<tg-emoji emoji-id='5276083683495815587'>✅</tg-emoji> Промокод <b>{code}</b> активирован."
+profile_city_manage: | 
+  <blockquote><tg-emoji emoji-id="5278314532459028193">✨</tg-emoji> <b>Уважаемый клиент, обратите внимание</b></blockquote>
+
+  Вам предоставляется возможность указать <b>2 города</b>.
+  После достижения лимита <b>добавление новых городов будет недоступно.</b>
+
+  Это связано с политикой конфиденциальности нашего агентства. Мы заботимся о безопасности и конфиденциальности как моделей, так и клиентов.
+
+  <i>— Вы сможете свободно переключаться между уже добавленными городами.</i>
+
+profile_city_active_answer: "Активный город: {city}"
+profile_city_second_prompt: "<tg-emoji emoji-id='5276367091207808640'>🏙</tg-emoji> <b>Введите название города:</b>"
+profile_city_not_set: "Не указан"
+profile_city_already_active: "Этот город уже активен."
+profile_city_missing: "Город не задан."
+profile_top_up_caption: |
+  <blockquote><b><tg-emoji emoji-id="5276374238033391568">💳</tg-emoji> Пополнение баланса</b></blockquote>
+
+  Ваш текущий баланс: <b>{balance}</b>
+
+  <i>Для пополнения баланса выберите способ оплаты:</i>
+
+top_up_amount_prompt: |
+  <blockquote><b><tg-emoji emoji-id="5276374238033391568">💳</tg-emoji> Пополнение баланса</b></blockquote>
+
+  Введите сумму пополнения в рублях:
+
+top_up_amount_invalid: |
+  <blockquote><b><tg-emoji emoji-id="5276374238033391568">💳</tg-emoji> Пополнение баланса</b></blockquote>
+
+  <tg-emoji emoji-id="5278314532459028193">⚠️</tg-emoji> <b>Некорректная сумма!</b>
+  Пожалуйста, введите положительное целое число (от <b>{min_amount} ₽</b> до <b>{max_amount} ₽</b>).
+
+  <i>Повторите попытку ввода:</i>
+
+top_up_amount_limit_error: |
+  <blockquote><b><tg-emoji emoji-id="5276374238033391568">💳</tg-emoji> Пополнение баланса</b></blockquote>
+
+  <tg-emoji emoji-id="5278314532459028193">⚠️</tg-emoji> <b>Сумма вне диапазона!</b>
+  Сумма пополнения должна быть от <b>{min_amount} ₽</b> до <b>{max_amount} ₽</b>.
+
+  <i>Пожалуйста, повторите попытку и введите сумму в указанном диапазоне:</i>
+
+top_up_card_card_text: |
+  <blockquote><b><tg-emoji emoji-id="5276374238033391568">💳</tg-emoji> Пополнение баланса #{order_number}</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5278520656529498073">✨</tg-emoji> Детали платежа</b></blockquote>
+  ├ Сумма: <b>{price} ₽</b>
+  └ Способ: <b>Банковская карта</b>
+
+  <blockquote><tg-emoji emoji-id="5276374238033391568">💳</tg-emoji><b> Реквизиты для оплаты</b></blockquote>
+  ├ Номер карты: <code>{card_number}</code>
+  └ Сумма к переводу: <b>{price} ₽</b>
+
+  <tg-emoji emoji-id="5278634047961081571">✨</tg-emoji> <i>После совершения перевода нажмите на кнопку «Отправить чек» ниже и прикрепите квитанцию.</i>
+
+top_up_card_text: |
+  <blockquote><b><tg-emoji emoji-id="5276374238033391568">💳</tg-emoji> Пополнение баланса #{order_number}</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5278520656529498073">✨</tg-emoji> Детали платежа</b></blockquote>
+  ├ Сумма: <b>{price} ₽</b>
+  └ Способ: <b>Банковская карта</b>
+
+  <i>Для получения реквизитов на данную сумму обратитесь в службу поддержки.</i>
+
+profile_transaction_card: |
+  <blockquote><b><tg-emoji emoji-id="5278746777967696376">✨</tg-emoji> Транзакция #{id}</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5278520656529498073">✨</tg-emoji> Детали операции</b></blockquote>
+  ├ Сумма: <b>{amount}</b>
+  ├ Тип: <b>{type}</b>
+  ├ Описание: <b>{description}</b>
+  └ Баланс после: <b>{balance_after}</b>
+
+  <i>Дата: <b>{created_at}</b></i>
+
+profile_order_card: |
+  <blockquote><b><tg-emoji emoji-id="5278746777967696376">✨</tg-emoji> Заказ #{order_number}</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5278520656529498073">✨</tg-emoji> Детали заказа</b></blockquote>
+  ├ Модель: <b>{model_name}</b>
+  ├ Тариф: <b>{tariff}</b>
+  ├ Статус: <b>{status}</b>
+  ├ Город: <b>{city}</b>
+  ├ Дата: <b>{meeting_date}</b>
+  ├ Время: <b>{meeting_time}</b>
+  ├ Место: <b>{meeting_place}</b>
+  └ Адрес: <b>{address}</b>
+
+  <i>Создан: <b>{created_at}</b></i>
+
+
+# MODEL CARD
+model_card: |
+  <blockquote><b><tg-emoji emoji-id="5278305989769076414">✨</tg-emoji> Анкета модели {name} ({age})</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5276181067584287537">✨</tg-emoji> Цены</b></blockquote>
+  ├ Час - {one_hour_price}
+  ├ 2 часа - {two_hour_price}
+  ├ 3 часа - {three_hour_price}
+  └ Ночь - {overnight_price}
+
+  <blockquote><b><tg-emoji emoji-id="5276197117877074070">✨</tg-emoji> Параметры</b></blockquote>
+  ├ Возраст: <b>{age}</b>
+  ├ Рост: <b>{height}</b>
+  └ Размер груди: <b>{bust_size}</b>
+
+  <blockquote>{caption}</blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5276404753776029449">✨</tg-emoji> Дополнительно</b></blockquote>
+  ├ Верификация: {verification}
+  ├ Справка ИППП\ЗППП: {medical_certificate}
+  ├ Рейтинг: {rating}
+  └ Заказы: {orders}
+
+  <i><tg-emoji emoji-id="5278634047961081571">✨</tg-emoji> Для оформления нажмите на кнопку «<b>Оформить</b>».</i>
+
+# MODELS CATALOG
+models_city_prompt: "<tg-emoji emoji-id='5276367091207808640'>🏙</tg-emoji> <b>Укажите ваш город</b>, чтобы продолжить:"
+models_city_not_found: "<tg-emoji emoji-id='5278314532459028193'>⚠️</tg-emoji> Город не найден. Попробуйте еще раз:"
+models_city_set: "<tg-emoji emoji-id='5276083683495815587'>✅</tg-emoji> Город <b>{city_name}</b> установлен."
+models_catalog: |
+  <blockquote><tg-emoji emoji-id="5276097045139075990">✨</tg-emoji> <b>Каталог моделей</b></blockquote>
+
+  Доступные анкеты на данный момент: <b>{count}</b>
+models_list_item: "#{index} {name} ({age})"
+models_reviews_title: "<tg-emoji emoji-id='5278520656529498073'>⭐️</tg-emoji> <b>Отзывы о модели {name}</b> ({count})"
+models_reviews_empty: "<tg-emoji emoji-id='5278520656529498073'>⭐️</tg-emoji> <b>Отзывы о модели {name}</b>\n\nОтзывов пока нет."
+models_review_author_fallback: "Аноним"
+models_review_item: "\n{stars}\n<b>{author}</b> {review_date}\n{body}"
+models_services_title: "<tg-emoji emoji-id='5276186784185755393'>🧾</tg-emoji> <b>Услуги модели</b>"
+models_service_item: "• {name}"
+models_services_unavailable: "Услуги для этой анкеты не указаны."
+models_additionals_title: "<tg-emoji emoji-id='5276186784185755393'>🎀</tg-emoji> <b>Дополнительные услуги модели</b>"
+models_additional_item: "• {name} — {price}₽"
+models_additionals_unavailable: "Дополнительные услуги для этой анкеты не указаны."
+models_private_channel_default_description: "Эксклюзивный доступ в приватный канал модели с дополнительным контентом и обновлениями."
+models_private_channel_caption: |
+  <tg-emoji emoji-id='5891243564309942507'>🔐</tg-emoji> <b>Приватный канал</b>
+
+  <b>Модель:</b> <code>{name}</code> <code>{code}</code>
+
+  {description}
+
+  <b>Цена:</b> <code>{price}₽</code>
+models_private_channel_unavailable: "Приватный канал для этой анкеты недоступен."
+model_not_found: "Модель не найдена."
+model_fav_added: "Добавлено в избранное."
+model_fav_removed: "Удалено из избранного."
+model_no_other_photos: "Других фото нет."
+
+# MODELS ORDER
+models_order_unavailable: "Оформление заказа временно недоступно."
+models_tariff_prompt: "<tg-emoji emoji-id='5276230390988712590'>✨</tg-emoji> Выберите тариф для <b>{name}</b>:"
+models_choose_month: "<tg-emoji emoji-id='5278399310818485641'>✨</tg-emoji> Выберите месяц встречи:"
+models_choose_date: "<tg-emoji emoji-id='5278399310818485641'>✨</tg-emoji> Выберите дату встречи:"
+models_choose_time: "<tg-emoji emoji-id='5278448380819842800'>✨</tg-emoji> Выберите время встречи:"
+models_choose_place: "<tg-emoji emoji-id='5276367091207808640'>✨</tg-emoji> Выберите место встречи:"
+models_choose_address: "<tg-emoji emoji-id='5276358733201449739'>✨</tg-emoji> Выберите адрес:"
+models_no_addresses: |
+  <blockquote><tg-emoji emoji-id="5278314532459028193">✨</tg-emoji> <b>У вас нет сохранённых адресов.</b></blockquote>
+  
+  <i>— Для того чтобы добавить адрес, нажмите на кнопку «Добавить адрес» ниже.</i>
+models_addons_prompt: "<tg-emoji emoji-id='5276186784185755393'>🎀</tg-emoji> <b>Выберите дополнительные услуги:</b>"
+models_order_caption: |
+  <blockquote><tg-emoji emoji-id="5276252918092183887">✨</tg-emoji> <b>Оформление заказа #{order_number}</b></blockquote>
+  
+  <blockquote><tg-emoji emoji-id="5276404753776029449">✨</tg-emoji> <b>Информация о заявке</b></blockquote>
+  ├ Модель: <b>{model}</b>
+  ├ Тариф: <b>{tariff}</b>
+  └ Сумма к оплате: <b>{price}</b>
+  
+  Выберите метод оплаты:
+models_pay_card_text: |
+  <blockquote><tg-emoji emoji-id="5278746777967696376">✨</tg-emoji><b> Заявка на оплату {order_number}</b></blockquote>
+
+  <blockquote><tg-emoji emoji-id="5276404753776029449">✨</tg-emoji><b> Информация о заявке</b></blockquote>
+  ├ Модель: <b>{model_name}</b>, <code>{model_code}</code>
+  └ Итого к оплате: <b>{price}</b>
+
+  <tg-emoji emoji-id='5278314532459028193'>⚠️</tg-emoji> <b>Способ оплаты доступен только в ручном режиме.</b>
+  Для оформления <i>обратитесь в техническую поддержку</i>.
+  Наш сотрудник оперативно предоставит вам инструкции и реквизиты для оплаты.
+
+  <tg-emoji emoji-id="5278634047961081571">✨</tg-emoji> <i>Нажмите на кнопку ниже, чтобы связаться с технической поддержкой.</i>
+
+models_pay_card_card_text: |
+  <blockquote><tg-emoji emoji-id="5278746777967696376">✨</tg-emoji><b> Заявка на оплату #{order_number}</b></blockquote>
+
+  <blockquote><tg-emoji emoji-id="5276404753776029449">✨</tg-emoji><b> Информация о заявке</b></blockquote>
+  ├ Модель: <b>{model_name}</b>, <code>{model_code}</code>
+  └ Итого к оплате: <b>{price} ₽</b>
+
+  <blockquote><tg-emoji emoji-id="5276374238033391568">💳</tg-emoji><b> Реквизиты для оплаты</b></blockquote>
+  ├ Способ: <b>Банковская карта</b>
+  ├ Номер карты: <code>{card_number}</code>
+  └ Сумма к переводу: <b>{price} ₽</b>
+
+  <tg-emoji emoji-id="5278634047961081571">✨</tg-emoji> <i>После совершения перевода нажмите на кнопку «Отправить чек» ниже и прикрепите квитанцию.</i>
+models_pay_cash_answer: "Для оплаты наличными необходимо иметь более 3-х успешных заказов."
+models_pay_balance_insufficient: "❌ На вашем балансе недостаточно средств."
+models_pay_balance_confirm: |
+  <blockquote><b><tg-emoji emoji-id="5276374238033391568">💳</tg-emoji> Оплата с баланса</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5278520656529498073">✨</tg-emoji> Детали оплаты заказа #{order_number}</b></blockquote>
+  ├ Сумма заказа: <b>{price} ₽</b>
+  ├ Текущий баланс: <b>{balance} ₽</b>
+  └ Баланс после оплаты: <b>{balance_after} ₽</b>
+
+  <i>Подтвердите списание средств с вашего баланса для оплаты заказа.</i>
+models_pay_method_disabled: "<tg-emoji emoji-id='5278314532459028193'>⚠️</tg-emoji> <b>Этот способ оплаты сейчас отключен.</b>"
+models_check_prompt: "<tg-emoji emoji-id='5276457706427826666'>📸</tg-emoji> <b>Отправьте скриншот чека об оплате</b>\n\nПрикрепите фото квитанции и отправьте его в этот чат."
+models_check_sent: "<tg-emoji emoji-id='5276083683495815587'>✅</tg-emoji> <b>Чек получен!</b>\n\nОжидайте подтверждения оплаты от менеджера."
+models_check_confirmed: "<tg-emoji emoji-id='5276083683495815587'>✅</tg-emoji> <b>Оплата подтверждена!</b>\n\n<b>Заказ #{order_number}</b> успешно оформлен.\n<b>Модель:</b> {model_name}\n<b>Тариф:</b> {tariff}\n<b>Сумма:</b> {price}₽\n\n<tg-emoji emoji-id='5377639619728808318'>⚠️</tg-emoji> Для подтверждения оформления встречи с моделью, обратитесь в техническую поддержку."
+models_check_rejected: "<tg-emoji emoji-id='5276314172915759453'>❌</tg-emoji> <b>Оплата отклонена.</b>\n\nЧек по заявке <code>#{order_number}</code> отклонён менеджером."
+top_up_confirmed: |
+  <blockquote><b><tg-emoji emoji-id="5276374238033391568">💳</tg-emoji> Баланс пополнен!</b></blockquote>
+
+  <tg-emoji emoji-id="5276083683495815587">✅</tg-emoji> <b>Оплата подтверждена!</b>
+  Сумма: <b>{price} ₽</b> успешно зачислена на ваш баланс (заявка <code>#{order_number}</code>).
+top_up_rejected: |
+  <blockquote><b><tg-emoji emoji-id="5276374238033391568">💳</tg-emoji> Пополнение отклонено</b></blockquote>
+
+  <tg-emoji emoji-id="5276314172915759453">❌</tg-emoji> <b>Чек отклонён менеджером.</b>
+  Оплата по заявке <code>#{order_number}</code> на сумму <b>{price} ₽</b> отклонена.
+models_private_channel_payment_unavailable: "Оплата приватного канала временно недоступна."
+order_not_found: "Заказ не найден."
+
+
+# ADDRESSES
+address_list_caption: "<tg-emoji emoji-id='5276367091207808640'>🏙</tg-emoji> <b>Мои адреса</b>\n\nВсего: {count}"
+address_list_empty: "<tg-emoji emoji-id='5276367091207808640'>🏙</tg-emoji> <b>Мои адреса</b>\n\nУ вас пока нет сохранённых адресов."
+address_detail: "<tg-emoji emoji-id='5276367091207808640'>🏙</tg-emoji> <b>{title}</b>\n\n<blockquote>{address}</blockquote>"
+address_create_title: "<tg-emoji emoji-id='5276367091207808640'>🏙</tg-emoji> <b>Введите название адреса</b>"
+address_create_address: "<tg-emoji emoji-id='5276367091207808640'>🏙</tg-emoji> <b>Введите адрес</b>"
+address_create_confirm: "<tg-emoji emoji-id='5276367091207808640'>🏙</tg-emoji> <b>Подтвердите создание адреса</b>\n\n<b>Название:</b> {title}\n<b>Адрес:</b> {address}"
+address_created: "Адрес сохранён."
+address_edit_title: "<tg-emoji emoji-id='5276367091207808640'>🏙</tg-emoji> <b>Введите новое название</b>"
+address_edit_address: "<tg-emoji emoji-id='5276367091207808640'>🏙</tg-emoji> <b>Введите новый адрес</b>"
+address_edit_confirm_title: "<tg-emoji emoji-id='5276367091207808640'>🏙</tg-emoji> <b>Подтвердите изменение названия</b>\n\n<b>Было:</b> {old_title}\n<b>Станет:</b> {new_title}"
+address_edit_confirm_addr: "<tg-emoji emoji-id='5276367091207808640'>🏙</tg-emoji> <b>Подтвердите изменение адреса</b>\n\n<b>Было:</b> {old_address}\n<b>Станет:</b> {new_address}"
+address_updated: "Адрес обновлён."
+address_deleted: "Адрес удалён."
+address_delete_confirm: "<tg-emoji emoji-id='5278314532459028193'>⚠️</tg-emoji> Удалить адрес <b>{title}</b>?"
+address_not_found: "Адрес не найден."
+
+# SEARCH
+search_code_enter: "<tg-emoji emoji-id='5276098071636254561'>💼</tg-emoji> Введите код модели:"
+search_code_not_found: "<tg-emoji emoji-id='5278314532459028193'>❌</tg-emoji> Модель с кодом <b>{code}</b> не найдена."

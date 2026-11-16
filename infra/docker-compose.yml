@@ -1,0 +1,244 @@
+version: '3.8'
+
+services:
+  # PostgreSQL 16
+  postgres:
+    image: postgres:16-alpine
+    container_name: escort_postgres
+    restart: unless-stopped
+    env_file:
+      - ./postgres/.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-escort}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - escort_network
+
+  # Redis 7 (FSM storage, caching)
+  redis:
+    image: redis:7-alpine
+    container_name: escort_redis
+    restart: unless-stopped
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - escort_network
+
+  # Photos Service (Media storage)
+  photos:
+    build:
+      context: ..
+      dockerfile: photos/Dockerfile
+    container_name: escort_photos
+    restart: unless-stopped
+    env_file:
+      - ../photos/.env
+    ports:
+      - "8005:8005"
+    volumes:
+      - photos_storage:/data/photos
+    networks:
+      - escort_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8005/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Logs Service (Telegram event logging)
+  logs:
+    build:
+      context: ..
+      dockerfile: logs/Dockerfile
+    container_name: escort_logs
+    restart: unless-stopped
+    env_file:
+      - ../logs/.env
+    ports:
+      - "8006:8006"
+    volumes:
+      - logs_data:/app/data
+    networks:
+      - escort_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8006/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # API Service (Strictly for web_app)
+  api:
+    build:
+      context: ..
+      dockerfile: api/Dockerfile
+    container_name: escort_api
+    restart: unless-stopped
+    env_file:
+      - ../api/.env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../repository:/app/repository
+      - ../services:/app/services
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - escort_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Main Bot (Aiogram Client Bot)
+  main_bot:
+    build:
+      context: ..
+      dockerfile: main/Dockerfile
+    container_name: escort_main_bot
+    restart: unless-stopped
+    env_file:
+      - ../main/.env
+    ports:
+      - "8001:8001"
+    volumes:
+      - ../repository:/app/repository
+      - ../services:/app/services
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - escort_network
+
+  # Support Bot (Forum Relay)
+  support_bot:
+    build:
+      context: ..
+      dockerfile: support/Dockerfile
+    container_name: escort_support_bot
+    restart: unless-stopped
+    env_file:
+      - ../support/.env
+    ports:
+      - "8002:8002"
+    volumes:
+      - ../repository:/app/repository
+      - ../services:/app/services
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - escort_network
+
+  # Admin Bot (Management Panel)
+  admin_bot:
+    build:
+      context: ..
+      dockerfile: admin/Dockerfile
+    container_name: escort_admin_bot
+    restart: unless-stopped
+    env_file:
+      - ../admin/.env
+    ports:
+      - "8003:8003"
+    volumes:
+      - ../repository:/app/repository
+      - ../services:/app/services
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - escort_network
+
+  # Web App (FastAPI BFF + React frontend)
+  web_app:
+    build:
+      context: ..
+      dockerfile: web_app/Dockerfile
+    container_name: escort_web_app
+    restart: unless-stopped
+    env_file:
+      - ../web_app/.env
+    ports:
+      - "8004:8004"
+    depends_on:
+      - api
+    networks:
+      - escort_network
+
+  # Web Landing Service
+  web:
+    build:
+      context: ..
+      dockerfile: web/Dockerfile
+    container_name: escort_web
+    restart: unless-stopped
+    env_file:
+      - ../web/.env
+    ports:
+      - "8007:8007"
+    depends_on:
+      - api
+    networks:
+      - escort_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8007/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Cloudflare Tunnel
+  cloudflare_tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: escort_cloudflare_tunnel
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    env_file:
+      - ./cloudflare/.env
+    networks:
+      - escort_network
+    depends_on:
+      - api
+      - photos
+      - logs
+      - web_app
+      - web
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  photos_storage:
+    driver: local
+  logs_data:
+    driver: local
+
+networks:
+  escort_network:
+    driver: bridge

@@ -1,0 +1,48 @@
+welcome: "👋 <b>Добро пожаловать в поддержку!</b>\n\nПросто напишите ваше сообщение в этот чат — и оно будет отправлено нашей команде поддержки.\n\nОператор ответит вам прямо сюда."
+error_banned: "🚫 Вы заблокированы."
+error_send_reply: "❌ Не удалось отправить ответ клиенту."
+error_delivery_failed: "❌ Не удалось выполнить действие у клиента."
+error_thread_not_found: "❌ Тред клиента не найден."
+error_client_not_found: "❌ Клиент не найден."
+error_agreement_not_found: "❌ Соглашение не найдено."
+error_forum_only: "⚠️ Команду нужно использовать внутри треда форума."
+event_thread_created: "✅ Тред клиента создан."
+event_reply_sent: "✅ Ответ отправлен клиенту."
+event_message_updated: "✅ Сообщение клиента обновлено в треде."
+event_message_forwarded: "✅ Сообщение отправлено в поддержку."
+event_agreement_changed: "✅ Соглашение клиента обновлено."
+event_ban_enabled: "✅ Клиент заблокирован."
+event_ban_disabled: "✅ Клиент разблокирован."
+support_client_agreement_choose: "📄 <b>Выберите соглашение для клиента:</b>"
+support_client_agreement_changed: "✅ Вы успешно сменили соглашение для этого клиента."
+info: |
+  ℹ️ <b>Информация о боте поддержки</b>
+
+  Этот бот обеспечивает связь клиентов с командой поддержки.
+
+  • Напишите вопрос — и он будет направлен оператору
+  • Оператор ответит вам прямо в этом чате
+  • Все сообщения попадают в единый форум поддержки
+support_info_card: |
+  <blockquote>› ℹ️ <b>Информация о клиенте</b></blockquote>
+
+  <blockquote>› 👤 <b>Клиент</b></blockquote>
+  Имя: <b>{full_name}</b>
+  Username: <b>{username}</b>
+  ID: <code>{user_id}</code>
+  Город 1: <b>{primary_city}</b>
+  Город 2: <b>{secondary_city}</b>
+  Выбранный город: <b>{active_city_slot}</b>
+  Промокод: <b>{promo}</b>
+  Соглашение: <b>{title}</b>
+  Бан: <b>{ban_status}</b>
+
+  <i>› Регистрация: <b>{registered_at}</b></i>
+support_agreement_missing: "Отсутствует"
+support_promo_missing: "Не активирован"
+support_city_missing: "Отсутствует"
+support_username_missing: "Отсутствует"
+support_name_missing: "Отсутствует"
+support_ban_enabled: "🔒 Заблокирован"
+support_ban_disabled: "🔓 Разблокирован"
+support_topic_name: "👤 {full_name}"

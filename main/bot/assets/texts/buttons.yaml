@@ -1,0 +1,99 @@
+back: {text: "‹ Назад", icon_custom_emoji_id: null, color: null}
+back_to_main: {text: "‹ В главное меню", icon_custom_emoji_id: null, color: null}
+back_to_info: {text: "‹ В информацию", icon_custom_emoji_id: null, color: null}
+back_to_additionals: {text: "‹ В доп. услуги", icon_custom_emoji_id: null, color: null}
+back_to_profile: {text: "‹ В профиль", icon_custom_emoji_id: null, color: null}
+back_to_models: {text: "‹ К моделям", icon_custom_emoji_id: null, color: null}
+back_to_model: {text: "‹ К модели", icon_custom_emoji_id: null, color: null}
+back_to_months: {text: "‹ К выбору месяца", icon_custom_emoji_id: null, color: null}
+back_to_dates: {text: "‹ К выбору даты", icon_custom_emoji_id: null, color: null}
+back_to_times: {text: "‹ К времени", icon_custom_emoji_id: null, color: null}
+back_to_place: {text: "‹ К выбору места", icon_custom_emoji_id: null, color: null}
+back_to_addresses: {text: "‹ К адресам", icon_custom_emoji_id: null, color: null}
+back_to_address: {text: "‹ К адресу", icon_custom_emoji_id: null, color: null}
+back_to_orders: {text: "‹ К заказам", icon_custom_emoji_id: null, color: null}
+back_to_city: {text: "‹ К выбору города", icon_custom_emoji_id: null, color: null}
+
+confirm: {text: "Подтвердить", icon_custom_emoji_id: "5776375003280838798", color: null}
+cancel: {text: "Отмена", icon_custom_emoji_id: "5778527486270770928", color: null}
+main_menu_reply: {text: "Главное меню", icon_custom_emoji_id: "5276037869079666921", color: null}
+
+agreement: {text: "Соглашение", icon_custom_emoji_id: "5764779661028495989", color: null}
+acquainted: {text: "Ознакомлен", icon_custom_emoji_id: "5776375003280838798", color: 'green'}
+read_agreement: {text: "📄 Ознакомиться", icon_custom_emoji_id: null, color: null}
+
+open_web_app: {text: "Открыть приложение", icon_custom_emoji_id: "5870748341150683538", color: 'red'}
+profile: {text: "Профиль", icon_custom_emoji_id: "4904848288345228262", color: null}
+models: {text: "Модели", icon_custom_emoji_id: "5765017520612315383", color: null}
+search_code: {text: "Поиск по коду", icon_custom_emoji_id: "5870974879200711167", color: null}
+information: {text: "О нас", icon_custom_emoji_id: "5879785854284599288", color: null}
+support: {text: "Поддержка", icon_custom_emoji_id: "4913497231492908158", color: null}
+
+faq: {text: "Частые вопросы", icon_custom_emoji_id: "5872996816659681395", color: null}
+guarantees: {text: "Гарантии", icon_custom_emoji_id: "5873153278023307367", color: null}
+additionals: {text: "Доп. услуги", icon_custom_emoji_id: "5775937998948404844", color: null}
+additionals_info: {text: "О доп. услугах", icon_custom_emoji_id: "5879785854284599288", color: null}
+shootings: {text: "Съёмки", icon_custom_emoji_id: "5870759052799119046", color: null}
+accompaniment: {text: "Сопровождение", icon_custom_emoji_id: "5931415565955503486", color: null}
+relations: {text: "Отношения", icon_custom_emoji_id: "5944970130554359187", color: null}
+promo_section: {text: "Промо", icon_custom_emoji_id: "5870730156259152122", color: null}
+hostess: {text: "Хостес", icon_custom_emoji_id: "5942877472163892475", color: null}
+
+promo: {text: "Промокод", icon_custom_emoji_id: "5992430854909989581", color: null}
+orders: {text: "Заказы", icon_custom_emoji_id: "5927169041595634481", color: null}
+top_up: {text: "Пополнить баланс", icon_custom_emoji_id: "5927169041595634481", color: "green"}
+transactions_history: {text: "Операции", icon_custom_emoji_id: "5870450390679425417", color: null}
+change_city: {text: "Сменить город", icon_custom_emoji_id: "5870718740236079262", color: null}
+favorites: {text: "Избранные", icon_custom_emoji_id: "5994495149336434048", color: null}
+add_city: {text: "Добавить город", icon_custom_emoji_id: "5775937998948404844", color: "green"}
+current_city: {text: "{city}", icon_custom_emoji_id: "5870633910337015697", color: "blue"}
+other_city: {text: "{city}", icon_custom_emoji_id: null, color: null}
+active_orders: {text: "Активные", icon_custom_emoji_id: "5852871561983299073", color: null}
+completed_orders: {text: "Завершенные", icon_custom_emoji_id: "5776375003280838798", color: null}
+
+
+order: {text: "Оформить модель", icon_custom_emoji_id: "5775937998948404844", color: "green"}
+view_reviews: {text: "Отзывы", icon_custom_emoji_id: "5764779661028495989", color: null}
+services: {text: "Услуги", icon_custom_emoji_id: "5879785854284599288", color: null}
+blog: {text: "Блог", icon_custom_emoji_id: "5891243564309942507", color: null}
+private_channel: {text: "Приватный канал", icon_custom_emoji_id: "5891243564309942507", color: null}
+other_photo: {text: "Другое фото", icon_custom_emoji_id: "5936017305585586269", color: null}
+in_favorites: {text: "В избранном", icon_custom_emoji_id: "5994495149336434048", color: null}
+to_favorites: {text: "В избранное", icon_custom_emoji_id: "5994495149336434048", color: null}
+pay_card: {text: "Оплатить картой", icon_custom_emoji_id: "5927169041595634481", color: null}
+tariff_hour: {text: "1 час", icon_custom_emoji_id: "5778605968208170641", color: null}
+tariff_2hours: {text: "2 часа", icon_custom_emoji_id: "5778605968208170641", color: null}
+tariff_3hours: {text: "3 часа", icon_custom_emoji_id: "5778605968208170641", color: null}
+tariff_night: {text: "Ночь", icon_custom_emoji_id: "5778605968208170641", color: null}
+tariff_private: {text: "Приватный канал", icon_custom_emoji_id: "5891243564309942507", color: null}
+month_1: {text: "Январь", icon_custom_emoji_id: null, color: null}
+month_2: {text: "Февраль", icon_custom_emoji_id: null, color: null}
+month_3: {text: "Март", icon_custom_emoji_id: null, color: null}
+month_4: {text: "Апрель", icon_custom_emoji_id: null, color: null}
+month_5: {text: "Май", icon_custom_emoji_id: null, color: null}
+month_6: {text: "Июнь", icon_custom_emoji_id: null, color: null}
+month_7: {text: "Июль", icon_custom_emoji_id: null, color: null}
+month_8: {text: "Август", icon_custom_emoji_id: null, color: null}
+month_9: {text: "Сентябрь", icon_custom_emoji_id: null, color: null}
+month_10: {text: "Октябрь", icon_custom_emoji_id: null, color: null}
+month_11: {text: "Ноябрь", icon_custom_emoji_id: null, color: null}
+month_12: {text: "Декабрь", icon_custom_emoji_id: null, color: null}
+place_at_model: {text: "У модели", icon_custom_emoji_id: "5765017520612315383", color: null}
+place_at_mine: {text: "У себя", icon_custom_emoji_id: "5377544619347189018", color: null}
+my_addresses: {text: "Мои адреса", icon_custom_emoji_id: "5870718761710915573", color: null}
+add_address: {text: "Добавить адрес", icon_custom_emoji_id: "5775937998948404844", color: null}
+edit_address: {text: "Изменить", icon_custom_emoji_id: "5879841310902324730", color: null}
+delete_address: {text: "Удалить", icon_custom_emoji_id: "5879896690210639947", color: null}
+edit_title: {text: "Название", icon_custom_emoji_id: "5879841310902324730", color: null}
+edit_addr: {text: "Адрес", icon_custom_emoji_id: "5879841310902324730", color: null}
+next: {text: "Далее ›", icon_custom_emoji_id: null, color: null}
+pay_cash: {text: "Наличными", icon_custom_emoji_id: "5927169041595634481", color: null}
+pay_balance: {text: "Баланс", icon_custom_emoji_id: "5870450390679425417", color: null}
+pay_crypto: {text: "Криптовалюта", icon_custom_emoji_id: "5927169041595634481", color: null}
+pay_qr: {text: "QR-код", icon_custom_emoji_id: "5927169041595634481", color: null}
+pay_sbp: {text: "СБП", icon_custom_emoji_id: "5927169041595634481", color: null}
+send_check: {text: "Отправить чек", icon_custom_emoji_id: "5776375003280838798", color: null}
+check_payment: {text: "Проверить оплату", icon_custom_emoji_id: "5776375003280838798", color: null}
+
+
+

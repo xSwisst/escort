@@ -1,0 +1,2773 @@
+start_welcome: '👋 <b>Добро пожаловать в панель управления!</b>
+
+
+  Выберите бота для управления:'
+access_pending: '<tg-emoji emoji-id=''5382072545669323039''>⏳</tg-emoji> Ваша заявка
+  на рассмотрении.
+
+
+  Ожидайте решения администратора.'
+access_pending_alert: 'Ваша заявка на рассмотрении.
+
+  Ожидайте решения администратора.'
+access_rejected: <tg-emoji emoji-id='5382284304736890029'>❌</tg-emoji> К сожалению,
+  ваша заявка была отклонена.
+access_rejected_alert: К сожалению, ваша заявка была отклонена.
+service_panel_caption: '<blockquote>👨🏻‍💻 <b>Воркер панель {service_name}</b></blockquote>
+
+
+  <blockquote>🤖 <b>Информация о сервисе</b></blockquote>
+
+  Название: <b>{bot_name}</b>
+
+  Ссылка: <b>{bot_link_text}</b>
+
+  Состояние: <b>{service_status}</b> {service_status_emoji}
+
+
+  <blockquote>🔗 <b>Реферальная ссылка</b></blockquote>
+
+  <code>{referral_link}</code>
+
+
+  <blockquote>👤 <b>Статистика клиентов</b></blockquote>
+
+  За сегодня: <b>{today}</b>
+
+  За месяц: <b>{month}</b>
+
+  За все время: <b>{all}</b>
+
+  '
+cf_clients_list: 📋 <b>Список ваших клиентов Coinflick</b>
+cf_clients_empty_alert: У вас пока нет клиентов
+cf_client_list_item: '#{seq} | {client_id}'
+cf_client_search_prompt: 🆔 <b>Введите ID клиента, которого хотите найти:</b>
+cf_client_bind_prompt: 🆔 <b>Введите ID клиента, которого хотите привязать:</b>
+cf_client_id_wrong: '❗️ <b>Неверный формат.</b>
+
+
+  <b>ID должен быть числом.</b>'
+cf_client_not_found: '😔 <b>Клиент #{client_id} не найден</b>'
+cf_client_answer_not_found: Клиент не найден
+cf_client_not_yours: Клиент привязан к другому воркеру
+cf_client_already_bound: '❗️ <b>Клиент #{client_id} уже привязан к воркеру #{worker_id}</b>'
+cf_client_bound_ok: '✅ <b>Клиент #{client_id} успешно привязан</b>'
+cf_client_unbound_ok: ✅ <b>Клиент успешно отвязан</b>
+cf_client_updated_ok: ✅ Обновлено
+cf_client_setting_not_supported: Это поле пока недоступно.
+cf_client_mgmt_caption: '👥 <b>Управление клиентами</b>
+
+
+  Выберите нужное действие:'
+cf_soon_alert: В разработке (Soon)
+req_methods_caption: '💳 <b>Реквизиты · {service_name}</b>
+
+
+  Выбери нужный раздел:'
+req_currency_caption: '💱 <b>{method_name}</b>
+
+
+  Выбери валюту:'
+req_crypto_caption: '🪙 <b>Криптовалюта</b>
+
+
+  Выбери монету:'
+req_crypto_network_caption: '🧩 <b>{coin}</b>
+
+
+  Выбери сеть:'
+req_item_caption: '💳 <b>Реквизиты</b>
+
+
+  <b>Раздел:</b> <code>{method_name}</code>
+
+  <b>Валюта/монета:</b> <code>{currency}</code>
+
+  <b>Личные реквизиты:</b> <code>{is_enabled}</code>
+
+  <b>Реквизиты ERD:</b> <code>{fallback}</code>
+
+  <b>Данные:</b> <code>{requisites}</code>
+
+  <b>Лимит:</b> <code>{min_amount} - {max_amount}</code>'
+req_setup_prompt_card: '💳 <b>Карта ({currency})</b>
+
+
+  Заполним реквизиты по шагам.'
+req_setup_prompt_crypto: '✍️ <b>Настройка криптовалюты ({currency})</b>
+
+
+  Введи адрес кошелька одной строкой.'
+req_setup_prompt_sbp: '🏦 <b>СБП ({currency})</b>
+
+
+  Заполним реквизиты по шагам.'
+req_setup_wrong: ❗️ <b>Слишком короткое значение.</b> Введите корректные реквизиты.
+req_select_network_first: ❗️ Сначала выбери сеть.
+req_method_disabled: ⚠️ Этот метод отключен в каталоге shared.
+req_setup_min_amount: 💵 <b>Введите минимальную сумму для {currency}:</b>
+req_setup_max_amount: 💰 <b>Введите максимальную сумму для {currency}:</b>
+req_amount_wrong: ❗️ <b>Сумма должна быть целым неотрицательным числом.</b>
+req_max_lt_min: ❗️ <b>Максимальная сумма не может быть меньше минимальной.</b>
+req_card_format_wrong: '❗️ <b>Неверный формат карты.</b>
+
+
+  Нужно строго:
+
+  <code>НомерКарты;Получатель;Банк</code>'
+req_card_step_number: 💳 <b>Введите номер карты ({currency}):</b>
+req_card_step_holder: 👤 <b>Введите имя получателя:</b>
+req_card_step_bank: 🏦 <b>Введите банк:</b>
+req_sbp_step_recipient: 👤 <b>Введите имя получателя (СБП):</b>
+req_sbp_step_bank: 🏦 <b>Введите банк (СБП):</b>
+req_sbp_step_id: 📱 <b>Введите телефон/ID для СБП:</b>
+req_delete_confirm: '❓ <b>Удалить реквизиты?</b>
+
+
+  <b>Метод:</b> <code>{method_name}</code>
+
+  <b>Валюта:</b> <code>{currency}</code>'
+req_deleted: 🗑 Реквизиты удалены
+req_saved: ✅ Реквизиты сохранены
+req_qr_no_local_setup: Для QR доступен только переключатель «Реквизиты ERD».
+req_qr_no_local_toggle: Для QR локальные реквизиты не используются.
+req_not_found: '😔 <b>Реквизитов нет.</b>
+
+
+  Личные реквизиты не настроены или выключены, а «Реквизиты ERD» выключены либо в
+  ERD сейчас нет данных.'
+va_service_unavailable: '⚠️ <b>Velvet Allure сейчас недоступен.</b>
+
+
+  Похоже, сервис перезапускается или сеть временно глючит. Попробуй ещё раз через
+  несколько секунд.'
+cf_service_unavailable: '⚠️ <b>Coinflick сейчас недоступен.</b>
+
+
+  Похоже, сервис перезапускается или сеть временно глючит. Попробуй ещё раз через
+  несколько секунд.'
+cf_card_caption: '💳 <b>Реквизиты Coinflick (карта)</b>
+
+
+  <b>Статус:</b> {status}
+
+  <b>Реквизиты:</b> <code>{requisites}</code>
+
+  <b>Минимальная сумма:</b> <code>{min_amount} RUB</code>
+
+  <b>Максимальная сумма:</b> <code>{max_amount} RUB</code>'
+cf_card_caption_empty: '💳 <b>Реквизиты Coinflick (карта)</b>
+
+
+  <b>Реквизиты не настроены.</b>'
+cf_card_setup_prompt: '✍️ <b>Введите реквизиты карты</b>
+
+
+  Укажите номер карты / получателя / банк одной строкой.'
+cf_card_setup_wrong: ❗️ <b>Слишком коротко.</b> Введите корректные реквизиты.
+cf_card_step_min_amount: 💵 <b>Введите минимальную сумму (RUB):</b>
+cf_card_step_max_amount: 💰 <b>Введите максимальную сумму (RUB):</b>
+cf_card_step_amount_wrong: ❗️ <b>Сумма должна быть целым неотрицательным числом.</b>
+cf_card_step_max_lt_min: ❗️ <b>Максимальная сумма не может быть меньше минимальной.</b>
+cf_card_delete_confirm: ❓ <b>Удалить реквизиты карты?</b>
+cf_card_answer_saved: ✅ Реквизиты сохранены
+cf_card_answer_enabled: 🟢 Реквизиты включены
+cf_card_answer_disabled: 🔴 Реквизиты выключены
+cf_card_answer_deleted: 🗑 Реквизиты удалены
+cf_card_answer_not_found: Реквизиты не найдены
+cf_client_short_card: '<blockquote>👤 <b>Клиент Coinflick</b></blockquote>
+
+  <b>• ID:</b> <code>{client_id}</code>
+
+  <b>• Username:</b> <code>{username}</code>
+
+  <b>• Воркер:</b> <code>{worker_id}</code>
+
+  <b>• Регистрация:</b> <code>{registered}</code>'
+cf_client_card: '<blockquote>👤 <b>Клиент Coinflick</b></blockquote>
+
+  <b>• ID:</b> <code>{client_id}</code>
+
+  <b>• Username:</b> <code>{username}</code>
+
+  <b>• Воркер:</b> <code>{worker_id}</code>
+
+  <b>• Регистрация:</b> <code>{registered}</code>
+
+
+  <blockquote>💼 <b>Контроль</b></blockquote>
+
+  <b>• Верификация аккаунта:</b> <code>{verified}</code>
+
+  <b>• Удача:</b> <code>{lucky}</code>
+
+  <b>• АВТО-НДС:</b> <code>{tax_enabled}</code>
+
+  <b>• НДС %:</b> <code>{tax_percent}%</code>
+
+
+  <blockquote>👛 <b>Кошелек</b></blockquote>
+
+  <b>• Пополнение включено:</b> <code>{wallet_deposit_enabled}</code>
+
+  <b>• Мин/Макс депозит:</b> <code>{min_deposit} / {max_deposit} RUB</code>
+
+  <b>• Вывод заблокирован:</b> <code>{withdraw_blocked}</code>
+
+  <b>• Мин/Макс вывод:</b> <code>{min_withdraw} / {max_withdraw} RUB</code>
+
+
+  <blockquote>💱 <b>Кошелек: покупка / продажа / обмен</b></blockquote>
+
+  <b>• Покупка:</b> <code>{exchanger_buy_enabled}</code> | <code>{exchanger_buy_min}
+  - {exchanger_buy_max} RUB</code>
+
+  <b>• Продажа:</b> <code>{exchanger_sell_enabled}</code> | <code>{exchanger_sell_min}
+  - {exchanger_sell_max} RUB</code>
+
+  <b>• Обмен:</b> <code>{exchanger_swap_enabled}</code> | <code>{exchanger_swap_min}
+  - {exchanger_swap_max} RUB</code>
+
+
+  <blockquote>📈 <b>Биржа</b></blockquote>
+
+  <b>• Ставки заблокированы:</b> <code>{trading_blocked}</code>
+
+  <b>• Мин. инвестиция:</b> <code>{trading_min_amount} RUB</code>
+
+  <b>• Стоп-лимит:</b> <code>{stop_limit}</code>
+
+  <b>• Сумма стоп-лимита:</b> <code>{stop_limit_sum} RUB</code>
+
+  <b>• Long/Short множитель:</b> <code>{long_mult}x / {short_mult}x</code>
+
+
+  <blockquote>📊 <b>Статистика</b></blockquote>
+
+  <b>• Сделок всего:</b> <code>{deals_total}</code>
+
+  <b>• Сделок открыто:</b> <code>{deals_open}</code>
+
+  <b>• Побед / Поражений:</b> <code>{deals_wins} / {deals_losses}</code>
+
+  <b>• Winrate:</b> <code>{win_rate}%</code>
+
+  <b>• PnL:</b> <code>{deals_profit} RUB</code>
+
+  <b>• Пополнений:</b> <code>{deposits_count}</code> на <code>{deposits_sum} RUB</code>
+
+  <b>• Выводов:</b> <code>{withdrawals_count}</code> на <code>{withdrawals_sum} RUB</code>
+
+  '
+cf_client_card_main: '<blockquote>👤 <b>Клиент</b></blockquote>
+
+  <b>• ID:</b> <code>{client_id}</code>
+
+  <b>• Username:</b> <code>{username}</code>
+
+  <b>• Воркер:</b> <code>{worker_id}</code>
+
+  <b>• Регистрация:</b> <code>{registered}</code>
+
+
+  <blockquote>💼 <b>Контроль</b></blockquote>
+
+  <b>• Верификация аккаунта:</b> <code>{verified}</code>
+
+  <b>• Статус блокировки:</b> <code>{banned}</code>
+
+  <b>• Удача:</b> <code>{lucky}</code>
+
+  <b>• Метод вывода:</b> <code>{withdrawal_mode}</code>
+
+  <b>• АВТО-НДС:</b> <code>{tax_enabled}</code>
+
+  <b>• НДС %:</b> <code>{tax_percent}%</code>
+
+
+  <blockquote>📊 <b>Статистика</b></blockquote>
+
+  <b>• Сделок всего:</b> <code>{deals_total}</code>
+
+  <b>• Сделок открыто:</b> <code>{deals_open}</code>
+
+  <b>• Побед / Поражений:</b> <code>{deals_wins} / {deals_losses}</code>
+
+  <b>• Winrate:</b> <code>{win_rate}%</code>
+
+  <b>• Пополнений:</b> <code>{deposits_count}</code> на <code>{deposits_sum} RUB</code>
+
+  <b>• Выводов:</b> <code>{withdrawals_count}</code> на <code>{withdrawals_sum} RUB</code>
+
+
+  <i>Обновлено: <code>{updated_at}</code> (МСК)</i>
+
+  '
+cf_client_card_lucky: '<blockquote>🍀 <b>Удача</b></blockquote>
+
+  <b>• ID клиента:</b> <code>{client_id}</code>
+
+  <b>• Username:</b> <code>{username}</code>
+
+  <b>• Текущий режим:</b> <code>{lucky}</code>
+
+
+  <i>Выберите нужный режим ниже.</i>
+
+
+  <i>Обновлено: <code>{updated_at}</code> (МСК)</i>
+
+  '
+cf_client_card_withdraw_mode: '<blockquote>💸 <b>Метод вывода</b></blockquote>
+
+  <b>• ID клиента:</b> <code>{client_id}</code>
+
+  <b>• Username:</b> <code>{username}</code>
+
+  <b>• Текущий режим:</b> <code>{withdrawal_mode}</code>
+
+
+  <i>Выберите нужный режим ниже.</i>
+
+
+  <i>Обновлено: <code>{updated_at}</code> (МСК)</i>
+
+  '
+cf_client_card_wallet: '<blockquote>👛 <b>Кошелек</b></blockquote>
+
+  <b>• ID клиента:</b> <code>{client_id}</code>
+
+  <b>• Username:</b> <code>{username}</code>
+
+  <b>• Пополнение включено:</b> <code>{wallet_deposit_enabled}</code>
+
+  <b>• Мин. депозит:</b> <code>{min_deposit}</code>
+
+  <b>• Макс. депозит:</b> <code>{max_deposit}</code>
+
+  <b>• Вывод заблокирован:</b> <code>{withdraw_blocked}</code>
+
+  <b>• Мин. вывод:</b> <code>{min_withdraw}</code>
+
+  <b>• Макс. вывод:</b> <code>{max_withdraw}</code>
+
+  <b>• Покупка:</b> <code>{exchanger_buy_enabled}</code>
+
+  <b>• Мин. покупка:</b> <code>{exchanger_buy_min}</code>
+
+  <b>• Макс. покупка:</b> <code>{exchanger_buy_max}</code>
+
+  <b>• Продажа:</b> <code>{exchanger_sell_enabled}</code>
+
+  <b>• Мин. продажа:</b> <code>{exchanger_sell_min}</code>
+
+  <b>• Макс. продажа:</b> <code>{exchanger_sell_max}</code>
+
+  <b>• Обмен:</b> <code>{exchanger_swap_enabled}</code>
+
+  <b>• Мин. обмен:</b> <code>{exchanger_swap_min}</code>
+
+  <b>• Макс. обмен:</b> <code>{exchanger_swap_max}</code>
+
+
+  <blockquote>💰 <b>Балансы по монетам</b></blockquote>
+
+  {wallet_balances_block}
+
+
+  <i>Обновлено: <code>{updated_at}</code> (МСК)</i>
+
+  '
+cf_client_card_trading: '<blockquote>📈 <b>Биржа</b></blockquote>
+
+  <b>• ID клиента:</b> <code>{client_id}</code>
+
+  <b>• Username:</b> <code>{username}</code>
+
+  <b>• Ставки заблокированы:</b> <code>{trading_blocked}</code>
+
+  <b>• Мин. инвестиция:</b> <code>{trading_min_amount}</code>
+
+  <b>• Стоп-лимит:</b> <code>{stop_limit}</code>
+
+  <b>• Сумма стоп-лимита:</b> <code>{stop_limit_sum}</code>
+
+  <b>• Long/Short множитель:</b> <code>{long_mult}x / {short_mult}x</code>
+
+
+  <i>Обновлено: <code>{updated_at}</code> (МСК)</i>
+
+  '
+cf_client_card_nft: '<blockquote>⚠️ <b>Раздел недоступен</b></blockquote>
+
+  <b>• ID клиента:</b> <code>{client_id}</code>
+
+  <b>• Username:</b> <code>{username}</code>
+
+  '
+cf_client_set_balance_prompt: '✍️ <b>Введите новый баланс клиента (RUB):</b>
+
+
+  ▶️ <b>Пример:</b> <code>25000</code>'
+cf_client_set_min_deposit_prompt: '✍️ <b>Введите новый минимум депозита (RUB):</b>
+
+
+  ▶️ <b>Пример:</b> <code>5000</code>'
+cf_client_set_stop_limit_sum_prompt: '✍️ <b>Введите сумму стоп-лимита (RUB):</b>
+
+
+  ▶️ <b>Пример:</b> <code>100000</code>'
+cf_client_set_long_multiplier_prompt: '✍️ <b>Введите множитель LONG (вверх):</b>
+
+
+  ▶️ <b>Пример:</b> <code>1.8</code>'
+cf_client_set_short_multiplier_prompt: '✍️ <b>Введите множитель SHORT (вниз):</b>
+
+
+  ▶️ <b>Пример:</b> <code>1.8</code>'
+cf_client_set_number_error: ❗️ <b>Неверное значение.</b> Введите корректное число.
+cf_client_balance_action_prompt: '💰 <b>Изменение баланса клиента #{client_id}</b>
+
+
+  Выберите тип изменения:'
+cf_client_balance_coin_prompt: '🪙 <b>{action}</b>
+
+
+  Выберите монету:'
+cf_client_balance_amount_prompt: '✍️ <b>{action}</b>
+
+
+  <b>Монета:</b> <code>{coin_symbol}</code> ({coin_name})
+
+  <b>Введите сумму в RUB:</b>'
+cf_client_balance_amount_error: '❗️ <b>Неверная сумма.</b>
+
+  Введите число в RUB.'
+cf_client_balance_amount_positive_error: ❗️ <b>Сумма должна быть больше 0 RUB.</b>
+cf_client_balance_amount_non_negative_error: ❗️ <b>Сумма не может быть отрицательной.</b>
+cf_client_balance_confirm: '❓ <b>Подтвердить изменение баланса?</b>
+
+
+  <b>Тип:</b> <code>{action}</code>
+
+  <b>Монета:</b> <code>{coin_symbol}</code>
+
+  <b>Сумма:</b> <code>{amount_rub} RUB</code>
+
+  <b>Эквивалент:</b> <code>{amount_coin} {coin_symbol}</code>'
+cf_client_wallet_balances_empty: • <i>Пока пусто</i>
+cf_client_balance_coin_not_found: Монета не найдена.
+cf_client_balance_action_add: ➕ Прибавить к балансу
+cf_client_balance_action_subtract: ➖ Убавить с баланса
+cf_client_balance_action_set: 🧮 Изменить баланс
+cf_client_balance_action_add_short: Прибавить к балансу
+cf_client_balance_action_subtract_short: Убавить с баланса
+cf_client_balance_action_set_short: Изменить баланс
+cf_client_set_value_prompt: '✍️ <b>Введите значение: {field}</b>
+
+
+  ▶️ <b>Пример:</b> <code>{example}</code>'
+cf_client_confirm_update: '❓ <b>Подтвердить изменение?</b>
+
+
+  <b>Поле:</b> <code>{field}</code>
+
+  <b>Новое значение:</b> <code>{value}</code>'
+cf_client_set_stats_error: ❗️ <b>Неверный формат.</b>
+cf_client_field_generic: Параметр
+cf_client_lucky_mode_win: Победа
+cf_client_lucky_mode_random: Рандом
+cf_client_lucky_mode_loss: Поражение
+cf_client_lucky_btn_win: Всегда победа
+cf_client_lucky_btn_random: Рандом
+cf_client_lucky_btn_loss: Всегда поражение
+cf_client_field_wallet_deposit_min: Мин. депозит (RUB)
+cf_client_field_wallet_deposit_max: Макс. депозит (RUB)
+cf_client_field_wallet_withdrawal_min: Мин. вывод (RUB)
+cf_client_field_wallet_withdrawal_max: Макс. вывод (RUB)
+cf_client_field_exchanger_buy_min: Мин. покупка (RUB)
+cf_client_field_exchanger_buy_max: Макс. покупка (RUB)
+cf_client_field_exchanger_sell_min: Мин. продажа (RUB)
+cf_client_field_exchanger_sell_max: Макс. продажа (RUB)
+cf_client_field_exchanger_swap_min: Мин. обмен (RUB)
+cf_client_field_exchanger_swap_max: Макс. обмен (RUB)
+cf_client_field_tax_percent: НДС (%)
+cf_client_field_trading_min_amount: Мин. инвестиция (RUB)
+cf_client_field_trading_stop_limit_amount: Сумма стоп-лимита (RUB)
+cf_client_field_trading_long_multiplier: Long множитель
+cf_client_field_trading_short_multiplier: Short множитель
+cf_client_btn_lucky: 'Удача: {value}'
+cf_client_btn_min_deposit: 'Мин. депозит: {value}'
+cf_client_btn_max_deposit: 'Макс. депозит: {value}'
+cf_client_btn_bets_toggle: '{icon} Ставки'
+cf_client_btn_wallet_deposit_toggle: '{icon} Пополнение'
+cf_client_btn_withdraw_toggle: '{icon} Вывод'
+cf_client_btn_balance: 💰 Управление балансом
+cf_client_btn_min_withdraw: 'Мин. вывод: {value}'
+cf_client_btn_max_withdraw: 'Макс. вывод: {value}'
+cf_client_btn_exchanger_buy_toggle: '{icon} Покупка'
+cf_client_btn_exchanger_sell_toggle: '{icon} Продажа'
+cf_client_btn_exchanger_swap_toggle: '{icon} Обмен'
+cf_client_btn_exchanger_buy_min: 'Мин. покупка: {value}'
+cf_client_btn_exchanger_buy_max: 'Макс. покупка: {value}'
+cf_client_btn_exchanger_sell_min: 'Мин. продажа: {value}'
+cf_client_btn_exchanger_sell_max: 'Макс. продажа: {value}'
+cf_client_btn_exchanger_swap_min: 'Мин. обмен: {value}'
+cf_client_btn_exchanger_swap_max: 'Макс. обмен: {value}'
+cf_client_btn_tax_toggle: '{icon} АВТО-НДС'
+cf_client_btn_tax_percent: 'НДС %: {value}'
+cf_client_btn_withdrawal_mode: 'Метод вывода: {value}'
+cf_client_btn_trading_min: 'Мин. инвестиция: {value}'
+cf_client_btn_long_multiplier: 'Long: {value}'
+cf_client_btn_short_multiplier: 'Short: {value}'
+cf_client_btn_stop_limit_toggle: '{icon} Стоп-лимит'
+cf_client_btn_stop_limit_sum: 'Сумма стоп-лимита: {value}'
+cf_client_btn_verified_toggle: '{icon} Верификация'
+cf_client_btn_ban_toggle: '{status}'
+cf_client_ban_status_locked: 🔒 Заблокирован
+cf_client_ban_status_unlocked: 🔓 Разблокирован
+cf_client_section_wallet: 👛 Кошелек
+cf_client_section_trading: 📈 Биржа
+cf_client_back_main: ⬅️ Назад в общее
+cf_log_history_empty: '📊 <b>Логи клиента #{client_id}</b>
+
+
+  Нет записей.'
+cf_log_history_entry: '🕗 <b>{time}</b>
+
+  {text}'
+cf_log_history_caption: '📊 <b>Логи клиента #{client_id}</b>
+
+
+  {logs}
+
+
+  📄 Страница {page}/{total_pages}'
+cf_logs_manage_caption: '📊 <b>Управление уведомлениями Coinflick</b>
+
+
+  Логи воркера приходят в единой стилистике с Velvet Allure.
+
+
+  Поддерживаемые события:
+
+  • Новый клиент
+
+  • Новая сделка (win/loss)
+
+  • Покупка/продажа/обмен в кошельке
+
+  • Пополнение/вывод в кошельке'
+cf_log_new_client: '<blockquote>🆕 <b>Новый клиент</b></blockquote>
+
+
+  <blockquote>ℹ️ <b>Информация:</b></blockquote>
+
+  <b>• Имя:</b> <code>{client_name}</code>
+
+  <b>• Юзернейм:</b> <code>{client_username}</code>
+
+  <b>• ID:</b> <code>{client_id}</code>
+
+  <b>• Команда:</b> <code>{command}</code>
+
+  <b>• Всего клиентов:</b> <code>{total_clients}</code>
+
+  '
+cf_log_new_deal: '<blockquote>📈 <b>Новая сделка</b></blockquote>
+
+
+  <blockquote>ℹ️ <b>Информация:</b></blockquote>
+
+  <b>• ID клиента:</b> <code>{client_id}</code>
+
+  <b>• Сделка:</b> <code>{request_id}</code>
+
+  <b>• Результат:</b> <code>{deal_result}</code>
+
+  <b>• Сумма:</b> <code>{amount} {currency}</code>{details_block}
+
+  '
+cf_log_exchanger_buy: '<blockquote>🛒 <b>Покупка в кошельке</b></blockquote>
+
+
+  <blockquote>ℹ️ <b>Информация:</b></blockquote>
+
+  <b>• ID клиента:</b> <code>{client_id}</code>
+
+  <b>• Заявка:</b> <code>{request_id}</code>
+
+  <b>• Сумма:</b> <code>{amount} {currency}</code>{details_block}
+
+  '
+cf_log_payment_paid: '<blockquote>✅ <b>Оплата подтверждена</b></blockquote>
+
+
+  <blockquote>ℹ️ <b>Информация:</b></blockquote>
+
+  <b>• ID клиента:</b> <code>{client_id}</code>
+
+  <b>• Заявка:</b> <code>{request_id}</code>
+
+  <b>• Сумма:</b> <code>{amount} {currency}</code>{details_block}
+
+  '
+cf_log_exchanger_swap: '<blockquote>🔄 <b>Обмен в кошельке</b></blockquote>
+
+
+  <blockquote>ℹ️ <b>Информация:</b></blockquote>
+
+  <b>• ID клиента:</b> <code>{client_id}</code>
+
+  <b>• Заявка:</b> <code>{request_id}</code>
+
+  <b>• Сумма списания:</b> <code>{amount} {currency}</code>{details_block}
+
+  '
+cf_log_wallet_deposit_attempt: '<blockquote>💳 <b>Попытка пополнения кошелька</b></blockquote>
+
+
+  <blockquote>ℹ️ <b>Информация:</b></blockquote>
+
+  <b>• ID клиента:</b> <code>{client_id}</code>
+
+  <b>• Заявка:</b> <code>{request_id}</code>
+
+  <b>• Сумма:</b> <code>{amount} {currency}</code>{details_block}
+
+  '
+cf_log_wallet_withdraw_attempt: '<blockquote>💸 <b>Попытка вывода из кошелька</b></blockquote>
+
+
+  <blockquote>ℹ️ <b>Информация:</b></blockquote>
+
+  <b>• ID клиента:</b> <code>{client_id}</code>
+
+  <b>• Заявка:</b> <code>{request_id}</code>
+
+  <b>• Сумма:</b> <code>{amount} {currency}</code>{details_block}
+
+  '
+cf_log_action_parse_error: Некорректные данные действия.
+cf_log_paid_done: '✅ Заявка #{request_id} оплачена.'
+cf_log_request_approved: '✅ Заявка #{request_id} подтверждена.'
+cf_log_request_rejected: '❌ Заявка #{request_id} отклонена.'
+cf_settings_card: '<blockquote>⚙️ <b>Настройки</b></blockquote>
+
+
+  <blockquote>👛 <b>Кошелек</b></blockquote>
+
+  <b>• Пополнение:</b> <code>{wallet_deposit_enabled}</code>
+
+  <b>• Мин/Макс депозит:</b> <code>{wallet_deposit_min} / {wallet_deposit_max}</code>
+
+  <b>• Вывод:</b> <code>{wallet_withdrawal_enabled}</code>
+
+  <b>• Режим вывода:</b> <code>{withdrawal_mode}</code>
+
+  <b>• Мин/Макс вывод:</b> <code>{wallet_withdrawal_min} / {wallet_withdrawal_max}</code>
+
+
+  <blockquote>💱 <b>Кошелек: покупка / продажа / обмен</b></blockquote>
+
+  <b>• Покупка:</b> <code>{exchanger_buy_enabled}</code> | <code>{exchanger_buy_min}
+  - {exchanger_buy_max}</code>
+
+  <b>• Продажа:</b> <code>{exchanger_sell_enabled}</code> | <code>{exchanger_sell_min}
+  - {exchanger_sell_max}</code>
+
+  <b>• Обмен:</b> <code>{exchanger_swap_enabled}</code> | <code>{exchanger_swap_min}
+  - {exchanger_swap_max}</code>
+
+
+  <blockquote>📈 <b>Биржа</b></blockquote>
+
+  <b>• Включена:</b> <code>{trading_enabled}</code>
+
+  <b>• Удача:</b> <code>{lucky}%</code>
+
+  <b>• Мин. инвестиция:</b> <code>{trading_min_amount}</code>
+
+  <b>• Стоп-лимит:</b> <code>{trading_stop_limit_amount}</code>
+
+  <b>• Long/Short множитель:</b> <code>{trading_long_multiplier} / {trading_short_multiplier}</code>
+
+
+  <blockquote>🧾 <b>АВТО-НДС</b></blockquote>
+
+  <b>• АВТО-НДС:</b> <code>{tax_enabled}</code>
+
+  <b>• НДС %:</b> <code>{tax_percent}%</code>'
+cf_settings_set_prompt: '✍️ <b>Введите новое значение для {field}</b>
+
+
+  ▶️ <b>Пример:</b> <code>{example}</code>'
+cf_settings_set_error: '❗️ <b>Ошибка значения.</b>
+
+
+  ✍️ <b>Введите корректное значение для {field}</b>'
+cf_settings_set_not_supported: Это поле пока недоступно.
+cf_settings_confirm_update: '❓ <b>Подтвердить изменение?</b>
+
+
+  <b>Поле:</b> <code>{field}</code>
+
+  <b>Новое значение:</b> <code>{value}</code>'
+cf_settings_field_generic: Параметр
+cf_settings_field_wallet_deposit_min: Мин. депозит (RUB)
+cf_settings_field_wallet_deposit_max: Макс. депозит (RUB)
+cf_settings_field_wallet_withdrawal_min: Мин. вывод (RUB)
+cf_settings_field_wallet_withdrawal_max: Макс. вывод (RUB)
+cf_settings_field_exchanger_buy_min: Мин. покупка (RUB)
+cf_settings_field_exchanger_buy_max: Макс. покупка (RUB)
+cf_settings_field_exchanger_sell_min: Мин. продажа (RUB)
+cf_settings_field_exchanger_sell_max: Макс. продажа (RUB)
+cf_settings_field_exchanger_swap_min: Мин. обмен (RUB)
+cf_settings_field_exchanger_swap_max: Макс. обмен (RUB)
+cf_settings_field_trading_min_amount: Мин. инвестиция (RUB)
+cf_settings_field_trading_stop_limit_amount: Сумма стоп-лимита (RUB)
+cf_settings_field_trading_long_multiplier: Long множитель
+cf_settings_field_trading_short_multiplier: Short множитель
+cf_settings_field_tax_percent: НДС (%)
+cf_settings_field_withdrawal_mode: Метод вывода
+cf_settings_field_lucky: Удача (%)
+cf_settings_btn_wallet_deposit_min: 'Мин. депозит: {value}'
+cf_settings_btn_wallet_deposit_max: 'Макс. депозит: {value}'
+cf_settings_btn_wallet_deposit_toggle: '{icon} Пополнение'
+cf_settings_btn_wallet_withdraw_toggle: '{icon} Вывод'
+cf_settings_btn_wallet_withdraw_min: 'Мин. вывод: {value}'
+cf_settings_btn_wallet_withdraw_max: 'Макс. вывод: {value}'
+cf_settings_btn_market_toggle: '{icon} Биржа'
+cf_settings_btn_exchanger_toggle: '{icon} Обменник'
+cf_settings_btn_exchanger_buy_toggle: '{icon} Покупка'
+cf_settings_btn_exchanger_sell_toggle: '{icon} Продажа'
+cf_settings_btn_exchanger_swap_toggle: '{icon} Обмен'
+cf_settings_btn_exchanger_buy_min: 'Мин. покупка: {value}'
+cf_settings_btn_exchanger_buy_max: 'Макс. покупка: {value}'
+cf_settings_btn_exchanger_sell_min: 'Мин. продажа: {value}'
+cf_settings_btn_exchanger_sell_max: 'Макс. продажа: {value}'
+cf_settings_btn_exchanger_swap_min: 'Мин. swap: {value}'
+cf_settings_btn_exchanger_swap_max: 'Макс. swap: {value}'
+cf_settings_btn_exchanger_fee: 'Комиссия: {value}'
+cf_settings_btn_trading_toggle: '{icon} Биржа'
+cf_settings_btn_lucky: 'Удача: {value}'
+cf_settings_btn_trading_min_amount: 'Мин. инвестиция: {value}'
+cf_settings_btn_trading_stop_limit: 'Сумма стоп-лимита: {value}'
+cf_settings_btn_trading_long_multiplier: 'Long: {value}'
+cf_settings_btn_trading_short_multiplier: 'Short: {value}'
+cf_settings_btn_withdrawal_mode: 'Метод вывода: {value}'
+cf_settings_btn_tax_toggle: '{icon} АВТО-НДС'
+cf_settings_btn_tax_percent: 'НДС %: {value}'
+cf_settings_withdraw_mode_card: '<blockquote>💸 <b>Метод Вывода</b></blockquote>
+
+  <b>• Текущий режим:</b> <code>{withdrawal_mode}</code>
+
+
+  <i>Выберите нужный режим ниже.</i>
+
+  '
+cf_settings_withdraw_mode_open: Открытый
+cf_settings_withdraw_mode_normal: Обычный
+cf_settings_withdraw_mode_verification: Верификационный
+cf_settings_withdraw_mode_auto_error: Автоматическая ошибка
+cf_settings_withdraw_mode_btn_open: Открытый
+cf_settings_withdraw_mode_btn_normal: Обычный
+cf_settings_withdraw_mode_btn_verification: Верификационный
+cf_settings_withdraw_mode_btn_auto_error: Автоматическая ошибка
+cf_client_withdraw_mode_btn_open: Открытый
+cf_client_withdraw_mode_btn_normal: Обычный
+cf_client_withdraw_mode_btn_verification: Верификационный
+cf_client_withdraw_mode_btn_auto_error: Автоматическая ошибка
+cf_settings_tax_zero_error: ❗️ Нельзя включить АВТО-НДС при НДС 0%.
+cf_fake_req_list_caption: '<blockquote>🧾 <b>Фейк реквизиты</b></blockquote>
+
+  <b>• Всего записей:</b> <code>{total}</code>
+
+  <b>• Страница:</b> <code>{page}/{total_pages}</code>
+
+
+  <i>Используются для обычного режима вывода. Можно хранить любое количество записей.</i>
+
+  '
+cf_fake_req_item_caption: '<blockquote>🧾 <b>Фейк реквизиты</b></blockquote>
+
+  <b>• Запись:</b> <code>{title}</code>
+
+  <b>• Код:</b> <code>{code}</code>
+
+  <b>• Статус:</b> <code>{status}</code>
+
+  <b>• Данные:</b> <code>{requisites}</code>
+
+
+  <i>Используется для обычного режима вывода.</i>
+
+  '
+cf_fake_req_title: '{kind}'
+cf_fake_req_item_btn: '{index}. {title} {status_icon}'
+cf_fake_req_kind_card: Карта
+cf_fake_req_kind_sbp: СБП
+cf_fake_req_kind_btc: BTC кошелек
+cf_fake_req_kind_eth: ETH кошелек
+cf_fake_req_kind_usdt: USDT кошелек
+cf_fake_req_kind_trx: TRX кошелек
+cf_fake_req_kind_ton: TON кошелек
+cf_fake_req_kind_custom: Пользовательский
+cf_fake_req_type_prompt: 🧾 <b>Выберите тип фейк реквизитов</b>
+cf_fake_req_prompt_card: '💳 <b>Введите номер карты</b>
+
+
+  Допустимы только цифры, 16-20 символов.'
+cf_fake_req_prompt_sbp: '🏦 <b>Введите номер телефона для СБП</b>
+
+
+  Допустим российский номер в формате 10 или 11 цифр.'
+cf_fake_req_wrong: ❗️ <b>Слишком короткое значение.</b> Введите корректные реквизиты.
+cf_fake_req_wrong_card: ❗️ <b>Неверный номер карты.</b> Введите 16-20 цифр.
+cf_fake_req_wrong_sbp: ❗️ <b>Неверный номер СБП.</b> Введите 10 или 11 цифр телефона.
+cf_fake_req_delete_confirm: ❓ <b>Удалить фейк реквизиты {title}?</b>
+cf_fake_req_saved: ✅ Фейк реквизиты сохранены
+cf_fake_req_enabled: 🟢 Фейк реквизиты включены
+cf_fake_req_disabled: 🔴 Фейк реквизиты выключены
+cf_fake_req_deleted: 🗑 Фейк реквизиты удалены
+cf_fake_req_not_found: Фейк реквизиты не найдены
+va_client_mgmt_caption: '👥 <b>Управление клиентами</b>
+
+
+  Выберите нужное действие:'
+va_clients_list: 👥 <b>Ваши клиенты:</b>
+va_client_list_button: Клиенты ({client_count})
+va_service_params_updated_answer: ✅ Параметр обновлен
+va_service_params_toggle_date_time_selection: '{icon} Выбор даты и времени'
+va_service_params_toggle_address_system: '{icon} Адреса\Место встречи'
+va_service_params_toggle_web_app: '{icon} Web-app'
+va_service_params_toggle_logging: '{icon} Логирование'
+va_default_models_city_choose: 🦋 <b>Выберите город для дефолтных анкет:</b>
+va_default_models_choose: 🦋 <b>Выберите дефолтную анкету или добавьте новую</b>
+va_default_forms_enabled_answer: ✅ Дефолтные анкеты включены для ваших клиентов
+va_default_forms_disabled_answer: ✅ Дефолтные анкеты выключены для ваших клиентов
+va_admin_access_denied: Нет доступа
+va_admin_panel_caption: '⚙️ <b>Админ ESCORT V1</b>
+
+
+  Выберите нужный раздел:'
+va_admin_stats_caption: '📊 <b>Статистика ESCORT V1</b>
+
+
+  Клиентов: <code>{total_clients}</code>
+
+  Анкет всего: <code>{total_forms}</code>
+
+  Дефолтных анкет: <code>{total_default_forms}</code>'
+va_admin_search_worker_prompt: '🔎 <b>Введите ID воркера</b>
+
+
+  Отправьте числовой ID воркера, чтобы открыть его статистику.'
+va_admin_search_worker_invalid: '❗️ <b>ID воркера должен быть числом.</b>
+
+
+  Отправьте корректный числовой ID.'
+va_admin_search_worker_not_found: '❗️ <b>Воркер не найден.</b>
+
+
+  Проверьте ID и попробуйте еще раз.'
+va_admin_search_worker_caption: '👤 <b>Воркер ESCORT V1</b>
+
+
+  <b>Имя:</b> <code>{worker_name}</code>
+
+  <b>ID:</b> <code>{worker_id}</code>
+
+  <b>Публичный ID:</b> <code>{fake_id}</code>
+
+  <b>Статус:</b> <code>{worker_status}</code>
+
+
+  <blockquote>📊 <b>ERD статистика</b></blockquote>
+
+  <b>За день:</b> <code>{profit_day}</code>
+
+  <b>За месяц:</b> <code>{profit_month}</code>
+
+  <b>За все время:</b> <code>{profit_all}</code>
+
+  <b>В проекте:</b> <code>{community_days}</code> дн
+
+
+  <blockquote>👥 <b>Клиенты</b></blockquote>
+
+  <b>Всего:</b> <code>{clients_all}</code>
+
+  <b>За месяц:</b> <code>{clients_month}</code>
+
+  <b>За день:</b> <code>{clients_today}</code>
+
+
+  <blockquote>🦋 <b>Анкеты</b></blockquote>
+
+  <b>Всего:</b> <code>{forms_total}</code>
+
+  <b>Город 1:</b> <code>{forms_city_1}</code>
+
+  <b>Город 2:</b> <code>{forms_city_2}</code>
+
+  <b>Дефолтные анкеты:</b> <code>{default_forms}</code>'
+va_admin_agreements_caption: '📄 <b>Соглашения</b>
+
+
+  Выберите соглашение или создайте новое.'
+va_admin_new_agreement_step1: '✍️ <b>Название соглашения</b>
+
+
+  <b>Введите название:</b>'
+va_admin_new_agreement_step2: '✍️ <b>Ссылка на соглашение</b>
+
+
+  <b>Введите ссылку:</b>'
+va_admin_agreement_confirm_add: ✅ <b>Подтвердить создание соглашения</b>
+va_admin_agreement_missing: Заполните все поля
+va_admin_agreement_added_answer: ✅ Соглашение добавлено
+va_admin_agreement_delete_confirm: ❓ <b>Подтвердить удаление соглашения</b>
+va_admin_agreement_deleted_answer: ✅ Соглашение удалено
+va_admin_agreement_not_found: Соглашение не найдено
+va_admin_agreement_info: '📄 <b>Соглашение</b>
+
+
+  <b>ID:</b> <code>{agreement_id}</code>
+
+  <b>Название:</b> <code>{agreement_name}</code>
+
+  <b>Ссылка:</b> <code>{agreement_url}</code>
+
+  <b>Кем создано:</b> <code>{creater_id}</code>'
+va_models_city_choose: '<blockquote><b>🏙 Список городов</b></blockquote>
+
+
+  <i>— Вы можете добавить модель в определенный город.</i>
+
+  '
+va_models_choose: '🦋 Выберите модель или добавьте новую:
+
+  '
+va_positions_header: '<blockquote><b>📋 Позиции анкет</b></blockquote>
+
+
+  Используйте стрелки <b>вверх</b>\<b>вниз</b> для изменения порядка отображения.
+
+
+  <i>— При изменении порядка отображения, анкеты будут отображаться в том порядке,
+  что и в списке.</i>
+
+  '
+va_models_new_step1: '<blockquote><b>✏️ Добавление анкеты</b></blockquote>
+
+
+  <b>1\3</b> Введите имя, возраст, рост и размер груди. Формат: «<b>Алина 21 169 3</b>»
+
+
+  <i>— Введенные данные будут использоваться для создания новой анкеты.</i>
+
+  '
+va_models_new_step2: '<blockquote><b>✏️ Цены анкеты</b></blockquote>
+
+
+  <b>2\3</b> Введите цены за 1 час, 3 часа и ночь. Формат: «<b>3000 8000 20000</b>»
+
+
+  <i>— Введенные цены будут использоваться для создания новой анкеты.</i>
+
+  '
+va_models_new_step3: '<blockquote><b>✏️ Медиа анкеты</b></blockquote>
+
+
+  <b>3\3</b> Отправьте от 1 до 10 фото или видео:
+
+
+  <i>— Отправленные медиа будут использоваться для создания новой анкеты.</i>
+
+  '
+va_models_new_confirm: '<blockquote><b>❗️ Подтвердите создание анкеты</b></blockquote>
+
+
+  <i>— Анкета будет создана после подтверждения.</i>
+
+  '
+va_models_added_answer: ✅ Модель успешно добавлена
+va_model_card: "<blockquote><b>\U0001F98B Карточка модели</b></blockquote>\n\n<blockquote><b>\U0001F464\
+  \ Модель</b></blockquote>\nИмя: <b>{name}</b> \nВозраст: <b>{age}</b>\nРост: <b>{height}</b>\n\
+  Размер груди: <b>{tits}</b>\nКод: <code>{code}</code>\n\n<blockquote><b>\U0001F4B0\
+  \ Цены</b></blockquote>\n1 час: <b>{price_one_hours}</b>\n2 часа: <b>{price_two_hours}</b>\n\
+  3 часа: <b>{price_three_hours}</b>\nНочь: <b>{price_night}</b>\n\n<blockquote><b>\U0001F516\
+  \ Описание</b></blockquote>\n{caption}\n\n<blockquote><b>ℹ️ Дополнительно</b></blockquote>\n\
+  Рейтинг: <b>{rating}</b>\nКол-во заказов: <b>{orders}</b>\nСправка ИППП/ЗППП: <b>{document}</b>\n\
+  Верификация: <b>{verification}</b>\nПриватный канал: <b>{private_channel}</b>\n\
+  Динамика: <b>{dynamic}</b>\nВидимость: <b>{visibility}</b>\nГород: <b>{city}</b>\n"
+va_model_wrong_format: '<blockquote><b>❗️ Неверный формат ввода</b></blockquote>
+
+
+  <i>— Проверьте значение и попробуйте снова.</i>
+
+  '
+va_model_delete_confirm: '<blockquote><b>❗️ Подтвердите удаление анкеты</b></blockquote>
+
+
+  <i>— Анкета будет удалена после подтверждения.</i>
+
+  '
+va_model_param_deleted_answer: ✅ Значение успешно удалено
+va_model_param_delete_unavailable: ❗️ У этого параметра нечего удалять
+va_model_edit_info: '<blockquote><b>📝 Редактирование анкеты</b></blockquote>
+
+
+  <blockquote><b>⚙️ Параметры</b></blockquote>
+
+  Имя: <b>{name}</b>
+
+  Город: <b>{city}</b>
+
+  Возраст: <b>{age}</b>
+
+  Размер груди: <b>{tits}</b>
+
+
+  <blockquote><b>💰 Цены</b></blockquote>
+
+  1 час: <b>{price_one_hours}</b>
+
+  2 часа: <b>{price_two_hours}</b>
+
+  3 часа: <b>{price_three_hours}</b>
+
+  Ночь: <b>{price_night}</b>
+
+  '
+va_model_reviews_title: '<blockquote><b>📰 Отзывы анкеты</b></blockquote>
+
+
+  <i>— Вы можете добавить отзывы для анкеты модели.</i>
+
+  '
+va_model_review_add_prompt: '<blockquote><b>✏️ Добавление отзывов</b></blockquote>
+
+
+  <b>1\1</b> Введите один или несколько отзывов в формате: «<b>Автор;Дата(DD.MM.YYYY);Текст;Оценка(1-5)</b>»
+
+
+  Пример ввода: <b>Андрей;20.10.2026;Баба рабочая, рабочая баба, вообще, и в жопу
+  дает, и готовит;5</b>
+
+
+  <i>— Вы можете добавить несколько отзывов. Для добавления нескольких отзывов, введите
+  их через перевод строки.</i>
+
+  '
+va_model_review_confirm_add: '<blockquote><b>❗️ Подтвердите добавление отзывов</b></blockquote>
+
+
+  Количество: <b>{count}</b>
+
+
+  <i>— После подтверждения отзывы будут добавлены в анкету модели.</i>
+
+  '
+va_model_review_wrong_format: '<blockquote><b>❗️ Неверный формат ввода</b></blockquote>
+
+
+  Каждая строка должна быть в формате: «<b>Автор;Дата(DD.MM.YYYY);Текст;Оценка(1-5)</b>».
+
+
+  Текст отзыва: от <b>2</b> до <b>256</b> символов.
+
+
+  <i>— Проверьте значение и попробуйте снова.</i>
+
+  '
+va_model_review_added_answer: ✅ Отзывы успешно добавлены
+va_model_review_deleted_answer: 🗑 Отзыв успешно удалён
+va_model_review_updated_answer: ✅ Отзыв успешно обновлён
+va_model_review_delete_confirm: '<blockquote><b>❓ <b>Подтвердить удаление отзыва</b></blockquote>
+
+
+  <i>— После подтверждения отзыв будет удалён из анкеты модели.</i>
+
+  '
+va_model_review_confirm_change_author: '<blockquote><b>❗️ <b>Подтвердите изменение
+  автора отзыва</b></blockquote>
+
+
+  Новое имя автора: <b>{value}</b>
+
+
+  <i>— После подтверждения имя автора отзыва будет изменено на указанное значение.</i>
+
+  '
+va_model_review_confirm_change_text: '<blockquote><b>❗️ <b>Подтвердите изменение текста
+  отзыва</b></blockquote>
+
+
+  Новый текст отзыва: <b>{value}</b>
+
+
+  <i>— После подтверждения текст отзыва будет изменён на указанное значение.</i>
+
+  '
+va_model_review_confirm_change_score: '<blockquote><b>❗️ <b>Подтвердите изменение
+  оценки отзыва</b></blockquote>
+
+
+  Новая оценка: <b>{value}</b>
+
+
+  <i>— После подтверждения оценка отзыва будет изменена на указанное значение.</i>
+
+  '
+va_model_review_score_wrong: '<blockquote><b>❗️ <b>Неверный формат</b></blockquote>
+
+
+  Оценка должна быть числом от <b>1</b> до <b>5</b>.
+
+
+  <i>— Проверьте значение и попробуйте снова.</i>
+
+  '
+va_model_review_card: '<blockquote><b>📰 Карточка отзыва</b></blockquote>
+
+
+  <blockquote><b>ℹ️ Информация</b></blockquote>
+
+  Автор: <b>{author}</b>
+
+  Дата: <b>{date}</b>
+
+  Оценка: <b>{score}/5</b>
+
+  ID: <code>{id}</code>
+
+
+  <blockquote>{text}</blockquote>
+
+
+  <i>Дата добавления: <b>{created_ad} (МСК)</b></i>
+
+  '
+va_model_review_edit_author: '<blockquote><b>✏️ Автор отзыва</b></blockquote>
+
+
+  <b>1\1</b> Введите новое имя автора отзыва
+
+
+  <i>— Имя автора будет изменено на указанное значение.</i>
+
+  '
+va_model_review_edit_text: '<blockquote><b>✏️ Текст отзыва</b></blockquote>
+
+
+  <b>1\1</b> Введите новый текст отзыва
+
+
+  <i>— Текст отзыва будет изменён на указанное значение.</i>
+
+  '
+va_model_review_edit_score: '<blockquote><b>✏️ Оценка отзыва</b></blockquote>
+
+
+  <b>1\1</b> Введите новую оценку от 1 до 5
+
+
+  <i>— Оценка отзыва будет изменена на указанное значение.</i>
+
+  '
+va_model_review_text_wrong: '<blockquote><b>❗️ <b>Неверный формат</b></blockquote>
+
+
+  Текст отзыва должен быть длиной от <b>2</b> до <b>256</b> символов.
+
+
+  <i>— Проверьте значение и попробуйте снова.</i>
+
+  '
+va_model_services_title: '<blockquote><b>🧾 Услуги анкеты</b></blockquote>
+
+
+  <i>— Вы можете добавить услуги для анкеты модели.</i>
+
+  '
+va_model_service_add_prompt: '<blockquote><b>✏️ Добавление услуг</b></blockquote>
+
+
+  <b>1\1</b> Введите одну или несколько услуг, каждую с новой строки
+
+
+  Пример ввода: <b>Классика</b>
+
+
+  <i>— Вы можете добавить несколько услуг. Для добавления нескольких услуг, введите
+  их через перевод строки.</i>
+
+  '
+va_model_service_confirm_add: '<blockquote><b>❗️ Подтвердите добавление услуг</b></blockquote>
+
+
+  Количество: <b>{count}</b>
+
+
+  <i>— После подтверждения услуги будут добавлены в анкету модели.</i>
+
+  '
+va_model_service_wrong_format: '<blockquote><b>❗️ Неверный формат ввода</b></blockquote>
+
+
+  Каждая строка должна содержать только название услуги.
+
+
+  Название услуги: от <b>2</b> до <b>64</b> символов.
+
+
+  <i>— Проверьте значение и попробуйте снова.</i>
+
+  '
+va_model_service_added_answer: ✅ Услуги добавлены
+va_model_service_deleted_answer: 🗑 Услуга удалена
+va_model_service_updated_answer: ✅ Услуга обновлена
+va_model_service_delete_confirm: '<blockquote><b>❓ Подтвердить удаление услуги</b></blockquote>
+
+
+  <i>— После подтверждения услуга будет удалена из анкеты модели.</i>
+
+  '
+va_model_service_confirm_change_name: '<blockquote><b>❗️ Подтвердите изменение названия
+  услуги</b></blockquote>
+
+
+  Новое значение: <b>{value}</b>
+
+
+  <i>— После подтверждения название услуги будет изменено на указанное значение.</i>
+
+  '
+va_model_service_edit_name: '<blockquote><b>✏️ Название услуги</b></blockquote>
+
+
+  <b>1\1</b> Введите новое название услуги
+
+
+  <i>— Название услуги будет изменено на указанное значение.</i>
+
+  '
+va_model_service_name_wrong: '<blockquote><b>❗️ Неверный формат ввода</b></blockquote>
+
+
+  Название услуги должно быть длиной от <b>2</b> до <b>64</b> символов.
+
+
+  <i>— Проверьте значение и попробуйте снова.</i>
+
+  '
+va_model_service_card: '<blockquote><b>🧾 Карточка услуги</b></blockquote>
+
+
+  <blockquote><b>ℹ️ Информация</b></blockquote>
+
+  Название: <b>{name}</b>
+
+  ID: <code>{id}</code>
+
+
+  <i>Дата добавления: <b>{created_at} (МСК)</b></i>
+
+  '
+va_model_additionals_title: '<blockquote><b>🎀 Доп. услуги анкеты</b></blockquote>
+
+
+  <i>— Вы можете добавить доп. услуги для анкеты модели.</i>
+
+  '
+va_model_additional_add_prompt: '<blockquote><b>✏️ Добавление доп. услуг</b></blockquote>
+
+
+  <b>1\1</b> Введите одну или несколько доп. услуг в формате: «Название;Цена»
+
+
+  Пример ввода: <b>МБР;2000</b>
+
+
+  <i>— Вы можете добавить несколько доп. услуг. Для добавления нескольких доп. услуг,
+  введите их через перевод строки.</i>
+
+  '
+va_model_additional_confirm_add: '<blockquote><b>❗️ Подтвердите добавление доп. услуг</b></blockquote>
+
+
+  Количество: <b>{count}</b>
+
+
+  <i>— После подтверждения доп. услуги будут добавлены в анкету модели.</i>
+
+  '
+va_model_additional_wrong_format: '<blockquote><b>❗️ Неверный формат ввода</b></blockquote>
+
+
+  Каждая строка должна быть в формате: «<b>Название;Цена</b>».
+
+
+  Название доп. услуги: от <b>2</b> до <b>64</b> символов.
+
+  Цена доп. услуги: целое число больше <b>0</b>.
+
+
+  <i>— Проверьте значение и попробуйте снова.</i>
+
+  '
+va_model_additional_added_answer: ✅ Доп. услуги добавлены
+va_model_additional_deleted_answer: 🗑 Доп. услуга удалена
+va_model_additional_updated_answer: ✅ Доп. услуга обновлена
+va_model_additional_delete_confirm: '<blockquote><b>❓ Подтвердить удаление доп. услуги</b></blockquote>
+
+
+  <i>— После подтверждения доп. услуга будет удалена из анкеты модели.</i>
+
+  '
+va_model_additional_confirm_change_name: '<blockquote><b>❗️ Подтвердите изменение
+  названия доп. услуги</b></blockquote>
+
+
+  Новое значение: <b>{value}</b>
+
+
+  <i>— После подтверждения название доп. услуги будет изменено на указанное значение.</i>
+
+  '
+va_model_additional_confirm_change_price: '<blockquote><b>❗️ Подтвердите изменение
+  цены доп. услуги</b></blockquote>
+
+
+  Новая цена: <b>{value} RUB</b>
+
+
+  <i>— После подтверждения цена доп. услуги будет изменена на указанное значение.</i>
+
+  '
+va_model_additional_edit_name: '<blockquote><b>✏️ Название доп. услуги</b></blockquote>
+
+
+  <b>1\1</b> Введите новое название доп. услуги
+
+
+  <i>— Название доп. услуги будет изменено на указанное значение.</i>
+
+  '
+va_model_additional_edit_price: '<blockquote><b>✏️ Цена доп. услуги</b></blockquote>
+
+
+  <b>1\1</b> Введите новую цену доп. услуги в RUB
+
+
+  <i>— Цена доп. услуги будет изменена на указанное значение.</i>
+
+  '
+va_model_additional_name_wrong: '<blockquote><b>❗️ Неверный формат ввода</b></blockquote>
+
+
+  Название доп. услуги должно быть длиной от <b>2</b> до <b>64</b> символов.
+
+
+  <i>— Проверьте значение и попробуйте снова.</i>
+
+  '
+va_model_additional_price_wrong: '<blockquote><b>❗️ Неверный формат ввода</b></blockquote>
+
+
+  Цена доп. услуги должна быть целым числом больше <b>0</b>.
+
+
+  <i>— Проверьте значение и попробуйте снова.</i>
+
+  '
+va_model_additional_card: '<blockquote><b>🎀 Карточка доп. услуги</b></blockquote>
+
+
+  <blockquote><b>ℹ️ Информация</b></blockquote>
+
+  Название: <b>{name}</b>
+
+  Цена: <b>{price}</b>
+
+  ID: <code>{id}</code>
+
+
+  <i>Дата добавления: <b>{created_at} (МСК)</b></i>
+
+  '
+va_model_edit_param_rating: '<blockquote><b>✏️ Рейтинг анкеты</b></blockquote>
+
+
+  <b>1\1</b> Введите новое значение рейтинга
+
+
+  Пример ввода: <b>4.8</b>
+
+
+  <i>— Рейтинг анкеты будет изменён на указанное значение.</i>
+
+  '
+va_model_edit_param_caption: '<blockquote><b>✏️ Описание анкеты</b></blockquote>
+
+
+  <b>1\1</b> Введите новое описание анкеты
+
+
+  Пример ввода: <b>Горячая, стройная</b>
+
+
+  <i>— Описание анкеты будет изменено на указанное значение.</i>
+
+  '
+va_model_edit_param_orders: '<blockquote><b>✏️ Количество заказов</b></blockquote>
+
+
+  <b>1\1</b> Введите новое значение количества заказов
+
+
+  Пример ввода: <b>46</b>
+
+
+  <i>— Количество заказов будет изменено на указанное значение.</i>
+
+  '
+va_model_edit_param_channel: '<blockquote><b>✏️ Ссылка на канал</b></blockquote>
+
+
+  <b>1\1</b> Введите новую ссылку на канал
+
+
+  Пример ввода: <b>t.me/username</b>
+
+
+  <i>— Ссылка на канал будет изменена на указанное значение.</i>
+
+  '
+va_model_edit_param_additional: '<blockquote><b>✏️ Доп. параметры</b></blockquote>
+
+
+  <b>1\1</b> Введите новое значение для допов
+
+
+  Пример ввода: <b>МБР 2000;ОРАЛ 1500;ОВР 1000</b>
+
+
+  <i>— Значение допов будет изменено на указанное значение.</i>
+
+  '
+va_model_edit_param_name: '<blockquote><b>✏️ Имя анкеты</b></blockquote>
+
+
+  <b>1\1</b> Введите новое имя анкеты
+
+
+  Пример ввода: <b>Алина</b>
+
+
+  <i>— Имя анкеты будет изменено на указанное значение.</i>
+
+  '
+va_model_edit_param_age: '<blockquote><b>✏️ Возраст анкеты</b></blockquote>
+
+
+  <b>1\1</b> Введите новое значение возраста
+
+
+  Пример ввода: <b>21</b>
+
+
+  <i>— Возраст анкеты будет изменён на указанное значение.</i>
+
+  '
+va_model_edit_param_height: '<blockquote><b>✏️ Рост анкеты</b></blockquote>
+
+
+  <b>1\1</b> Введите новое значение роста
+
+
+  Пример ввода: <b>169</b>
+
+
+  <i>— Рост анкеты будет изменён на указанное значение.</i>
+
+  '
+va_model_edit_param_tits: '<blockquote><b>✏️ Размер груди</b></blockquote>
+
+
+  <b>1\1</b> Введите новое значение размера груди
+
+
+  Пример ввода: <b>3</b>
+
+
+  <i>— Размер груди будет изменён на указанное значение.</i>
+
+  '
+va_model_edit_param_price1: '<blockquote><b>✏️ Цена за 1 час</b></blockquote>
+
+
+  <b>1\1</b> Введите новую сумму в RUB
+
+
+  Пример ввода: <b>3000</b>
+
+
+  <i>— Цена за 1 час будет изменена на указанное значение.</i>
+
+  '
+va_model_edit_param_price_two_hours: '<blockquote><b>✏️ Цена за 2 часа</b></blockquote>
+
+
+  <b>1\1</b> Введите новую сумму в RUB
+
+
+  Пример ввода: <b>5000</b>
+
+
+  <i>— Цена за 2 часа будет изменена на указанное значение.</i>
+
+  '
+va_model_edit_param_price2: '<blockquote><b>✏️ Цена за 3 часа</b></blockquote>
+
+
+  <b>1\1</b> Введите новую сумму в RUB
+
+
+  Пример ввода: <b>8000</b>
+
+
+  <i>— Цена за 3 часа будет изменена на указанное значение.</i>
+
+  '
+va_model_edit_param_price3: '<blockquote><b>✏️ Цена за ночь</b></blockquote>
+
+
+  <b>1\1</b> Введите новую сумму в RUB
+
+
+  Пример ввода: <b>20000</b>
+
+
+  <i>— Цена за ночь будет изменена на указанное значение.</i>
+
+  '
+va_model_confirm_update_rating: '<blockquote><b>❗️ Подтвердите изменение рейтинга</b></blockquote>
+
+
+  Новое значение: <b>{value}</b>
+
+
+  <i>— После подтверждения рейтинг будет изменён на указанное значение.</i>
+
+  '
+va_model_confirm_update_caption: '<blockquote><b>❗️ Подтвердите изменение описания
+  анкеты</b></blockquote>
+
+
+  <blockquote>{value}</blockquote>
+
+
+  <i>— После подтверждения описание анкеты будет изменено на указанное значение.</i>
+
+  '
+va_model_confirm_update_orders: '<blockquote><b>❗️ Подтвердите изменение количества
+  заказов</b></blockquote>
+
+
+  Новое значение: <b>{value}</b>
+
+
+  <i>— После подтверждения количество заказов будет изменено на указанное значение.</i>
+
+  '
+va_model_confirm_update_channel: '<blockquote><b>❗️ Подтвердите изменение ссылки на
+  канал</b></blockquote>
+
+
+  Новое значение: <b>{value}</b>
+
+
+  <i>— После подтверждения ссылка на канал будет изменена на указанное значение.</i>
+
+  '
+va_model_confirm_update_name: '<blockquote><b>❗️ Подтвердите изменение имени анкеты</b></blockquote>
+
+
+  Новое значение: <b>{value}</b>
+
+
+  <i>— После подтверждения имя анкеты будет изменено на указанное значение.</i>
+
+  '
+va_model_confirm_update_age: '<blockquote><b>❗️ Подтвердите изменение возраста анкеты</b></blockquote>
+
+
+  Новое значение: <b>{value}</b>
+
+
+  <i>— После подтверждения возраст анкеты будет изменён на указанное значение.</i>
+
+  '
+va_model_confirm_update_height: '<blockquote><b>❗️ Подтвердите изменение роста анкеты</b></blockquote>
+
+
+  Новое значение: <b>{value}</b>
+
+
+  <i>— После подтверждения рост анкеты будет изменён на указанное значение.</i>
+
+  '
+va_model_confirm_update_tits: '<blockquote><b>❗️ Подтвердите изменение размера груди</b></blockquote>
+
+
+  Новое значение: <b>{value}</b>
+
+
+  <i>— После подтверждения размер груди будет изменён на указанное значение.</i>
+
+  '
+va_model_confirm_update_price1: '<blockquote><b>❗️ Подтвердите изменение цены за 1
+  час</b></blockquote>
+
+
+  Новая сумма: <b>{value} RUB</b>
+
+
+  <i>— После подтверждения цена за 1 час будет изменена на указанное значение.</i>
+
+  '
+va_model_confirm_update_price_two_hours: '<blockquote><b>❗️ Подтвердите изменение
+  цены за 2 часа</b></blockquote>
+
+
+  Новая сумма: <b>{value} RUB</b>
+
+
+  <i>— После подтверждения цена за 2 часа будет изменена на указанное значение.</i>
+
+  '
+va_model_confirm_update_price2: '<blockquote><b>❗️ Подтвердите изменение цены за 3
+  часа</b></blockquote>
+
+
+  Новая сумма: <b>{value} RUB</b>
+
+
+  <i>— После подтверждения цена за 3 часа будет изменена на указанное значение.</i>
+
+  '
+va_model_confirm_update_price3: '<blockquote><b>❗️ Подтвердите изменение цены за ночь</b></blockquote>
+
+
+  Новая сумма: <b>{value} RUB</b>
+
+
+  <i>— После подтверждения цена за ночь будет изменена на указанное значение.</i>
+
+  '
+va_model_confirm_delete_rating: '<blockquote><b>❓ Подтвердить удаление рейтинга</b></blockquote>
+
+
+  <i>— После подтверждения рейтинг будет удалён из анкеты модели.</i>
+
+  '
+va_model_confirm_delete_caption: '<blockquote><b>❓ Подтвердить удаление описания анкеты</b></blockquote>
+
+
+  <i>— После подтверждения описание анкеты будет удалено из анкеты модели.</i>
+
+  '
+va_model_confirm_delete_orders: '<blockquote><b>❓ Подтвердить удаление количества
+  заказов</b></blockquote>
+
+
+  <i>— После подтверждения количество заказов будет удалено из анкеты модели.</i>
+
+  '
+va_model_confirm_delete_channel: '<blockquote><b>❓ Подтвердить удаление ссылки на
+  канал</b></blockquote>
+
+
+  <i>— После подтверждения ссылка на канал будет удалена из анкеты модели.</i>
+
+  '
+va_model_confirm_delete_price1: '<blockquote><b>❓ Подтвердить удаление цены за 1 час</b></blockquote>
+
+
+  <i>— После подтверждения цена за 1 час будет удалена из анкеты модели.</i>
+
+  '
+va_model_confirm_delete_price_two_hours: '<blockquote><b>❓ Подтвердить удаление цены
+  за 2 часа</b></blockquote>
+
+
+  <i>— После подтверждения цена за 2 часа будет удалена из анкеты модели.</i>
+
+  '
+va_model_confirm_delete_price2: '<blockquote><b>❓ Подтвердить удаление цены за 3 часа</b></blockquote>
+
+
+  <i>— После подтверждения цена за 3 часа будет удалена из анкеты модели.</i>
+
+  '
+va_model_confirm_delete_price3: '<blockquote><b>❓ Подтвердить удаление цены за ночь</b></blockquote>
+
+
+  <i>— После подтверждения цена за ночь будет удалена из анкеты модели.</i>
+
+  '
+va_private_channel_card: '<blockquote><b>🔐 Приватный канал</b></blockquote>
+
+
+  <blockquote><b>ℹ️ Информация</b></blockquote>
+
+  Статус: <b>{status}</b>
+
+  Цена: <b>{price}</b>
+
+
+  <blockquote><b>📝 Описание</b></blockquote>
+
+  {description}
+
+
+  <i>Дата создания: <b>{created_at} (МСК)</b></i>
+
+  '
+va_private_channel_price_prompt: '<blockquote><b>✏️ Цена приватного канала</b></blockquote>
+
+
+  <b>1\1</b> Введите сумму приватного канала в RUB
+
+
+  <i>— Цена приватного канала будет изменена на указанное значение.</i>
+
+  '
+va_private_channel_price_invalid: '<blockquote><b>❗️ Неверный формат ввода</b></blockquote>
+
+
+  Цена должна быть целым числом не меньше <b>2000 RUB</b>.
+
+
+  <i>— Проверьте значение и попробуйте снова.</i>
+
+  '
+va_private_channel_description_prompt: '<blockquote><b>✏️ Описание приватного канала</b></blockquote>
+
+
+  <b>1\1</b> Введите текст описания приватного канала
+
+
+  <i>— Описание приватного канала будет изменено на указанное значение.</i>
+
+  '
+va_private_channel_description_invalid: '<blockquote><b>❗️ Неверный формат ввода</b></blockquote>
+
+
+  Описание должно быть длиной от <b>2</b> до <b>256</b> символов.
+
+
+  <i>— Проверьте значение и попробуйте снова.</i>
+
+  '
+va_private_channel_toggle_price_required: '❗️ Сначала укажите цену приватного канала
+
+  '
+va_private_channel_updated: ✅ Приватный канал обновлён
+va_private_channel_price_confirm_add: '<blockquote><b>❗️ Подтвердите добавление цены
+  приватного канала</b></blockquote>
+
+
+  Цена: <b>{price} RUB</b>
+
+
+  <i>— После подтверждения цена приватного канала будет добавлена.</i>
+
+  '
+va_private_channel_price_confirm_update: '<blockquote><b>❗️ Подтвердите изменение
+  цены приватного канала</b></blockquote>
+
+
+  Новая цена: <b>{price} RUB</b>
+
+
+  <i>— После подтверждения цена приватного канала будет изменена на указанное значение.</i>
+
+  '
+va_private_channel_description_confirm_add: '<blockquote><b>❗️ Подтвердите добавление
+  описания приватного канала</b></blockquote>
+
+
+  <blockquote>{description}</blockquote>
+
+
+  <i>— После подтверждения описание приватного канала будет добавлено.</i>
+
+  '
+va_private_channel_description_confirm_update: '<blockquote><b>❗️ Подтвердите изменение
+  описания приватного канала</b></blockquote>
+
+
+  <blockquote>{description}</blockquote>
+
+
+  <i>— После подтверждения описание приватного канала будет изменено на указанное
+  значение.</i>
+
+  '
+va_private_channel_description_delete_confirm: '<blockquote><b>❓ Подтвердить удаление
+  описания приватного канала</b></blockquote>
+
+
+  <i>— После подтверждения описание приватного канала будет удалено.</i>
+
+  '
+va_photos_add_confirm: '<blockquote><b>❗️ Подтвердите добавление медиа</b></blockquote>
+
+
+  Загружено: <b>{count}</b>
+
+
+  <i>— После подтверждения медиа будут добавлены в анкету модели.</i>
+
+  '
+va_promo_list: '<blockquote><b>💌 Выбери промокод или добавьте новый</b></blockquote>
+
+
+  <i>— Промокод может быть использован клиентом для получения скидки.</i>
+
+  '
+va_promo_new_step1: '<blockquote><b>✏️ Создание промокода</b></blockquote>
+
+
+  <b>1\1</b> Введите сумма промокода в формате <b>«500»</b>, или введите сумму и имя
+  в формате <b>«500;SALE2026»</b>
+
+
+  <i>— Введенные сумма промокода будет использована для скидки.</i>
+
+  '
+va_promo_sum_wrong: '<blockquote><b>❗️Неверный формат </b></blockquote>
+
+
+  Используйте формат <b>«500»</b> или <b>«500;SALE2026»</b>
+
+
+  <i>— Проверьте значение и попробуйте снова.</i>
+
+  '
+va_promo_confirm_add: '<blockquote><b>❗️ Подтвердите создание промокода</b></blockquote>
+
+
+  Сумма: <b>{amount} RUB</b>
+
+  Название: <b>{name}</b>
+
+
+  <i>— После подтверждения, промокод будет создан и добавлен в список промокодов.</i>
+
+  '
+va_promo_added_answer: ✅ Промокод успешно создан
+va_promo_info: '<blockquote><b>💌 Промокод</b></blockquote>
+
+
+  <blockquote><b>ℹ️ Информация</b></blockquote>
+
+  Название: <code>{name}</code>
+
+  Сумма скидки: <b>{amount} RUB</b>
+
+  '
+va_promo_delete_confirm: '<blockquote>❓ <b>Подтвердить удаление промокода</b></blockquote>
+
+
+  <i>— После подтверждения, выбранный Вами промокод будет удален безвозвратно.</i>
+
+  '
+va_promo_deleted_answer: ✅ Промокод успешно удален
+va_cards_list_title: |
+  <blockquote><b>💳 Карты</b></blockquote>
+
+  <i>— Выберите карту для управления или добавьте новую.</i>
+
+va_card_info: |
+  <blockquote><b>💳 Информация о карте</b></blockquote>
+
+  <blockquote><b>ℹ️ Данные реквизитов</b></blockquote>
+  ┣ Номер карты: <code>{card_number}</code>
+  ┣ Лимиты суммы: <b>{min_amount} — {max_amount} ₽</b>
+  ┣ Статус: <b>{status}</b>
+  ┣ Кем добавлена: <b>{created_by}</b>
+  ┗ Дата добавления: <b>{created_at}</b>
+
+  <i>— Включенные карты выдаются клиентам при оплате заказа, если сумма попадает в лимит.</i>
+
+va_card_not_found: "Карта не найдена."
+va_card_delete_confirm: |
+  <blockquote><b>❓ Подтверждение удаления</b></blockquote>
+
+  Вы действительно хотите удалить эту карту?
+
+  <i>— Карта будет скрыта из списка и перестанет выдаваться для оплаты.</i>
+
+va_card_deleted_answer: "🗑 Карта удалена"
+va_card_created_success: "✅ Карта успешно добавлена"
+
+va_card_new_step1_number: |
+  <blockquote><b>💳 Добавление карты</b></blockquote>
+
+  <b>Шаг 1 из 2.</b> Введите номер банковской карты:
+
+  <i>— Можно вводить с пробелами или без (например: <code>2200 7000 1234 5678</code>).</i>
+
+va_card_invalid_number: |
+  <blockquote><b>❗️ Неверный номер карты</b></blockquote>
+
+  Номер карты должен содержать от 12 до 19 цифр.
+
+  <i>— Проверьте введённый номер и отправьте снова:</i>
+
+va_card_new_step2_limits: |
+  <blockquote><b>💳 Добавление карты</b></blockquote>
+  Карта: <code>{card_number}</code>
+
+  <b>Шаг 2 из 2.</b> Введите лимиты суммы (минимальная и максимальная):
+
+  <i>— Формат: <code>1000 50000</code> (или одно число для максимума).</i>
+
+va_card_invalid_limits: |
+  <blockquote><b>❗️ Неверный формат лимитов</b></blockquote>
+
+  Введите минимальную и максимальную сумму через пробел (например: <code>1000 50000</code>).
+
+  <i>— Попробуйте снова:</i>
+
+va_card_new_confirm: |
+  <blockquote><b>❗️ Подтвердите добавление карты</b></blockquote>
+
+  <blockquote><b>💳 Данные новой карты</b></blockquote>
+  ┣ Номер карты: <code>{card_number}</code>
+  ┣ Мин. сумма: <b>{min_amount} ₽</b>
+  ┗ Макс. сумма: <b>{max_amount} ₽</b>
+
+  <i>— После подтверждения карта будет добавлена в список активных реквизитов.</i>
+va_ltp_caption: '👩🏼‍💻 <b>ЛТП — Личный тред поддержки</b>
+
+
+  <b>Статус:</b> {status}{thread_info}
+
+
+  <i>Если ЛТП не установлен — сообщения клиентов идут в общий форум.</i>'
+va_ltp_thread_info: '
+
+  <b>Форум:</b> <code>{chat_id}</code>'
+va_ltp_set_prompt: '✍️ <b>ID форума для ЛТП</b>
+
+
+  <b>Введите ID вашего форума:</b>
+
+
+  1. Создайте группу в Telegram
+
+  2. Включите в группе <b>Темы</b>
+
+  3. Отправьте любое сообщение
+
+  4. Скопируйте ссылку на сообщение
+
+  5. Ссылка будет вида:
+
+  <code>https://t.me/c/2487654321/1</code>
+
+  6. Возьмите число после <code>/c/</code>
+
+  7. Добавьте спереди <code>-100</code>
+
+
+  <b>Пример:</b>
+
+  <code>-1002487654321</code>'
+va_ltp_id_wrong: '❗️ <b>Неверный формат.</b>
+
+
+  ID должен начинаться с <code>-100</code> и содержать только цифры.
+
+  <b>Пример:</b> <code>-1001234567890</code>
+
+
+  Попробуйте снова:'
+va_ltp_set_failed: '⚠️ <b>Не удалось установить ЛТП.</b>
+
+
+  Сервис временно недоступен или форум недостижим. Попробуйте снова через несколько
+  секунд.'
+va_ltp_set_success: '✅ <b>ЛТП успешно установлен!</b>
+
+
+  Сообщения ваших клиентов теперь будут перенаправляться в указанный форум.'
+va_ltp_remove_confirm: '❓ <b>Подтвердить удаление ЛТП</b>
+
+
+  Сообщения клиентов снова будут идти в общий форум.'
+va_ltp_removed_answer: ✅ ЛТП удалён. Сообщения клиентов теперь идут в общий форум.
+va_malling_audience_prompt: '<blockquote><b>👥 Получателя рассылки</b></blockquote>
+
+
+  <i>— Вы можете выбрать определенный диапазон клиентов, которые получат сообщение.</i>
+
+  '
+va_malling_enter: '<blockquote>✏️ <b>Текст рассылки</b></blockquote>
+
+
+  <b>1\1</b> Введите сообщение для рассылки клиентам
+
+
+  <i>— Вы можете использовать форматирование, а так же Telegram-premium эмодзи.</i>
+
+  '
+va_malling_confirm: '<blockquote>✅ <b>Подтвердить запуск рассылки</b></blockquote>
+
+
+  <code>{text}</code>
+
+  '
+va_malling_started_answer: ✅ Рассылка запущена
+va_malling_done: '<blockquote><b>✅ Рассылка завершена</b></blockquote>
+
+
+  <blockquote><b>ℹ️ Информация</b></blockquote>
+
+  Всего получателей: <b>{total}</b>
+
+  Успешно отправлено: <b>{sent}</b>
+
+  Не отправлено: <b>{failed}</b>
+
+  '
+va_malling_settings: '<blockquote><b>📨 Рассылка</b></blockquote>
+
+
+  <blockquote><b>ℹ️ Информация</b></blockquote>
+
+  Получатели: <b>{audience}</b>
+
+  Сообщение рассылки: <b>{content_status}</b>
+
+  Медиа: <b>{media_status}</b>
+
+  Кнопки: <b>{buttons_status}</b>
+
+
+  <i>— Вы можете добавить медиа а так же кнопки для рассылки. Так же, Вы можете предпросмотреть
+  сообщение перед его отправкой.</i>
+
+  '
+va_malling_audience_all_short: Все клиенты
+va_malling_audience_7d_short: Новые клиенты за 7 дней
+va_malling_audience_14d_short: Новые клиенты за 14 дней
+va_malling_audience_30d_short: Новые клиенты за 30 дней
+va_malling_preview_ready: ✅ Успешно
+va_malling_draft_save_failed: ❌ Не удалось сохранить черновик. Попробуйте ещё раз.
+va_malling_media_prompt: '<blockquote>🖼 <b>Медиа для рассылки</b></blockquote>
+
+
+  <b>1\1</b> Отправьте фотографию для рассылки
+
+
+  <i>— Вы можете добавить медиа для рассылки. Так же, Вы можете предпросмотреть медиа
+  перед ее отправкой.</i>
+
+  '
+va_malling_media_invalid: '<blockquote>❗️ <b>Неверный формат</b></blockquote>
+
+
+  Отправьте сообщение в формате изображения
+
+
+  <i>— Проверьте значение и попробуйте снова.</i>
+
+  '
+va_malling_media_upload_failed: '<blockquote>❗️ <b>Не удалось загрузить медиа</b></blockquote>
+
+
+  Попробуйте ещё раз через некоторое время
+
+  '
+va_malling_media_confirm: '<blockquote>❗️ <b>Подтвердить добавление медиа</b></blockquote>
+
+
+  <i>— После подтверждения добавления медиа, оно будет добавлено к сообщению рассылки.</i>
+
+  '
+va_malling_buttons_title: '<blockquote>🔘 <b>Кнопки рассылки</b></blockquote>
+
+
+  <i>— Вы можете добавить кнопки любого формата для сообщения рассылки, а так же удалить
+  уже добавленные кнопки.</i>
+
+  '
+va_malling_button_type_prompt: '🔘 Выберите тип кнопки:
+
+  '
+va_malling_button_text_prompt: '<blockquote>✏️ <b>Текст кнопки</b></blockquote>
+
+
+  <b>1\2</b> Введите текст для кнопки
+
+
+  <i>— Введенное значение будет отображаться как название кнопки.</i>
+
+  '
+va_malling_button_value_url_prompt: '<blockquote>✏️ <b>Ссылка для кнопки</b></blockquote>
+
+
+  <b>2\2</b> Введите ссылку для кнопки
+
+
+  <i>— Введенное значение будет отображаться как ссылка для перехода из кнопки.</i>
+
+  '
+va_malling_button_value_callback_prompt: '<blockquote>✏️ <b>Callback для кнопки</b></blockquote>
+
+
+  <b>2\2</b> Введите callback_data для кнопки
+
+
+  <i>— Введенное значение будет использоваться для вызова действия внутри бота. Вы
+  можете использовать menu:models, для открытия раздела Модели.</i>
+
+  '
+va_malling_button_value_copy_prompt: '<blockquote>✏️ <b>Текст для копирования</b></blockquote>
+
+
+  <b>2\2</b> Введите значение для копирования
+
+
+  <i>— Введенное значение будет использоваться для копирования текста после нажатия
+  на кнопку.</i>
+
+  '
+va_malling_button_value_required: '<blockquote>❌ <b>Значение не может быть пустым</b></blockquote>
+
+
+  Вы должны ввести значение для копирования.
+
+
+  <i>— Проверьте значение и попробуйте снова.</i>
+
+  '
+va_malling_button_confirm: '<blockquote>❗️ <b>Подтвердить добавление кнопки</b></blockquote>
+
+
+  <blockquote><b>ℹ️ Информация</b></blockquote>
+
+  Тип кнопки: <b>{button_type}</b>
+
+  Текст кнопки: <b>{button_text}</b>
+
+  Значение для кнопки: <b>{button_text_copy}</b>
+
+
+  <i>— После подтверждения добавления кнопки, она будет добавлена к сообщению рассылки.</i>
+
+  '
+va_malling_button_view: '<blockquote>🔘 <b>Кнопка #{index}</b></blockquote>
+
+
+  <blockquote><b>ℹ️ Информация</b></blockquote>
+
+  Тип кнопки: <b>{button_type}</b>
+
+  Текст кнопки: <b>{button_text}</b>
+
+  Значение для кнопки: <b>{button_value}</b>
+
+  '
+va_malling_button_delete_confirm: '<blockquote>❗️ <b>Подтвердить удаление кнопки</b></blockquote>
+
+
+  {text}
+
+
+  <i>— После подтверждения удаления кнопки, она будет удалена из сообщения рассылки.</i>
+
+  '
+va_client_card: '<blockquote>👤 <b>Клиент</b></blockquote>
+
+  <b>• Имя:</b> <code>{client_name}</code>
+
+  <b>• Username:</b> {username}
+
+  <b>• ID:</b> <code>{client_id}</code>
+
+
+  <blockquote>📊 <b>Статистика</b></blockquote>
+
+  <b>• Заказы:</b> <code>{orders}</code>
+
+  <b>• Рейтинг:</b> <code>{rating}</code>
+
+  <b>• Адреса:</b> <code>{addresses}</code>
+
+  <b>• Избранные:</b> <code>{favorites}</code>
+
+
+  <blockquote>⚙️ <b>Данные</b></blockquote>
+
+  <b>• Город:</b> <code>{city}</code>
+
+  <b>• Промокод:</b> <code>{promo}</code>
+
+  <b>• Соглашение:</b> {agreement}
+
+  <b>• Бан:</b> {ban}
+
+
+  <blockquote>🕗 Зарегистрирован: <b>{registered}</b></blockquote>'
+va_client_card_worker: '
+
+
+  <blockquote>👤 <b>Воркер</b></blockquote>
+
+
+  <b>• Имя:</b> <code>{worker_name}</code>
+
+  <b>• ID:</b> <code>{worker_id}</code>'
+va_client_search_prompt: '✍️ <b>Поиск клиента</b>
+
+
+  <b>Введите ID клиента:</b>'
+va_client_id_wrong: '❗️ <b>Неверный формат.</b>
+
+
+  <b>Введите корректный ID клиента:</b>'
+va_client_id_not_number: '❗️ <b>Неверный формат.</b>
+
+
+  <b>ID должен быть числом.</b>'
+va_client_not_found: 😔 <b>Данный клиент не был найден в базе данных</b>
+va_client_no_bind: 😔 <b>У данного клиента отсутствует привязка к воркеру</b>
+va_client_other_worker: 😔 <b>Данный клиент привязан к другому воркеру</b>
+va_client_inline_empty: Клиенты не найдены
+va_client_send_message_prompt: '✍️ <b>Сообщение клиенту</b>
+
+
+  <b>Введите текст сообщения:</b>
+
+  <code>Любое сообщение</code>'
+va_client_send_message_confirm: '✅ <b>Подтвердить отправку сообщения клиенту</b>
+
+
+  <blockquote><code>{text}</code></blockquote>'
+va_client_sent_answer: ✅ Вы успешно отправили сообщение клиенту
+va_client_agreement_choose: 📄 <b>Выберите желаемое соглашение для клиента:</b>
+va_client_agreement_changed: ✅ Вы успешно сменили соглашение для этого клиента
+va_client_bind_prompt: 🆔 <b>Введите ID клиента, которого хотите привязать:</b>
+va_client_bind_success: ✅ <b>Клиент был успешно привязан к Вам</b>
+va_client_already_bound: 😔 <b>Клиент уже привязан к Вам</b>
+va_client_message_too_short: ❗ Сообщение слишком короткое.
+va_logs_manage_caption: '📊 <b>Управление уведомлениями</b>
+
+
+  Включите или отключите отдельные типы логов.'
+va_log_history_empty: '📊 <b>Логи клиента #{client_id}</b>
+
+
+  Нет записей.'
+va_log_history_entry: '🕗 <b>{time}</b>
+
+  {text}'
+va_log_history_caption: '📊 <b>Логи клиента #{client_id}</b>
+
+
+  {logs}
+
+
+  📄 Страница {page}/{total_pages}'
+word_ban_yes: 🔴 Да
+word_ban_no: 🟢 Нет
+word_yes: Да
+word_no: Нет
+word_enabled: Включен
+word_disabled: Выключен
+word_not_specified: Не указано
+word_unavailable: Недоступно
+word_dynamic: Динамическая
+word_static: Статическая
+word_visible: Не скрыта
+word_hidden: Скрыта
+word_city_first: Первый
+word_city_second: Второй
+word_ltp_active: 🟢 Активен
+word_ltp_inactive: 🔴 Не установлен
+word_card_enabled: 🟢 Включена
+word_card_disabled: 🔴 Выключена
+va_answer_changed: ✅ Изменено
+va_answer_updated: ✅ Обновлено
+va_answer_deleted: ✅ Удалено
+va_answer_not_found: Анкета не найдена
+va_answer_city_not_chosen: Город не выбран
+va_answer_no_photos: У анкеты нет фотографий
+va_answer_photo_deleted: 🗑 Фото удалено
+va_answer_photos_added: ✅ Фото добавлены
+va_answer_data_error: 'Ошибка: данные не найдены'
+va_answer_error: Ошибка
+va_client_answer_not_chosen: Клиент не выбран
+va_client_answer_not_found: Клиент не найден
+va_promo_answer_not_found: Промокод не найден
+va_models_params_wrong: ❗️ <b>Введите 4 параметра:</b> Имя Возраст Рост Грудь
+va_models_params_not_numbers: ❗️ <b>Возраст, рост и грудь — числа</b>
+va_models_prices_wrong: ❗️ <b>Введите 3 положительных числа</b>
+va_model_deleted_success: ✅ <b>Анкета успешно удалена.</b>
+va_model_moved_city: ✅ Анкета перенесена в {city} город
+va_photo_caption: 📷 <b>Фото {current}/{total}</b>
+va_malling_too_short: ❗ Сообщение слишком короткое.
+va_check_confirmed: '✅ <b>Оплата подтверждена</b>
+
+
+  Заказ: <code>{check_id}</code>'
+va_check_rejected: '❌ <b>Оплата отклонена</b>
+
+
+  Заказ: <code>{check_id}</code>'
+va_logs_all_on_answer: ✅ Все включены
+va_logs_all_off_answer: ✅ Все выключены
+va_answer_review_not_found: Отзыв не найден
+panel_caption: '<blockquote>👨🏻‍💻 <b>Админ панель ESCORT V1</b></blockquote>
+
+
+  <blockquote>🤖 <b>Информация о сервисе</b></blockquote>
+
+  Название: <b>{bot_name}</b>
+
+  Ссылка: <b>{bot_link_text}</b>
+
+  Состояние: <b>{service_status}</b> {service_status_emoji}
+
+
+  <blockquote>👥 <b>Клиенты</b></blockquote>
+
+  Клиентов всего: <b>{total_clients}</b>
+
+
+  <blockquote>🦋 <b>Анкеты</b></blockquote>
+
+  Всего: <b>{total_forms}</b>
+
+  Город 1: <b>{forms_city_1}</b>
+
+  Город 2: <b>{forms_city_2}</b>
+
+
+  <blockquote>📑 <b>Дополнительно</b></blockquote>
+
+  Промокоды: <b>{total_promos}</b>
+
+  Соглашения: <b>{total_agreements}</b>
+
+  '
+model_card: "<blockquote><b>\U0001F98B Карточка модели</b></blockquote>\n\n<blockquote><b>\U0001F464\
+  \ Модель</b></blockquote>\nИмя: <b>{name}</b> \nВозраст: <b>{age}</b>\nРост: <b>{height}</b>\n\
+  Размер груди: <b>{tits}</b>\nКод: <code>{code}</code>\n\n<blockquote><b>\U0001F4B0\
+  \ Цены</b></blockquote>\n1 час: <b>{price_one_hours}</b>\n2 часа: <b>{price_two_hours}</b>\n\
+  3 часа: <b>{price_three_hours}</b>\nНочь: <b>{price_night}</b>\n\n<blockquote><b>\U0001F516\
+  \ Описание</b></blockquote>\n{caption}\n\n<blockquote><b>ℹ️ Дополнительно</b></blockquote>\n\
+  Рейтинг: <b>{rating}</b>\nКол-во заказов: <b>{orders}</b>\nСправка ИППП/ЗППП: <b>{document}</b>\n\
+  Верификация: <b>{verification}</b>\nПриватный канал: <b>{private_channel}</b>\n\
+  Динамика: <b>{dynamic}</b>\nВидимость: <b>{visibility}</b>\nГород: <b>{city}</b>\n"
+models_city_choose: '<blockquote><b>🏙 Список городов</b></blockquote>
+
+
+  <i>— Вы можете добавить модель в определенный город.</i>
+
+  '
+models_list_caption: '<blockquote><b>🦋 Список анкет · Город {city_slot}</b></blockquote>
+
+
+  Всего анкет: <b>{total}</b>
+
+  Страница: <b>{page}/{total_pages}</b>
+
+
+  <i>— Выберите модель или добавьте новую.</i>
+
+  '
+models_list_empty: '<blockquote><b>🦋 В этом городе пока нет анкет</b></blockquote>
+
+
+  <i>— Нажмите кнопку ниже, чтобы добавить первую анкету.</i>
+
+  '
+models_new_step1: '<blockquote><b>✏️ Добавление анкеты</b></blockquote>
+
+
+  <b>1\3</b> Введите имя, возраст, рост и размер груди. Формат: «<b>Алина 21 169 3</b>»
+
+
+  <i>— Введенные данные будут использоваться для создания новой анкеты.</i>
+
+  '
+models_new_step1_invalid: ❗️ <b>Введите 4 параметра:</b> Имя Возраст Рост Грудь
+models_new_step2: "<blockquote><b>✏️ Цены анкеты</b></blockquote>\n\n<b>2\x03</b>\
+  \ Введите цены за 1 час, 2 часа, 3 часа и ночь. Формат: «<b>3000 5000 8000 20000</b>»\n\
+  \n<i>— Введенные цены будут использоваться для создания новой анкеты.</i>\n"
+models_new_step2_invalid: ❗️ <b>Введите 3 положительных числа</b>
+models_new_step3: '<blockquote><b>✏️ Медиа анкеты</b></blockquote>
+
+
+  <b>3\3</b> Отправьте от 1 до 10 фото или видео:
+
+
+  <i>— Отправленные медиа будут использоваться для создания новой анкеты.</i>
+
+  '
+models_new_confirm: '<blockquote><b>❗️ Подтвердите создание анкеты</b></blockquote>
+
+
+  <blockquote><b>👤 Данные модели</b></blockquote>
+
+  Имя: <b>{name}</b>
+
+  Возраст: <b>{age}</b>
+
+  Рост: <b>{height} см</b>
+
+  Размер груди: <b>{bust_size}</b>
+
+  Город: <b>Город {city_slot}</b>
+
+
+  <blockquote><b>💰 Цены</b></blockquote>
+
+  1 час: <b>{price_1h} RUB</b>
+
+  2 часа: <b>{price_2h} RUB</b>
+
+  3 часа: <b>{price_3h} RUB</b>
+
+  Ночь: <b>{price_night} RUB</b>
+
+  Фотографий: <b>{photos_count}</b>
+
+
+  <i>— Анкета будет создана после подтверждения.</i>
+
+  '
+model_delete_confirm: '<blockquote><b>❗️ Подтвердите удаление анкеты</b></blockquote>
+
+
+  <i>— Анкета будет удалена после подтверждения.</i>
+
+  '
+model_deleted_answer: ✅ <b>Анкета успешно удалена.</b>
+model_reviews_title: '<blockquote><b>📰 Отзывы анкеты · {name}</b></blockquote>
+
+
+  Всего отзывов: <b>{total}</b>
+
+
+  <i>— Вы можете добавить отзывы для анкеты модели.</i>
+
+  '
+model_review_add_prompt: '<blockquote><b>✏️ Добавление отзывов</b></blockquote>
+
+
+  <b>1\1</b> Введите один или несколько отзывов в формате: «<b>Автор;Дата(DD.MM.YYYY);Текст;Оценка(1-5)</b>»
+
+
+  Пример ввода: <b>Андрей;20.10.2026;Баба рабочая, рабочая баба, вообще, и в жопу
+  дает, и готовит;5</b>
+
+
+  <i>— Вы можете добавить несколько отзывов. Для добавления нескольких отзывов, введите
+  их через перевод строки.</i>
+
+  '
+model_review_added: ✅ Отзывы успешно добавлены
+model_review_deleted: 🗑 Отзыв успешно удалён
+model_services_title: '<blockquote><b>🧾 Услуги анкеты · {name}</b></blockquote>
+
+
+  Всего услуг: <b>{total}</b>
+
+
+  <i>— Вы можете добавить услуги для анкеты модели.</i>
+
+  '
+model_service_add_prompt: '<blockquote><b>✏️ Добавление услуг</b></blockquote>
+
+
+  <b>1\1</b> Введите одну или несколько услуг, каждую с новой строки
+
+
+  Пример ввода: <b>Классика</b>
+
+
+  <i>— Вы можете добавить несколько услуг. Для добавления нескольких услуг, введите
+  их через перевод строки.</i>
+
+  '
+model_service_added: ✅ Услуги добавлены
+model_service_deleted: 🗑 Услуга удалена
+model_additionals_title: '<blockquote><b>🎀 Доп. услуги анкеты · {name}</b></blockquote>
+
+
+  Всего доп. услуг: <b>{total}</b>
+
+
+  <i>— Вы можете добавить доп. услуги для анкеты модели.</i>
+
+  '
+model_additional_add_prompt: '<blockquote><b>✏️ Добавление доп. услуг</b></blockquote>
+
+
+  <b>1\1</b> Введите одну или несколько доп. услуг в формате: «Название;Цена»
+
+
+  Пример ввода: <b>МБР;2000</b>
+
+
+  <i>— Вы можете добавить несколько доп. услуг. Для добавления нескольких доп. услуг,
+  введите их через перевод строки.</i>
+
+  '
+model_additional_added: ✅ Доп. услуги добавлены
+model_additional_deleted: 🗑 Доп. услуга удалена
+model_additional_invalid: '<blockquote><b>❗️ Неверный формат ввода</b></blockquote>
+
+
+  Каждая строка должна быть в формате: «<b>Название;Цена</b>».
+
+
+  Название доп. услуги: от <b>2</b> до <b>64</b> символов.
+
+  Цена доп. услуги: целое число больше <b>0</b>.
+
+
+  <i>— Проверьте значение и попробуйте снова.</i>
+
+  '
+promos_list_caption: '<blockquote><b>💌 Выберите промокод или добавьте новый</b></blockquote>
+
+
+  Всего промокодов: <b>{total}</b>
+
+  Страница: <b>{page}/{total_pages}</b>
+
+
+  <i>— Промокод может быть использован клиентом для получения скидки.</i>
+
+  '
+promo_new_step1: '<blockquote><b>✏️ Создание промокода</b></blockquote>
+
+
+  <b>1\1</b> Введите сумма промокода в формате <b>«500»</b>, или введите сумму и имя
+  в формате <b>«500;SALE2026»</b>
+
+
+  <i>— Введенные сумма промокода будет использована для скидки.</i>
+
+  '
+promo_confirm_add: '<blockquote><b>❗️ Подтвердите создание промокода</b></blockquote>
+
+
+  Сумма: <b>{amount} RUB</b>
+
+  Название: <b>{name}</b>
+
+
+  <i>— После подтверждения, промокод будет создан и добавлен в список промокодов.</i>
+
+  '
+promo_card_caption: '<blockquote><b>💌 Промокод</b></blockquote>
+
+
+  <blockquote><b>ℹ️ Информация</b></blockquote>
+
+  Название: <code>{name}</code>
+
+  Сумма скидки: <b>{amount} RUB</b>
+
+  '
+promo_delete_confirm: '<blockquote>❓ <b>Подтвердить удаление промокода</b></blockquote>
+
+
+  <i>— После подтверждения, выбранный Вами промокод будет удален безвозвратно.</i>
+
+  '
+promo_deleted_answer: ✅ Промокод успешно удален
+promo_created_answer: ✅ Промокод успешно создан
+agreements_list_caption: '📄 <b>Соглашения</b>
+
+
+  Выберите соглашение или создайте новое.'
+agreements_new_step1: '✍️ <b>Название соглашения</b>
+
+
+  <b>Введите название:</b>'
+agreements_new_step2: '✍️ <b>Ссылка на соглашение</b>
+
+
+  <b>Введите ссылку:</b>'
+agreements_confirm_add: ✅ <b>Подтвердить создание соглашения</b>
+agreement_card_caption: '📄 <b>Соглашение</b>
+
+
+  <b>ID:</b> <code>{agreement_id}</code>
+
+  <b>Название:</b> <code>{agreement_name}</code>
+
+  <b>Ссылка:</b> <code>{agreement_url}</code>
+
+  <b>Кем создано:</b> <code>{creater_id}</code>'
+agreement_delete_confirm: ❓ <b>Подтвердить удаление соглашения</b>
+agreement_deleted_answer: ✅ Соглашение удалено
+agreement_created_answer: ✅ Соглашение добавлено
+client_card: '<blockquote>👤 <b>Клиент</b></blockquote>
+
+  <b>• Имя:</b> <code>{client_name}</code>
+
+  <b>• Username:</b> {username}
+
+  <b>• ID:</b> <code>{client_id}</code>
+
+
+  <blockquote>📊 <b>Статистика</b></blockquote>
+
+  <b>• Заказы:</b> <code>{orders}</code>
+
+  <b>• Рейтинг:</b> <code>{rating}</code>
+
+  <b>• Адреса:</b> <code>{addresses}</code>
+
+  <b>• Избранные:</b> <code>{favorites}</code>
+
+
+  <blockquote>⚙️ <b>Данные</b></blockquote>
+
+  <b>• Город:</b> <code>{city}</code>
+
+  <b>• Промокод:</b> <code>{promo}</code>
+
+  <b>• Соглашение:</b> {agreement}
+
+  <b>• Бан:</b> {ban}
+
+
+  <blockquote>🕗 Зарегистрирован: <b>{registered}</b></blockquote>'
+client_mgmt_caption: '👥 <b>Управление клиентами</b>
+
+
+  Выберите нужное действие:'
+panel_results_caption: '<blockquote>👥 <b>Список клиентов</b></blockquote>
+
+
+  Запрос: <code>{query}</code>
+
+  Найдено: <b>{total}</b>
+
+  Страница: <b>{page}/{total_pages}</b>
+
+
+  {items}
+
+
+  <i>— Выберите клиента для просмотра и управления.</i>
+
+  '
+panel_results_empty: '<blockquote>👥 <b>Клиенты не найдены</b></blockquote>
+
+
+  По запросу <code>{query}</code> ничего не найдено.
+
+
+  <i>— Проверьте введенные данные и попробуйте снова.</i>
+
+  '
+search_prompt: '✍️ <b>Поиск клиента</b>
+
+
+  <b>Введите ID клиента:</b>'
+send_message_prompt: '✍️ <b>Сообщение клиенту</b>
+
+
+  <b>Введите текст сообщения:</b>
+
+  <code>Любое сообщение</code>'
+send_message_confirm: '✅ <b>Подтвердить отправку сообщения клиенту</b>
+
+
+  <blockquote><code>{text}</code></blockquote>'
+send_message_success: ✅ Вы успешно отправили сообщение клиенту
+choose_agreement: 📄 <b>Выберите желаемое соглашение для клиента:</b>
+agreement_updated: ✅ Вы успешно сменили соглашение для этого клиента
+malling_menu_caption: '<blockquote><b>👥 Получателя рассылки</b></blockquote>
+
+
+  <i>— Вы можете выбрать определенный диапазон клиентов, которые получат сообщение.</i>
+
+  '
+malling_text_prompt: '<blockquote>✏️ <b>Текст рассылки</b></blockquote>
+
+
+  <b>1\1</b> Введите сообщение для рассылки клиентам
+
+
+  <i>— Вы можете использовать форматирование, а так же Telegram-premium эмодзи.</i>
+
+  '
+malling_settings_caption: '<blockquote><b>📨 Рассылка</b></blockquote>
+
+
+  <blockquote><b>ℹ️ Информация</b></blockquote>
+
+  Получатели: <b>{audience}</b>
+
+  Сообщение рассылки: <b>{content_status}</b>
+
+  Медиа: <b>{media_status}</b>
+
+  Кнопки: <b>{buttons_status}</b>
+
+
+  <i>— Вы можете добавить медиа а так же кнопки для рассылки. Так же, Вы можете предпросмотреть
+  сообщение перед его отправкой.</i>
+
+  '
+
+btn_back_to_client: '🔙 К карточке клиента'
+client_log_not_found: '😔 <b>Лог #{log_id} не найден</b>'
+client_log_not_specified: 'Клиент не указан'
+client_log_history_empty: 'История активности пуста'
+
+client_log_detail_card: |
+  <blockquote><b><tg-emoji emoji-id="5278317079374633314">✨</tg-emoji> › {title} #{log_id}</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5276371072642493917">✨</tg-emoji> › Информация о клиенте #{client_db_id}</b></blockquote>
+  Имя: <b>{name_display}</b>
+  ID: <code>{user_id}</code>
+  Username: <b>{username_display}</b>
+
+  <blockquote><b><tg-emoji emoji-id="5278317079374633314">✨</tg-emoji> › Информация о действии</b></blockquote>
+  {details_block}
+
+  <i>Дата и время: <b>{date_time} (МСК)</b></i>
+
+log_detail_city: 'Город: <b>{city}</b>'
+log_detail_city_change_old: 'Старый город: <b>{old_city}</b>'
+log_detail_city_change_new: 'Новый город: <b>{new_city}</b>'
+log_detail_address_name: 'Название адреса: <b>{address_name}</b>'
+log_detail_address: 'Адрес: <b>{address}</b>'
+log_detail_order_number: 'Номер заявки: <code>{order_number}</code>'
+log_detail_model: 'Модель: <b>{model}</b>'
+log_detail_tariff: 'Тариф: <b>{tariff}</b>'
+log_detail_amount: 'Сумма: <b>{amount} ₽</b>'
+log_detail_payment_method: 'Метод оплаты: <b>{payment_method}</b>'
+log_detail_place: 'Место встречи: <b>{place}</b>'
+log_detail_code: 'Код: <code>{code}</code>'
+log_detail_message: "Сообщение:\n<blockquote>{message}</blockquote>"
+log_detail_info: 'Информация: <b>{info}</b>'

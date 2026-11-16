@@ -1,0 +1,14 @@
+{
+  "loadingTitle": "Запускаем веб апп",
+  "loadingMessage": "Поднимаю сессию приложения и подключаю backend.",
+  "browserTitle": "Откройте через Telegram",
+  "browserMessage": "",
+  "browserActionLabel": "Открыть",
+  "telegramErrorTitle": "Не удалось запустить веб апп",
+  "telegramErrorMessage": "Telegram открыл приложение без initData. Проверьте домен веб апп у бота и откройте приложение заново из Telegram.",
+  "errorTitle": "Не удалось поднять сессию",
+  "errorRetryLabel": "Повторить",
+  "errorFallbackMessage": "Проверь backend и настройки web app сессии.",
+  "notFoundTitle": "Маршрут не найден",
+  "notFoundMessage": "Эта страница пока не существует внутри веб апп."
+}

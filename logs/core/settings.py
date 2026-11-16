@@ -1,0 +1,24 @@
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Settings(BaseSettings):
+    APP_NAME: str = "escort_logs"
+    API_PORT: int = 8006
+
+    # Внутренний секрет для валидации входящих событий от ботов
+    LOGS_SECRET_KEY: str = ""
+    API_AUDIENCE: str = "escort_logs"
+
+    # Telegram bot (aiogram) для отправки логов
+    BOT_TOKEN: str = ""
+    BOT_USERNAME: str = "@escort_logs_bot"
+    LOGS_CHAT_ID: int = 0
+
+    # Webhook для бота логов (если нужен прием команд)
+    WEBHOOK_URL: str = ""
+    WEBHOOK_SECRET_TOKEN: str = ""
+
+    model_config = SettingsConfigDict(case_sensitive=True, extra="ignore")
+
+
+settings = Settings()

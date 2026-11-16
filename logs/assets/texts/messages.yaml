@@ -1,0 +1,308 @@
+# ── Сервисы и уровни ──────────────────────────────────────────────────────────
+service_main: "Основной бот"
+service_api: "API сервис"
+service_support: "Поддержка"
+service_admin: "Админ-панель"
+service_web_app: "Web App"
+service_logs: "Сервис логов"
+
+level_info: "INFO"
+level_warning: "WARNING"
+level_error: "ERROR"
+level_critical: "CRITICAL"
+level_debug: "DEBUG"
+
+payload_block: |
+  <blockquote><b> › Данные</b></blockquote>
+  <pre><code>{payload_json}</code></pre>
+
+meta_actor_id: "Actor ID: <code>{actor_id}</code>"
+meta_chat_id: "Chat ID: <code>{chat_id}</code>"
+meta_message_id: "Message ID: <code>{message_id}</code>"
+meta_trace_id: "Trace ID: <code>{trace_id}</code>"
+meta_occurred_at: "Время: <code>{occurred_at}</code>"
+
+# ── Регистрация и соглашения ──────────────────────────────────────────────────
+new_user: |
+  <blockquote><b><tg-emoji emoji-id="5278345512058133854">✨</tg-emoji> › Новый клиент</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5276371072642493917">✨</tg-emoji> › Информация о клиенте #{id}</b></blockquote>
+  Имя: <b>{client_name}</b>
+  ID: <code>{user_id}</code>
+  Username: <b>{username_display}</b>
+
+  <i>Дата и время: <b>{date_time} (МСК)</b></i>
+
+agreement_accepted: |
+  <blockquote><b><tg-emoji emoji-id="5276323389915570402">✨</tg-emoji> › Принятие соглашения</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5276371072642493917">✨</tg-emoji> › Информация о клиенте #{id}</b></blockquote>
+  Имя: <b>{client_name}</b>
+  ID: <code>{user_id}</code>
+  Username: <b>{username_display}</b>
+
+  <i>Дата и время: <b>{date_time} (МСК)</b></i>
+
+# ── Города ────────────────────────────────────────────────────────────────────
+add_city: |
+  <blockquote><b><tg-emoji emoji-id="5276314014001969354">✨</tg-emoji> › Клиент указал город</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5276371072642493917">✨</tg-emoji> › Информация о клиенте #{id}</b></blockquote>
+  Имя: <b>{client_name}</b>
+  ID: <code>{user_id}</code>
+  Username: <b>{username_display}</b>
+
+  <blockquote><b><tg-emoji emoji-id="5278317079374633314">✨</tg-emoji> › Информация о действии</b></blockquote>
+  Город: <b>{city}</b>
+
+  <i>Дата и время: <b>{date_time} (МСК)</b></i>
+
+change_of_city: |
+  <blockquote><b><tg-emoji emoji-id="5276314014001969354">✨</tg-emoji> › Клиент сменил город</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5276371072642493917">✨</tg-emoji> › Информация о клиенте #{id}</b></blockquote>
+  Имя: <b>{client_name}</b>
+  ID: <code>{user_id}</code>
+  Username: <b>{username_display}</b>
+
+  <blockquote><b><tg-emoji emoji-id="5278317079374633314">✨</tg-emoji> › Информация о действии</b></blockquote>
+  Старый город: <b>{old_city}</b>
+  Новый город: <b>{new_city}</b>
+
+  <i>Дата и время: <b>{date_time} (МСК)</b></i>
+
+# ── Адреса ────────────────────────────────────────────────────────────────────
+add_address: |
+  <blockquote><b><tg-emoji emoji-id="5276367091207808640">✨</tg-emoji> › Клиент добавил адрес</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5276371072642493917">✨</tg-emoji> › Информация о клиенте #{id}</b></blockquote>
+  Имя: <b>{client_name}</b>
+  ID: <code>{user_id}</code>
+  Username: <b>{username_display}</b>
+
+  <blockquote><b><tg-emoji emoji-id="5278317079374633314">✨</tg-emoji> › Информация о действии</b></blockquote>
+  Название: <b>{address_name}</b>
+  Адрес: <b>{address}</b>
+
+  <i>Дата и время: <b>{date_time} (МСК)</b></i>
+
+remove_address: |
+  <blockquote><b><tg-emoji emoji-id="5276367091207808640">✨</tg-emoji> › Клиент удалил адрес</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5276371072642493917">✨</tg-emoji> › Информация о клиенте #{id}</b></blockquote>
+  Имя: <b>{client_name}</b>
+  ID: <code>{user_id}</code>
+  Username: <b>{username_display}</b>
+
+  <blockquote><b><tg-emoji emoji-id="5278317079374633314">✨</tg-emoji> › Информация о действии</b></blockquote>
+  Название: <b>{address_name}</b>
+
+  <i>Дата и время: <b>{date_time} (МСК)</b></i>
+
+# ── Заявки и чеки ─────────────────────────────────────────────────────────────
+payment_request: |
+  <blockquote><b><tg-emoji emoji-id="5276181067584287537">✨</tg-emoji> › {payment_request_title}</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5276371072642493917">✨</tg-emoji> › Информация о клиенте #{id}</b></blockquote>
+  Имя: <b>{client_name}</b>
+  ID: <code>{user_id}</code>
+  Username: <b>{username_display}</b>
+
+  <blockquote><b><tg-emoji emoji-id="5278317079374633314">✨</tg-emoji> › Информация о действии</b></blockquote>
+  ID заявки: <code>{order_number}</code>
+  Модель: <b>{model_info}</b>
+  Тариф: <b>{tariff_plan}</b>
+  Доп. услуги: <b>{additional}</b>
+  Встреча: <b>{meet_info}</b>
+  Метод оплаты: <b>{payment_method}</b>
+  Сумма: <b>{amount} ₽</b>
+
+  <i>Дата и время: <b>{date_time} (МСК)</b></i>
+
+get_check_of_top_up: |
+  <blockquote><b><tg-emoji emoji-id="5276378524410755195">✨</tg-emoji> › Клиент отправил чек при пополнении</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5276371072642493917">✨</tg-emoji> › Информация о клиенте #{id}</b></blockquote>
+  Имя: <b>{client_name}</b>
+  ID: <code>{user_id}</code>
+  Username: <b>{username_display}</b>
+
+  <blockquote><b><tg-emoji emoji-id="5278317079374633314">✨</tg-emoji> › Информация о действии</b></blockquote>
+  ID заявки: <code>{order_number}</code>
+  Метод оплаты: <b>{payment_method}</b>
+  Сумма: <b>{amount} ₽</b>
+
+  <i>Дата и время: <b>{date_time} (МСК)</b></i>
+
+get_check_of_payment_private_channel: |
+  <blockquote><b><tg-emoji emoji-id="5276378524410755195">✨</tg-emoji> › Клиент отправил чек при оплате приватного канала</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5276371072642493917">✨</tg-emoji> › Информация о клиенте #{id}</b></blockquote>
+  Имя: <b>{client_name}</b>
+  ID: <code>{user_id}</code>
+  Username: <b>{username_display}</b>
+
+  <blockquote><b><tg-emoji emoji-id="5278317079374633314">✨</tg-emoji> › Информация о действии</b></blockquote>
+  ID заявки: <code>{order_number}</code>
+  Модель: <b>{model_info}</b>
+  Метод оплаты: <b>{payment_method}</b>
+  Сумма: <b>{amount} ₽</b>
+
+  <i>Дата и время: <b>{date_time} (МСК)</b></i>
+
+get_check_of_payment_model: |
+  <blockquote><b><tg-emoji emoji-id="5276378524410755195">✨</tg-emoji> › Клиент отправил чек при оплате модели</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5276371072642493917">✨</tg-emoji> › Информация о клиенте #{id}</b></blockquote>
+  Имя: <b>{client_name}</b>
+  ID: <code>{user_id}</code>
+  Username: <b>{username_display}</b>
+
+  <blockquote><b><tg-emoji emoji-id="5278317079374633314">✨</tg-emoji> › Информация о действии</b></blockquote>
+  ID заявки: <code>{order_number}</code>
+  Модель: <b>{model_info}</b>
+  Тариф: <b>{tariff_plan}</b>
+  Метод оплаты: <b>{payment_method}</b>
+  Сумма: <b>{amount} ₽</b>
+
+  <i>Дата и время: <b>{date_time} (МСК)</b></i>
+
+# ── Поддержка ─────────────────────────────────────────────────────────────────
+message_to_support: |
+  <blockquote><b><tg-emoji emoji-id="5276236949403773129">✨</tg-emoji> › Клиент написал в поддержку</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5276371072642493917">✨</tg-emoji> › Информация о клиенте #{id}</b></blockquote>
+  Имя: <b>{client_name}</b>
+  ID: <code>{user_id}</code>
+  Username: <b>{username_display}</b>
+
+  <i>Дата и время: <b>{date_time} (МСК)</b></i>
+
+open_support_section: |
+  <blockquote><b><tg-emoji emoji-id="5276326559601437329">✨</tg-emoji> › Клиент открыл раздел поддержки</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5276371072642493917">✨</tg-emoji> › Информация о клиенте #{id}</b></blockquote>
+  Имя: <b>{client_name}</b>
+  ID: <code>{user_id}</code>
+  Username: <b>{username_display}</b>
+
+  <i>Дата и время: <b>{date_time} (МСК)</b></i>
+
+# ── Промокоды ─────────────────────────────────────────────────────────────────
+promocode_created: |
+  <blockquote><b><tg-emoji emoji-id="5278742216712429326">✨</tg-emoji> › Создан новый промокод</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5278317079374633314">✨</tg-emoji> › Информация о промокоде #{promocode_id}</b></blockquote>
+  Промокод: <code>{code}</code>
+  Тип: <b>{promo_type}</b>
+  Сумма: <b>{amount} ₽</b>
+  Лимит активаций: <b>{usage_limit}</b>
+  Активен до: <b>{expires_at}</b>
+
+  <blockquote><b><tg-emoji emoji-id="5276371072642493917">✨</tg-emoji> › Кем создан</b></blockquote>
+  Админ: <b>{admin_name}</b>
+  ID: <code>{admin_id}</code>
+
+  <i>Дата и время создания: <b>{date_time} (МСК)</b></i>
+
+promocode_activated: |
+  <blockquote><b><tg-emoji emoji-id="5278742216712429326">✨</tg-emoji> › Клиент активировал промокод</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5276371072642493917">✨</tg-emoji> › Информация о клиенте #{id}</b></blockquote>
+  Имя: <b>{client_name}</b>
+  ID: <code>{user_id}</code>
+  Username: <b>{username_display}</b>
+
+  <blockquote><b><tg-emoji emoji-id="5278317079374633314">✨</tg-emoji> › Информация о промокоде</b></blockquote>
+  Промокод: <code>{code}</code>
+  Сумма: <b>{amount} ₽</b>
+
+  <i>Дата и время: <b>{date_time} (МСК)</b></i>
+
+# ── Анкеты и просмотры ────────────────────────────────────────────────────────
+open_model_form: |
+  <blockquote><b><tg-emoji emoji-id="5276186784185755393">✨</tg-emoji> › Клиент открыл анкету</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5276371072642493917">✨</tg-emoji> › Информация о клиенте #{id}</b></blockquote>
+  Имя: <b>{client_name}</b>
+  ID: <code>{user_id}</code>
+  Username: <b>{username_display}</b>
+
+  <blockquote><b><tg-emoji emoji-id="5278317079374633314">✨</tg-emoji> › Информация об анкете #{form_id}</b></blockquote>
+  Код: <code>{code}</code>
+  Имя: <b>{model_name}</b>
+
+  <i>Дата и время: <b>{date_time} (МСК)</b></i>
+
+new_form: |
+  <blockquote><b><tg-emoji emoji-id="5276516903962065117">✨</tg-emoji> › Создана новая анкета</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5278317079374633314">✨</tg-emoji> › Информация о модели #{form_id}</b></blockquote>
+  Код: <code>{code}</code>
+  Имя: <b>{model_name}</b>
+  Возраст: <b>{age}</b>
+  Рост: <b>{height}</b>
+  Грудь: <b>{breast}</b>
+
+  {caption}
+
+  <blockquote><b><tg-emoji emoji-id="5276159721596821768">✨</tg-emoji> › Цены</b></blockquote>
+  1 час: <b>{price_1h} ₽</b>
+  2 часа: <b>{price_2h} ₽</b>
+  3 часа: <b>{price_3h} ₽</b>
+  Ночь: <b>{price_night} ₽</b>
+
+  <blockquote><b><tg-emoji emoji-id="5278412045396515877">✨</tg-emoji> › Доп. информация</b></blockquote>
+  Верификация: <b>{verification}</b>
+  Справка: <b>{medical_certificate}</b>
+
+  <i>Дата и время: <b>{date_time} (МСК)</b></i>
+
+# ── Заказы ────────────────────────────────────────────────────────────────────
+new_order: |
+  <blockquote><b><tg-emoji emoji-id="5278384355742360230">✨</tg-emoji> › Клиент оформил модель</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5276371072642493917">✨</tg-emoji> › Информация о клиенте #{id}</b></blockquote>
+  Имя: <b>{client_name}</b>
+  ID: <code>{user_id}</code>
+  Username: <b>{username_display}</b>
+
+  <blockquote><b><tg-emoji emoji-id="5278317079374633314">✨</tg-emoji> › Информация о заказе #{order_id}</b></blockquote>
+  Код модели: <code>{code}</code>
+  Имя модели: <b>{model_name}</b>
+  Тариф: <b>{tariff_plan}</b>
+  Доп. услуги: <b>{additionals}</b>
+  Место встречи: <b>{place}</b>
+  Время встречи: <b>{meeting_time}</b>
+  Сумма: <b>{amount} ₽</b>
+
+  <i>Дата и время: <b>{date_time} (МСК)</b></i>
+
+# ── Отзывы ────────────────────────────────────────────────────────────────────
+new_review: |
+  <blockquote><b><tg-emoji emoji-id="5276247746951554630">✨</tg-emoji> › Новый отзыв</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5278317079374633314">✨</tg-emoji> › Информация об отзыве #{id}</b></blockquote>
+  Анкета: <b>{model_name} ({form_code})</b>
+  Автор: <b>{author}</b>
+  Оценка: <b>{rating}</b>
+
+  <b>Текст отзыва:</b>
+  <blockquote>{review_text}</blockquote>
+
+  <i>Дата и время: <b>{date_time} (МСК)</b></i>
+
+# ── Рассылки ──────────────────────────────────────────────────────────────────
+mailing: |
+  <blockquote><b><tg-emoji emoji-id="5278564173138143154">✨</tg-emoji> › Рассылка клиентам</b></blockquote>
+
+  <blockquote><b><tg-emoji emoji-id="5278317079374633314">✨</tg-emoji> › Информация</b></blockquote>
+  Аудитория: <b>{audience}</b>
+  Всего: <b>{total}</b>
+  Отправлено: <b>{sent}</b>
+  Ошибок: <b>{failed}</b>
+
+  <b>Текст рассылки:</b>
+  <blockquote>{text}</blockquote>
+
+  <i>Дата и время: <b>{date_time} (МСК)</b></i>

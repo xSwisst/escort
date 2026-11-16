@@ -1,0 +1,11 @@
+from __future__ import annotations
+
+from backend.core.settings import settings
+from shared.logging import LogsClient
+
+logs_client = LogsClient(
+    base_url=settings.LOGS_API_URL,
+    service_name="web_app",
+    secret_key=settings.API_SECRET_KEY,
+    target_audience="escort_logs",
+)

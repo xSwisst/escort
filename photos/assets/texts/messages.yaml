@@ -1,0 +1,8 @@
+error_missing_bearer_token: "Missing bearer token"
+error_invalid_bearer_token: "Invalid bearer token"
+error_service_issuer_not_allowed: "Service issuer is not allowed"
+error_file_is_required: "File is required"
+error_unsupported_file_type: "Unsupported file type: {content_type}"
+error_file_too_large: "File is too large"
+error_invalid_file_name: "Invalid file name"
+error_file_not_found: "File not found"

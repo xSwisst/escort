@@ -1,0 +1,4 @@
+back: {text: "◀ Назад", icon_custom_emoji_id: null, color: null}
+change_agreement: {text: "Соглашение", icon_custom_emoji_id: null, color: null}
+refresh: {text: "Обновить", icon_custom_emoji_id: null, color: null}
+
