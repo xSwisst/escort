@@ -4,7 +4,18 @@ from .addresses import Address
 from .cards import Card
 from .client_activity_logs import ClientActivityLog
 from .clients import Client
-from .forms import Form, FormAdditional, FormFavorite, FormPhoto, FormPrivateChannel, FormReview, FormService
+from .forms import (
+    Form,
+    FormAdditional,
+    FormFavorite,
+    FormPhoto,
+    FormPricing,
+    FormProfile,
+    FormPublication,
+    FormPrivateChannel,
+    FormReview,
+    FormService,
+)
 from .log_threads import LogThread, LogThreadType
 from .orders import Order, OrderStatus
 from .payments import InvoicePurpose, InvoiceStatus, PaymentInvoice, Transaction, TransactionType
@@ -23,6 +34,9 @@ __all__ = [
     "FormAdditional",
     "FormFavorite",
     "FormPhoto",
+    "FormPricing",
+    "FormProfile",
+    "FormPublication",
     "FormPrivateChannel",
     "FormReview",
     "FormService",
