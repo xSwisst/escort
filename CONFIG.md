@@ -12,7 +12,8 @@ new_escort/
 ├── admin/.env
 ├── photos/.env
 ├── logs/.env
-└── web_app/.env
+├── web_app/.env
+└── web/.env
 ```
 
 ## 📋 Шаблоны конфигов
@@ -28,6 +29,7 @@ cd admin && cp .env.example .env
 cd photos && cp .env.example .env
 cd logs && cp .env.example .env
 cd web_app && cp .env.example .env
+cd web && cp .env.example .env
 ```
 
 ## 🔐 Общие секреты
@@ -141,6 +143,25 @@ API_BASE_URL=http://api:8000
 WEB_APP_INFO_CHANNEL_URL=https://t.me/escort_info
 WEB_APP_REVIEWS_CHANNEL_URL=https://t.me/escort_reviews
 WEB_APP_SUPPORT_BOT_URL=https://t.me/escort_support_bot
+```
+
+### 8. Web Landing (web/.env)
+
+```env
+HOST=0.0.0.0
+PORT=8007
+API_PORT=8007
+
+WEB_DOMAIN=elegant-agency.fun
+WEB_URL=https://elegant-agency.fun
+
+BOT_USERNAME=@ElegantAgencyApp
+BOT_URL=https://t.me/ElegantAgencyApp
+SUPPORT_BOT_URL=https://t.me/ElegantAgencySupportApp
+WEB_APP_URL=https://app.elegant-agency.fun
+
+APP_NAME=ELEGANT AGENCY
+CONTACT_EMAIL=contact@elegant-agency.fun
 ```
 
 ## 🚀 Быстрый старт
