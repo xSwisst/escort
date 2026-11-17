@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from repository.models.settings import Agreement
-from repositories.base import BaseRepository
+from repository.repositories.base import BaseRepository
 
 
 class AgreementRepository(BaseRepository[Agreement]):

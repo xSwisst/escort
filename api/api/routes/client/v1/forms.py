@@ -5,8 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.dependencies import service_session
 from clients.logs import emit_client_log
-from domain.clients.service import ClientService
-from domain.forms.service import FormService
+from services.clients.service import ClientService
+from services.forms.service import FormService
 from schemas.client import (
     FavoriteToggleResponse,
     FormAdditionalsResponse,

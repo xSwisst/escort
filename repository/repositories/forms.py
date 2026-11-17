@@ -6,7 +6,7 @@ from sqlalchemy.orm import selectinload
 
 from repository.models.clients import Client
 from repository.models.forms import Form, FormPublication
-from repositories.base import BaseRepository
+from repository.repositories.base import BaseRepository
 
 
 class FormRepository(BaseRepository[Form]):

@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from repository.models.forms import FormReview
-from repositories.base import BaseRepository
+from repository.repositories.base import BaseRepository
 
 
 class ReviewRepository(BaseRepository[FormReview]):

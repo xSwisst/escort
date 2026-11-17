@@ -5,10 +5,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.dependencies import service_session
 from clients.logs import emit_client_log
-from domain.clients.service import ClientService
-from repositories.favorites import FavoriteRepository
-from repositories.orders import OrderRepository
-from repositories.transactions import TransactionRepository
+from services.clients.service import ClientService
+from repository.repositories.favorites import FavoriteRepository
+from repository.repositories.orders import OrderRepository
+from repository.repositories.transactions import TransactionRepository
 from schemas.client import (
     FavoriteItem,
     FavoritesResponse,

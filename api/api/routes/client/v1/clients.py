@@ -7,8 +7,8 @@ from api.dependencies import db_session, service_session
 from clients.logs import emit_client_log
 from core.settings import settings
 from core.web_app_auth import validate_telegram_init_data
-from domain.clients.service import ClientService
-from repositories.client_logs import ClientActivityLogRepository
+from services.clients.service import ClientService
+from repository.repositories.client_logs import ClientActivityLogRepository
 from schemas.client import (
     AcceptAgreementRequest,
     ActionStatusResponse,

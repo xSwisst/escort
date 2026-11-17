@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from repository.models.client_activity_logs import ClientActivityLog
 from repository.models.clients import Client
-from repositories.base import BaseRepository
+from repository.repositories.base import BaseRepository
 
 
 class ClientActivityLogRepository(BaseRepository[ClientActivityLog]):

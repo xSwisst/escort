@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from repository.models.forms import FormAdditional
-from repositories.base import BaseRepository
+from repository.repositories.base import BaseRepository
 
 
 class FormAdditionalRepository(BaseRepository[FormAdditional]):

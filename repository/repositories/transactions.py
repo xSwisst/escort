@@ -4,7 +4,7 @@ from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from repository.models.payments import Transaction, TransactionType
-from repositories.base import BaseRepository
+from repository.repositories.base import BaseRepository
 
 
 class TransactionRepository(BaseRepository[Transaction]):

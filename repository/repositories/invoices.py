@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from shared.utils.time import now_msk
 from repository.models.payments import InvoicePurpose, InvoiceStatus, PaymentInvoice
-from repositories.base import BaseRepository
+from repository.repositories.base import BaseRepository
 
 
 class InvoiceRepository(BaseRepository[PaymentInvoice]):

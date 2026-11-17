@@ -2,7 +2,7 @@ from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from repository.models.forms import FormPhoto
-from repositories.base import BaseRepository
+from repository.repositories.base import BaseRepository
 
 
 class FormPhotoRepository(BaseRepository[FormPhoto]):

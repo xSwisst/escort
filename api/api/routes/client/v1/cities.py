@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.dependencies import service_session
-from domain.cities import validate_city
+from services.cities import validate_city
 from schemas.client.cities import ValidateCityRequest, ValidateCityResponse
 
 router = APIRouter(prefix="/cities", tags=["cities"])

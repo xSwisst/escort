@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.dependencies import service_session
 from clients.logs import emit_client_log
-from domain.addresses.service import AddressService
+from services.addresses.service import AddressService
 from schemas.client import (
     ActionStatusResponse,
     AddressCreateRequest,

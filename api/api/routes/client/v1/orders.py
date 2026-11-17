@@ -5,12 +5,12 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.dependencies import service_session
-from models.orders import OrderStatus
-from models.payments import TransactionType
-from repositories.clients import ClientRepository
-from repositories.forms import FormRepository
-from repositories.orders import OrderRepository
-from repositories.transactions import TransactionRepository
+from repository.models.orders import OrderStatus
+from repository.models.payments import TransactionType
+from repository.repositories.clients import ClientRepository
+from repository.repositories.forms import FormRepository
+from repository.repositories.orders import OrderRepository
+from repository.repositories.transactions import TransactionRepository
 from schemas.client.common import ApiSchema
 
 router = APIRouter(prefix="/orders", tags=["client-orders"])

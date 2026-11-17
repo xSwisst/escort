@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from repository.models.clients import Client
-from repositories.base import BaseRepository
+from repository.repositories.base import BaseRepository
 
 
 class ClientRepository(BaseRepository[Client]):

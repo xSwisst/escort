@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.dependencies import service_session
-from repositories.cards import CardRepository
+from repository.repositories.cards import CardRepository
 from schemas.client.cards import SuitableCardResponse
 
 router = APIRouter(prefix="/cards", tags=["client-cards"])

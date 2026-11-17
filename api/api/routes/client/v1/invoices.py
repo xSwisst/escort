@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.dependencies import service_session
-from repositories.clients import ClientRepository
-from repositories.invoices import InvoiceRepository
+from repository.repositories.clients import ClientRepository
+from repository.repositories.invoices import InvoiceRepository
 from schemas.client.invoices import CreateInvoiceRequest, InvoiceResponse
 
 router = APIRouter(prefix="/invoices", tags=["client-invoices"])

@@ -2,7 +2,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from repository.models.promos import Promo
-from repositories.base import BaseRepository
+from repository.repositories.base import BaseRepository
 
 
 class PromoRepository(BaseRepository[Promo]):
