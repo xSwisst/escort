@@ -1,84 +1,56 @@
-version: '3.8'
-
 services:
-  # PostgreSQL Database
-  postgres:
-    image: postgres:16-alpine
-    container_name: escort_postgres
-    restart: unless-stopped
-    env_file:
-      - ./postgres/.env
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./postgres/init:/docker-entrypoint-initdb.d
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-escort}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - escort_network
 
-  # API Service
+  # API Service (только для web_app)
   api:
     build:
       context: .
       dockerfile: api/Dockerfile
-    container_name: escort_api
+    container_name: escort-api
     restart: unless-stopped
-    env_file:
-      - ./api/.env
+    env_file: ./api/.env
     ports:
       - "8000:8000"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - escort_network
+    volumes:
+      - ./api:/app
+      - ./repository:/app/repository
+      - ./services:/app/services
+      - ./shared:/app/shared
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
 
-  # Photos Service
+  # Photos Service (хранилище медиа)
   photos:
     build:
       context: .
       dockerfile: photos/Dockerfile
-    container_name: escort_photos
+    container_name: escort-photos
     restart: unless-stopped
-    env_file:
-      - ./photos/.env
+    env_file: ./photos/.env
     ports:
       - "8005:8005"
     volumes:
       - photos_storage:/data/photos
-    networks:
-      - escort_network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8005/health"]
       interval: 30s
       timeout: 10s
       retries: 3
 
-  # Logs Service
+  # Logs Service (Telegram логирование)
   logs:
     build:
       context: .
       dockerfile: logs/Dockerfile
-    container_name: escort_logs
+    container_name: escort-logs
     restart: unless-stopped
-    env_file:
-      - ./logs/.env
+    env_file: ./logs/.env
     ports:
       - "8006:8006"
     volumes:
       - logs_data:/app/data
-    networks:
-      - escort_network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8006/health"]
       interval: 30s
@@ -86,116 +58,87 @@ services:
       retries: 3
 
   # Main Bot
-  main_bot:
+  main-bot:
     build:
       context: .
       dockerfile: main/Dockerfile
-    container_name: escort_main_bot
+    container_name: escort-main-bot
     restart: unless-stopped
-    env_file:
-      - ./main/.env
+    env_file: ./main/.env
     ports:
       - "8001:8001"
-    depends_on:
-      - api
-    networks:
-      - escort_network
+    volumes:
+      - ./main:/app
+      - ./repository:/app/repository
+      - ./services:/app/services
+      - ./shared:/app/shared
 
   # Support Bot
-  support_bot:
+  support-bot:
     build:
       context: .
       dockerfile: support/Dockerfile
-    container_name: escort_support_bot
+    container_name: escort-support-bot
     restart: unless-stopped
-    env_file:
-      - ./support/.env
+    env_file: ./support/.env
     ports:
       - "8002:8002"
-    depends_on:
-      - api
-    networks:
-      - escort_network
+    volumes:
+      - ./support:/app
+      - ./repository:/app/repository
+      - ./services:/app/services
+      - ./shared:/app/shared
 
   # Admin Bot
-  admin_bot:
+  admin-bot:
     build:
       context: .
       dockerfile: admin/Dockerfile
-    container_name: escort_admin_bot
+    container_name: escort-admin-bot
     restart: unless-stopped
-    env_file:
-      - ./admin/.env
+    env_file: ./admin/.env
     ports:
       - "8003:8003"
-    depends_on:
-      - api
-    networks:
-      - escort_network
+    volumes:
+      - ./admin:/app
+      - ./repository:/app/repository
+      - ./services:/app/services
+      - ./shared:/app/shared
 
-  # Web App
-  web_app:
+  # Web App (FastAPI + React)
+  web-app:
     build:
       context: .
       dockerfile: web_app/Dockerfile
-    container_name: escort_web_app
+    container_name: escort-web-app
     restart: unless-stopped
-    env_file:
-      - ./web_app/.env
+    env_file: ./web_app/.env
     ports:
       - "8004:8004"
-    depends_on:
-      - api
-    networks:
-      - escort_network
 
   # Web Landing Service
   web:
     build:
       context: .
       dockerfile: web/Dockerfile
-    container_name: escort_web
+    container_name: escort-web
     restart: unless-stopped
-    env_file:
-      - ./web/.env
+    env_file: ./web/.env
     ports:
       - "8007:8007"
-    depends_on:
-      - api
-    networks:
-      - escort_network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8007/health"]
       interval: 30s
       timeout: 10s
       retries: 3
 
-  # Cloudflare Tunnel
-  cloudflare_tunnel:
-    image: cloudflare/cloudflared:latest
-    container_name: escort_cloudflare_tunnel
-    restart: unless-stopped
-    command: tunnel --no-autoupdate run
-    env_file:
-      - ./cloudflare/.env
-    networks:
-      - escort_network
-    depends_on:
-      - api
-      - photos
-      - logs
-      - web_app
-      - web
-
-
 volumes:
-  postgres_data:
-    driver: local
   photos_storage:
-    driver: local
+    name: escort_photos_storage
   logs_data:
-    driver: local
+    name: escort_logs_data
 
 networks:
-  escort_network:
-    driver: bridge
+  default:
+    name: infra_network
+    external: true

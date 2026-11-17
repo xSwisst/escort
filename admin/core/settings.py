@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     WEBHOOK_SECRET_TOKEN: str = ""
     API_PORT: int = 8003
 
-    DATABASE_URL: str = "postgresql+asyncpg://escort:escort@postgres:5432/escort"
+    DATABASE_URL: str = "postgresql+asyncpg://admin:P6jpA-TkrrKW@postgres:5432/escort_db"
     REDIS_URL: str = "redis://redis:6379/2"
 
     LOGS_API_URL: str = "http://logs:8006"

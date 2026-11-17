@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     API_PORT: int = 8000
 
     # Database
-    DATABASE_URL: str = "postgresql+asyncpg://escort:escort@postgres:5432/escort"
+    DATABASE_URL: str = "postgresql+asyncpg://admin:P6jpA-TkrrKW@postgres:5432/escort_db"
 
     # Telegram Bot (для валидации Web App init_data клиента)
     BOT_TOKEN: str = ""
