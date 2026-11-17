@@ -6,6 +6,6 @@ from shared.logging import LogsClient
 logs_client = LogsClient(
     base_url=settings.LOGS_API_URL,
     service_name="web_app",
-    secret_key=settings.API_SECRET_KEY,
+    secret_key=settings.LOGS_SECRET_KEY,
     target_audience="escort_logs",
 )

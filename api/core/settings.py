@@ -5,6 +5,10 @@ class Settings(BaseSettings):
     APP_NAME: str = "escort_api"
     API_PORT: int = 8000
 
+    # Service-to-service JWT
+    API_SECRET_KEY: str = ""
+    API_AUDIENCE: str = "escort_api"
+
     # Database
     DATABASE_URL: str = "postgresql+asyncpg://admin:P6jpA-TkrrKW@postgres:5432/escort_db"
 
@@ -14,6 +18,8 @@ class Settings(BaseSettings):
 
     # Photos service (публичный URL для отдачи фото в web_app)
     PHOTOS_API_URL: str = ""
+    LOGS_API_URL: str = "http://logs:8006"
+    LOGS_SECRET_KEY: str = ""
 
     model_config = SettingsConfigDict(case_sensitive=True, extra="ignore")
 
