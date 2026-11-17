@@ -11,6 +11,12 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "postgresql+asyncpg://admin:P6jpA-TkrrKW@postgres:5432/escort_db"
     REDIS_URL: str = "redis://redis:6379/2"
 
+    # API service
+    API_BASE_URL: str = "http://api:8000"
+    API_SECRET_KEY: str = ""
+    API_AUDIENCE: str = "escort_api"
+    ADMIN_API_KEY: str = ""
+
     LOGS_API_URL: str = "http://logs:8006"
     LOGS_SECRET_KEY: str = ""
 

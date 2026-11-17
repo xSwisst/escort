@@ -9,8 +9,9 @@ class Settings(BaseSettings):
     API_SECRET_KEY: str = ""
     API_AUDIENCE: str = "escort_api"
 
-    # Database
+    # Database (поддержка и DATABASE_URL и DB_URL)
     DATABASE_URL: str = "postgresql+asyncpg://admin:P6jpA-TkrrKW@postgres:5432/escort_db"
+    DB_URL: str = "postgresql+asyncpg://admin:P6jpA-TkrrKW@postgres:5432/escort_db"
 
     # Telegram Bot (для валидации Web App init_data клиента)
     BOT_TOKEN: str = ""
