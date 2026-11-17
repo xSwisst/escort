@@ -1,36 +1,86 @@
 from __future__ import annotations
 
-from .base import ApiSection
+from services.addresses.service import AddressService
+from shared.bot.session import resolve_session
+from .exceptions import ApiNotFoundError
 from .schemas import ActionStatusResponse, AddressItem, AddressListResponse
 
 
-class AddressesApi(ApiSection):
+class AddressesApi:
     async def list(self, user_id: int) -> AddressListResponse:
-        return await self._get(f"/client/v1/addresses/{user_id}", model=AddressListResponse)
+        async with resolve_session() as session:
+            addr_service = AddressService(session)
+            addrs = await addr_service.list(user_id)
+            return AddressListResponse(
+                items=[
+                    AddressItem(
+                        id=a.id,
+                        user_id=a.user_id,
+                        title=a.title,
+                        address=a.address,
+                        created_at=a.created_at,
+                    )
+                    for a in addrs
+                ]
+            )
 
     async def get(self, *, user_id: int, address_id: int) -> AddressItem:
-        return await self._get(f"/client/v1/addresses/{user_id}/{address_id}", model=AddressItem)
+        async with resolve_session() as session:
+            addr_service = AddressService(session)
+            a = await addr_service.get(user_id, address_id)
+            if not a:
+                raise ApiNotFoundError(f"Address not found: {address_id}")
+            return AddressItem(
+                id=a.id,
+                user_id=a.user_id,
+                title=a.title,
+                address=a.address,
+                created_at=a.created_at,
+            )
 
     async def create(self, *, user_id: int, title: str, address: str) -> AddressItem:
-        return await self._post(
-            f"/client/v1/addresses/{user_id}",
-            model=AddressItem,
-            json={"title": title, "address": address},
-        )
+        async with resolve_session() as session:
+            addr_service = AddressService(session)
+            a = await addr_service.create(user_id, title=title, address=address)
+            return AddressItem(
+                id=a.id,
+                user_id=a.user_id,
+                title=a.title,
+                address=a.address,
+                created_at=a.created_at,
+            )
 
     async def update_title(self, *, user_id: int, address_id: int, title: str) -> AddressItem:
-        return await self._patch(
-            f"/client/v1/addresses/{user_id}/{address_id}/title",
-            model=AddressItem,
-            json={"title": title},
-        )
+        async with resolve_session() as session:
+            addr_service = AddressService(session)
+            a = await addr_service.update_title(user_id, address_id, title)
+            if not a:
+                raise ApiNotFoundError(f"Address not found: {address_id}")
+            return AddressItem(
+                id=a.id,
+                user_id=a.user_id,
+                title=a.title,
+                address=a.address,
+                created_at=a.created_at,
+            )
 
     async def update_address(self, *, user_id: int, address_id: int, address: str) -> AddressItem:
-        return await self._patch(
-            f"/client/v1/addresses/{user_id}/{address_id}/address",
-            model=AddressItem,
-            json={"address": address},
-        )
+        async with resolve_session() as session:
+            addr_service = AddressService(session)
+            a = await addr_service.update_address_text(user_id, address_id, address)
+            if not a:
+                raise ApiNotFoundError(f"Address not found: {address_id}")
+            return AddressItem(
+                id=a.id,
+                user_id=a.user_id,
+                title=a.title,
+                address=a.address,
+                created_at=a.created_at,
+            )
 
     async def delete(self, *, user_id: int, address_id: int) -> None:
-        await self._delete(f"/client/v1/addresses/{user_id}/{address_id}", model=ActionStatusResponse)
+        async with resolve_session() as session:
+            addr_service = AddressService(session)
+            ok = await addr_service.delete(user_id, address_id)
+            if not ok:
+                raise ApiNotFoundError(f"Address not found: {address_id}")

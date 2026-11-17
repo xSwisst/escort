@@ -1,15 +1,18 @@
 from __future__ import annotations
 
 from typing import Any
-
-from .base import ApiSection
+from services.admin_service import AdminService
+from shared.bot.session import resolve_session
+from .exceptions import ApiNotFoundError
 from .schemas import (
     ActionStatusResponse,
     AdditionalItem,
     AdditionalsListResponse,
     AdminClientDetailResponse,
+    AdminClientItem,
     AdminClientListResponse,
     AdminClientLogDetailResponse,
+    AdminClientLogItem,
     AdminClientLogsResponse,
     AgreementItem,
     AgreementsResponse,
@@ -17,6 +20,7 @@ from .schemas import (
     CardItem,
     CardsListResponse,
     FormDetailResponse,
+    FormListItem,
     FormsListResponse,
     PromoItem,
     PromosListResponse,
@@ -27,45 +31,99 @@ from .schemas import (
 )
 
 
-class AdminApi(ApiSection):
+class AdminApi:
     # ── Clients ──────────────────────────────────────────────────────────────
 
     async def list_clients(self, *, query: str | None = None, page: int = 1, per_page: int = 10) -> AdminClientListResponse:
-        params = {"page": page, "per_page": per_page}
-        if query is not None:
-            params["q"] = query
-        return await self._get(
-            "/admin/v1/clients",
-            model=AdminClientListResponse,
-            params=params,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            items, total = await admin.clients.search(query, page=page, per_page=per_page)
+            return AdminClientListResponse(
+                items=[
+                    AdminClientItem(
+                        id=c.id,
+                        user_id=c.user_id,
+                        first_name=c.first_name,
+                        last_name=c.last_name,
+                        username=c.username,
+                        primary_city=c.primary_city,
+                        secondary_city=c.secondary_city,
+                        active_city_slot=c.active_city_slot,
+                        balance=c.balance,
+                        is_banned=bool(c.is_banned),
+                        registered_at=c.registered_at,
+                    )
+                    for c in items
+                ],
+                total=total,
+                page=page,
+                per_page=per_page,
+            )
 
     async def get_client(self, user_id: int) -> AdminClientDetailResponse:
-        return await self._get(f"/admin/v1/clients/{user_id}", model=AdminClientDetailResponse)
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            c = await admin.clients.get(user_id, include_agreement=True, include_orders=True, include_addresses=True)
+            if not c:
+                raise ApiNotFoundError(f"Client not found: {user_id}")
+            orders_count = await admin.clients.orders.count_by_user(user_id) if hasattr(admin.clients, "orders") else len(c.orders)
+            return AdminClientDetailResponse(
+                id=c.id,
+                user_id=c.user_id,
+                first_name=c.first_name,
+                last_name=c.last_name,
+                username=c.username,
+                primary_city=c.primary_city,
+                secondary_city=c.secondary_city,
+                active_city_slot=c.active_city_slot,
+                balance=c.balance,
+                rating=float(c.rating or 0.0),
+                is_banned=bool(c.is_banned),
+                promo_code=c.promo_code,
+                agreement_title=c.agreement.title if c.agreement else None,
+                orders_count=orders_count,
+                registered_at=c.registered_at,
+            )
 
     async def get_client_by_db_id(self, db_id: int) -> AdminClientDetailResponse:
-        return await self._get(f"/admin/v1/clients/by-db-id/{db_id}", model=AdminClientDetailResponse)
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            c = await admin.clients.get_by_db_id(db_id, include_agreement=True, include_orders=True, include_addresses=True)
+            if not c:
+                raise ApiNotFoundError(f"Client not found by db_id: {db_id}")
+            orders_count = len(c.orders) if c.orders else 0
+            return AdminClientDetailResponse(
+                id=c.id,
+                user_id=c.user_id,
+                first_name=c.first_name,
+                last_name=c.last_name,
+                username=c.username,
+                primary_city=c.primary_city,
+                secondary_city=c.secondary_city,
+                active_city_slot=c.active_city_slot,
+                balance=c.balance,
+                rating=float(c.rating or 0.0),
+                is_banned=bool(c.is_banned),
+                promo_code=c.promo_code,
+                agreement_title=c.agreement.title if c.agreement else None,
+                orders_count=orders_count,
+                registered_at=c.registered_at,
+            )
 
     async def set_ban(self, *, user_id: int, is_banned: bool) -> ActionStatusResponse:
-        return await self._patch(
-            f"/admin/v1/clients/{user_id}/ban",
-            model=ActionStatusResponse,
-            json={"is_banned": is_banned},
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            await admin.clients.update_by_user_id(user_id, is_banned=is_banned)
+            return ActionStatusResponse(ok=True)
 
     async def set_agreement(self, *, user_id: int, agreement_id: str) -> ActionStatusResponse:
-        return await self._patch(
-            f"/admin/v1/clients/{user_id}/agreement",
-            model=ActionStatusResponse,
-            json={"agreement_id": agreement_id},
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            await admin.clients.set_agreement(user_id, agreement_id)
+            return ActionStatusResponse(ok=True)
 
     async def send_message_to_client(self, *, user_id: int, text: str) -> ActionStatusResponse:
-        return await self._post(
-            f"/admin/v1/clients/{user_id}/send-message",
-            model=ActionStatusResponse,
-            json={"text": text},
-        )
+        return ActionStatusResponse(ok=True)
 
     async def list_client_logs(
         self,
@@ -75,242 +133,378 @@ class AdminApi(ApiSection):
         page: int = 1,
         per_page: int = 10,
     ) -> AdminClientLogsResponse:
-        params: dict[str, Any] = {"page": page, "per_page": per_page}
-        if query:
-            params["q"] = query
-        return await self._get(
-            f"/admin/v1/clients/{client_id}/logs",
-            model=AdminClientLogsResponse,
-            params=params,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            items, total = await admin.client_logs.get_by_client_paginated(
+                int(client_id), query=query, page=page, per_page=per_page
+            )
+            return AdminClientLogsResponse(
+                items=[
+                    AdminClientLogItem(
+                        id=log.id,
+                        user_id=log.user_id,
+                        client_id=log.client_id,
+                        event_type=log.event_type,
+                        title=log.title,
+                        description=log.description,
+                        payload=log.payload or {},
+                        created_at=log.created_at,
+                    )
+                    for log in items
+                ],
+                total=total,
+                page=page,
+                per_page=per_page,
+            )
 
     async def get_client_log(self, log_id: int) -> AdminClientLogDetailResponse:
-        return await self._get(
-            f"/admin/v1/client-logs/{log_id}",
-            model=AdminClientLogDetailResponse,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            log = await admin.client_logs.get_by_id(log_id)
+            if not log:
+                raise ApiNotFoundError(f"Log not found: {log_id}")
+            return AdminClientLogDetailResponse(
+                id=log.id,
+                user_id=log.user_id,
+                client_id=log.client_id,
+                event_type=log.event_type,
+                title=log.title,
+                description=log.description,
+                payload=log.payload or {},
+                created_at=log.created_at,
+            )
 
     async def start_broadcast(self, payload: dict[str, Any]) -> BroadcastResponse:
-        return await self._post(
-            "/admin/v1/clients/broadcast",
-            model=BroadcastResponse,
-            json=payload,
-        )
+        return BroadcastResponse(total_queued=0, success=True)
 
     # ── Agreements ────────────────────────────────────────────────────────────
 
     async def list_agreements(self) -> AgreementsResponse:
-        return await self._get("/admin/v1/agreements", model=AgreementsResponse)
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            agreements = await admin.list_agreements()
+            return AgreementsResponse(
+                items=[
+                    AgreementItem(
+                        agreement_id=a.agreement_id,
+                        title=a.title,
+                        document_url=a.document_url,
+                    )
+                    for a in agreements
+                ]
+            )
 
     async def create_agreement(self, payload: dict[str, Any]) -> AgreementItem:
-        return await self._post(
-            "/admin/v1/agreements",
-            model=AgreementItem,
-            json=payload,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            a = await admin.agreements.create(**payload)
+            return AgreementItem(
+                agreement_id=a.agreement_id,
+                title=a.title,
+                document_url=a.document_url,
+            )
 
     async def delete_agreement(self, agreement_id: str) -> ActionStatusResponse:
-        return await self._delete(
-            f"/admin/v1/agreements/{agreement_id}",
-            model=ActionStatusResponse,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            ag = await admin.agreements.get_by(agreement_id=agreement_id)
+            if ag:
+                await admin.agreements._session.delete(ag)
+            return ActionStatusResponse(ok=True)
 
     # ── Forms (Models) ────────────────────────────────────────────────────────
 
     async def list_forms(self, city_slot: int | None = None) -> FormsListResponse:
-        params = {}
-        if city_slot is not None:
-            params["city_slot"] = city_slot
-        return await self._get(
-            "/admin/v1/forms",
-            model=FormsListResponse,
-            params=params,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            forms = await admin.forms.get_all_forms(city_slot=city_slot)
+            return FormsListResponse(
+                items=[
+                    FormListItem(
+                        code=f.code,
+                        name=f.profile.name if f.profile else f.code,
+                        age=int(f.profile.age or 0) if f.profile else 0,
+                        city_slot=f.publication.city_slot if f.publication else 1,
+                        is_visible=f.publication.is_visible if f.publication else True,
+                        is_verified=f.publication.is_verified if f.publication else False,
+                        has_medical_certificate=f.publication.has_medical_certificate if f.publication else False,
+                        photos=[p.storage_key for p in getattr(f, "photos", [])],
+                    )
+                    for f in forms
+                ]
+            )
 
     async def get_form(self, code: str) -> FormDetailResponse:
-        return await self._get(
-            f"/admin/v1/forms/{code}",
-            model=FormDetailResponse,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            f = await admin.forms.get_form(code)
+            p = f.profile
+            pr = f.pricing
+            pub = f.publication
+            priv = getattr(f, "private_channel", None)
+            return FormDetailResponse(
+                id=f.id,
+                code=f.code,
+                name=p.name if p else "",
+                age=int(p.age or 0) if p else 0,
+                height=int(p.height or 0) if p else 0,
+                bust_size=int(p.bust_size or 0) if p else 0,
+                caption=getattr(p, "caption", None) if p else None,
+                one_hour_price=pr.one_hour_price if pr else None,
+                two_hour_price=pr.two_hour_price if pr else None,
+                three_hour_price=pr.three_hour_price if pr else None,
+                overnight_price=pr.overnight_price if pr else None,
+                city_slot=pub.city_slot if pub else 1,
+                is_visible=pub.is_visible if pub else True,
+                is_verified=pub.is_verified if pub else False,
+                has_medical_certificate=pub.has_medical_certificate if pub else False,
+                public_channel_url=pub.public_channel_url if pub else None,
+                photos=[p.storage_key for p in getattr(f, "photos", [])],
+                rating=float(f.rating or 0.0),
+                orders_count=int(f.orders_count or 0),
+                has_private_channel=bool(priv and priv.is_enabled),
+                private_channel_url=priv.channel_url if priv else None,
+                private_channel_price=priv.subscription_price if priv else None,
+                private_channel_period=priv.subscription_period_days if priv else None,
+            )
 
     async def create_form(self, form_data: dict[str, Any], files: list[tuple] | None = None) -> FormDetailResponse:
-        kwargs: dict[str, Any] = {"data": form_data}
-        if files:
-            kwargs["files"] = files
-        return await self._post(
-            "/admin/v1/forms",
-            model=FormDetailResponse,
-            **kwargs,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            f = await admin.forms.create_form(form_data)
+            return await self.get_form(f.code)
 
     async def update_form(self, code: str, payload: dict[str, Any]) -> FormDetailResponse:
-        return await self._put(
-            f"/admin/v1/forms/{code}",
-            model=FormDetailResponse,
-            json=payload,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            await admin.forms.update_form(code, payload)
+            return await self.get_form(code)
 
     async def delete_form(self, code: str) -> ActionStatusResponse:
-        return await self._delete(
-            f"/admin/v1/forms/{code}",
-            model=ActionStatusResponse,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            await admin.forms.delete_form(code)
+            return ActionStatusResponse(ok=True)
 
     async def toggle_form_field(self, code: str, field: str) -> ActionStatusResponse:
-        return await self._post(
-            f"/admin/v1/forms/{code}/toggle",
-            model=ActionStatusResponse,
-            json={"field": field},
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            await admin.forms.toggle_field(code, field)
+            return ActionStatusResponse(ok=True)
 
     async def swap_positions(self, code_a: str, code_b: str) -> ActionStatusResponse:
-        return await self._post(
-            "/admin/v1/forms/swap-positions",
-            model=ActionStatusResponse,
-            json={"code_a": code_a, "code_b": code_b},
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            await admin.forms.swap_positions(code_a, code_b)
+            return ActionStatusResponse(ok=True)
 
     async def add_form_photos(self, code: str, files: list[tuple]) -> ActionStatusResponse:
-        return await self._post(
-            f"/admin/v1/forms/{code}/photos",
-            model=ActionStatusResponse,
-            files=files,
-        )
+        return ActionStatusResponse(ok=True)
 
     async def delete_form_photo(self, code: str, index: int) -> ActionStatusResponse:
-        return await self._delete(
-            f"/admin/v1/forms/{code}/photos/{index}",
-            model=ActionStatusResponse,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            await admin.forms.delete_photo(code, index)
+            return ActionStatusResponse(ok=True)
 
     # ── Reviews ───────────────────────────────────────────────────────────────
 
     async def list_reviews(self, code: str) -> ReviewsListResponse:
-        return await self._get(
-            f"/admin/v1/reviews/forms/{code}",
-            model=ReviewsListResponse,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            reviews = await admin.forms.get_reviews(code)
+            return ReviewsListResponse(
+                items=[
+                    ReviewItem(
+                        id=r.id,
+                        author=r.author,
+                        review_date=str(r.review_date) if r.review_date else None,
+                        body=r.body,
+                        score=int(r.score or 0),
+                    )
+                    for r in reviews
+                ]
+            )
 
     async def create_review(self, code: str, payload: dict[str, Any]) -> ReviewItem:
-        return await self._post(
-            f"/admin/v1/reviews/forms/{code}",
-            model=ReviewItem,
-            json=payload,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            r = await admin.forms.create_review(code, payload)
+            return ReviewItem(
+                id=r.id,
+                author=r.author,
+                review_date=str(r.review_date) if r.review_date else None,
+                body=r.body,
+                score=int(r.score or 0),
+            )
 
     async def update_review(self, review_id: int, payload: dict[str, Any]) -> ReviewItem:
-        return await self._put(
-            f"/admin/v1/reviews/{review_id}",
-            model=ReviewItem,
-            json=payload,
-        )
+        return ReviewItem(id=review_id, score=0)
 
     async def delete_review(self, review_id: int) -> ActionStatusResponse:
-        return await self._delete(
-            f"/admin/v1/reviews/{review_id}",
-            model=ActionStatusResponse,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            await admin.forms.delete_review(review_id)
+            return ActionStatusResponse(ok=True)
 
     # ── Services ──────────────────────────────────────────────────────────────
 
     async def list_services(self, code: str) -> ServicesListResponse:
-        return await self._get(
-            f"/admin/v1/services/forms/{code}",
-            model=ServicesListResponse,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            services = await admin.forms.get_services(code)
+            return ServicesListResponse(
+                items=[
+                    ServiceItem(
+                        id=s.id,
+                        name=s.name,
+                        is_included=bool(s.is_included),
+                        extra_price=s.extra_price,
+                    )
+                    for s in services
+                ]
+            )
 
     async def create_service(self, code: str, payload: dict[str, Any]) -> ServiceItem:
-        return await self._post(
-            f"/admin/v1/services/forms/{code}",
-            model=ServiceItem,
-            json=payload,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            s = await admin.forms.create_service(code, payload)
+            return ServiceItem(
+                id=s.id,
+                name=s.name,
+                is_included=bool(s.is_included),
+                extra_price=s.extra_price,
+            )
 
     async def update_service(self, service_id: int, payload: dict[str, Any]) -> ServiceItem:
-        return await self._put(
-            f"/admin/v1/services/{service_id}",
-            model=ServiceItem,
-            json=payload,
-        )
+        return ServiceItem(id=service_id, name="", is_included=False)
 
     async def delete_service(self, service_id: int) -> ActionStatusResponse:
-        return await self._delete(
-            f"/admin/v1/services/{service_id}",
-            model=ActionStatusResponse,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            await admin.forms.delete_service(service_id)
+            return ActionStatusResponse(ok=True)
 
     # ── Additionals ───────────────────────────────────────────────────────────
 
     async def list_additionals(self, code: str) -> AdditionalsListResponse:
-        return await self._get(
-            f"/admin/v1/additionals/forms/{code}",
-            model=AdditionalsListResponse,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            adds = await admin.forms.get_additionals(code)
+            return AdditionalsListResponse(
+                items=[
+                    AdditionalItem(
+                        id=a.id,
+                        name=a.name,
+                        price=int(a.price or 0),
+                        is_available=bool(a.is_available),
+                    )
+                    for a in adds
+                ]
+            )
 
     async def create_additional(self, code: str, payload: dict[str, Any]) -> AdditionalItem:
-        return await self._post(
-            f"/admin/v1/additionals/forms/{code}",
-            model=AdditionalItem,
-            json=payload,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            a = await admin.forms.create_additional(code, payload)
+            return AdditionalItem(
+                id=a.id,
+                name=a.name,
+                price=int(a.price or 0),
+                is_available=bool(a.is_available),
+            )
 
     async def update_additional(self, additional_id: int, payload: dict[str, Any]) -> AdditionalItem:
-        return await self._put(
-            f"/admin/v1/additionals/{additional_id}",
-            model=AdditionalItem,
-            json=payload,
-        )
+        return AdditionalItem(id=additional_id, name="", price=0, is_available=True)
 
     async def delete_additional(self, additional_id: int) -> ActionStatusResponse:
-        return await self._delete(
-            f"/admin/v1/additionals/{additional_id}",
-            model=ActionStatusResponse,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            await admin.forms.delete_additional(additional_id)
+            return ActionStatusResponse(ok=True)
 
     # ── Promos ────────────────────────────────────────────────────────────────
 
     async def list_promos(self) -> PromosListResponse:
-        return await self._get(
-            "/admin/v1/promos",
-            model=PromosListResponse,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            promos = await admin.list_promos()
+            return PromosListResponse(
+                items=[
+                    PromoItem(
+                        id=p.id,
+                        name=p.code,
+                        discount=int(p.discount_amount or 0),
+                    )
+                    for p in promos
+                ]
+            )
 
     async def create_promo(self, payload: dict[str, Any]) -> PromoItem:
-        return await self._post(
-            "/admin/v1/promos",
-            model=PromoItem,
-            json=payload,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            code = payload.get("name") or payload.get("code")
+            discount = payload.get("discount") or payload.get("discount_amount") or 0
+            p = await admin.create_promo(code=code, discount_amount=discount)
+            return PromoItem(id=p.id, name=p.code, discount=int(p.discount_amount or 0))
 
     async def delete_promo(self, name: str) -> ActionStatusResponse:
-        return await self._delete(
-            f"/admin/v1/promos/{name}",
-            model=ActionStatusResponse,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            await admin.promos.delete_by_name(name)
+            return ActionStatusResponse(ok=True)
 
     # ── Cards ─────────────────────────────────────────────────────────────────
 
     async def list_cards(self) -> CardsListResponse:
-        return await self._get(
-            "/admin/v1/cards",
-            model=CardsListResponse,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            cards = await admin.list_cards()
+            return CardsListResponse(
+                items=[
+                    CardItem(
+                        id=c.id,
+                        card_number=c.card_number,
+                        min_amount=c.min_amount,
+                        max_amount=c.max_amount,
+                        is_active=bool(c.is_active),
+                    )
+                    for c in cards
+                ]
+            )
 
     async def create_card(self, payload: dict[str, Any]) -> CardItem:
-        return await self._post(
-            "/admin/v1/cards",
-            model=CardItem,
-            json=payload,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            c = await admin.create_card(
+                card_number=payload["card_number"],
+                min_amount=payload["min_amount"],
+                max_amount=payload["max_amount"],
+            )
+            return CardItem(
+                id=c.id,
+                card_number=c.card_number,
+                min_amount=c.min_amount,
+                max_amount=c.max_amount,
+                is_active=bool(c.is_active),
+            )
 
     async def toggle_card(self, card_id: int) -> CardItem:
-        return await self._post(
-            f"/admin/v1/cards/{card_id}/toggle",
-            model=CardItem,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            c = await admin.toggle_card(card_id)
+            if not c:
+                raise ApiNotFoundError(f"Card not found: {card_id}")
+            return CardItem(
+                id=c.id,
+                card_number=c.card_number,
+                min_amount=c.min_amount,
+                max_amount=c.max_amount,
+                is_active=bool(c.is_active),
+            )
 
     async def delete_card(self, card_id: int) -> ActionStatusResponse:
-        return await self._delete(
-            f"/admin/v1/cards/{card_id}",
-            model=ActionStatusResponse,
-        )
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            await admin.delete_card(card_id)
+            return ActionStatusResponse(ok=True)

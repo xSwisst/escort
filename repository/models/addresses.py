@@ -19,3 +19,19 @@ class Address(Base):
 
     client: Mapped["Client"] = relationship("Client", back_populates="addresses")
     orders: Mapped[list["Order"]] = relationship("Order", back_populates="address")
+
+    @property
+    def title(self) -> str:
+        return self.label
+
+    @title.setter
+    def title(self, value: str) -> None:
+        self.label = value
+
+    @property
+    def address(self) -> str:
+        return self.full_address
+
+    @address.setter
+    def address(self, value: str) -> None:
+        self.full_address = value

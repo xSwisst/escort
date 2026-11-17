@@ -30,6 +30,9 @@ class AdminClientListItem(BaseModel):
     registered_at: datetime
 
 
+AdminClientItem = AdminClientListItem
+
+
 class AdminClientListResponse(BaseModel):
     items: list[AdminClientListItem] = Field(default_factory=list)
     total: int

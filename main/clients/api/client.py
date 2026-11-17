@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-from core.settings import settings
-from shared.http import ServiceClient
-
 from .addresses import AddressesApi
 from .cards import CardsApi
 from .clients import ClientApi
@@ -15,23 +12,17 @@ from .profile import ProfileApi
 
 class MainApiClient:
     def __init__(self) -> None:
-        self._http = ServiceClient(
-            settings.API_BASE_URL,
-            settings.API_SECRET_KEY,
-            service_name="main",
-            target_audience=settings.API_AUDIENCE,
-        )
-        self.clients = ClientApi(self._http)
-        self.forms = FormsApi(self._http)
-        self.info = InfoApi(self._http)
-        self.profile = ProfileApi(self._http)
-        self.addresses = AddressesApi(self._http)
-        self.invoices = InvoicesApi(self._http)
-        self.cards = CardsApi(self._http)
-        self.orders = OrdersApi(self._http)
+        self.clients = ClientApi()
+        self.forms = FormsApi()
+        self.info = InfoApi()
+        self.profile = ProfileApi()
+        self.addresses = AddressesApi()
+        self.invoices = InvoicesApi()
+        self.cards = CardsApi()
+        self.orders = OrdersApi()
 
     async def close(self) -> None:
-        await self._http.close()
+        pass
 
 
 api_client = MainApiClient()

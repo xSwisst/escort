@@ -55,5 +55,22 @@ class PaymentService:
     async def list_transactions(self, user_id: int, page: int = 1, page_size: int = 10):
         return await self.transactions.list_by_user(user_id, page=page, page_size=page_size)
 
+    async def get_transactions_paginated(
+        self,
+        user_id: int,
+        query: str | None = None,
+        page: int = 1,
+        per_page: int = 10,
+    ):
+        return await self.transactions.get_by_user_paginated(
+            user_id=user_id,
+            query=query,
+            page=page,
+            per_page=per_page,
+        )
+
     async def get_transaction(self, transaction_id: int):
-        return await self.transactions.get(transaction_id)
+        return await self.transactions.get_by_id(transaction_id)
+
+    async def get_transaction_by_id(self, transaction_id: int):
+        return await self.transactions.get_by_id(transaction_id)

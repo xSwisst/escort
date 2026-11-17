@@ -23,6 +23,28 @@ class OrderService:
     async def get_user_orders(self, user_id: int, status: str | None = None):
         return await self.orders.get_by_user(user_id, status=status)
 
+    async def get_orders_paginated(
+        self,
+        user_id: int,
+        query: str | None = None,
+        page: int = 1,
+        per_page: int = 10,
+        status: str | None = None,
+    ):
+        return await self.orders.get_by_user_paginated(
+            user_id=user_id,
+            query=query,
+            page=page,
+            per_page=per_page,
+            status=status,
+        )
+
+    async def get_order_by_number(self, order_number: str | int):
+        return await self.orders.get_by_order_number(order_number)
+
+    async def get_order_by_id(self, order_id: int):
+        return await self.orders.get_by_id(order_id)
+
     async def create_order(
         self,
         *,

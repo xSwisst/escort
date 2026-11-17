@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from .base import ApiSection
-from .schemas import ActionStatusResponse, ClientCities, StartBootstrapResponse
+from services.clients.service import ClientService
+from shared.bot.session import resolve_session
+from .schemas import ActionStatusResponse, AgreementInfo, ClientCities, ClientIdentity, StartBootstrapResponse
 
 
-class ClientApi(ApiSection):
+class ClientApi:
     async def bootstrap(
         self,
         *,
@@ -13,39 +14,51 @@ class ClientApi(ApiSection):
         last_name: str | None = None,
         username: str | None = None,
     ) -> StartBootstrapResponse:
-        return await self._post(
-            "/client/v1/clients/bootstrap",
-            model=StartBootstrapResponse,
-            json={
-                "user": {
-                    "user_id": user_id,
-                    "first_name": first_name,
-                    "last_name": last_name,
-                    "username": username,
-                }
-            },
-        )
+        async with resolve_session() as session:
+            cs = ClientService(session)
+            res = await cs.bootstrap(user_id, first_name=first_name, last_name=last_name, username=username)
+            ag_info = None
+            if res.agreement:
+                ag_info = AgreementInfo(
+                    agreement_id=res.agreement.agreement_id,
+                    title=res.agreement.title,
+                    document_url=res.agreement.document_url,
+                )
+            return StartBootstrapResponse(
+                client=ClientIdentity(
+                    user_id=res.client.user_id,
+                    has_accepted_agreement=res.client.has_accepted_agreement,
+                ),
+                agreement_required=res.agreement_required,
+                agreement=ag_info,
+            )
 
     async def accept_agreement(self, user_id: int) -> None:
-        await self._post(
-            "/client/v1/clients/accept-agreement",
-            model=ActionStatusResponse,
-            json={"user_id": user_id},
-        )
+        async with resolve_session() as session:
+            cs = ClientService(session)
+            await cs.accept_agreement(user_id)
 
     async def get_cities(self, user_id: int) -> ClientCities:
-        return await self._get(f"/client/v1/clients/{user_id}/cities", model=ClientCities)
+        async with resolve_session() as session:
+            cs = ClientService(session)
+            client = await cs.get_client(user_id)
+            active_slot = int(getattr(client, "active_city_slot", 1) or 1)
+            active_city = client.secondary_city if active_slot == 2 and client.secondary_city else (client.primary_city if client else None)
+            return ClientCities(
+                primary_city=client.primary_city if client else None,
+                secondary_city=client.secondary_city if client else None,
+                active_city_slot=active_slot,
+                active_city=active_city,
+            )
 
     async def set_city(self, user_id: int, *, city: str, slot: int) -> ClientCities:
-        return await self._post(
-            f"/client/v1/clients/{user_id}/cities",
-            model=ClientCities,
-            json={"city": city, "slot": slot},
-        )
+        async with resolve_session() as session:
+            cs = ClientService(session)
+            await cs.set_city(user_id, city, slot)
+            return await self.get_cities(user_id)
 
     async def switch_city(self, user_id: int, *, active_city_slot: int) -> ClientCities:
-        return await self._post(
-            f"/client/v1/clients/{user_id}/cities/switch",
-            model=ClientCities,
-            json={"active_city_slot": active_city_slot},
-        )
+        async with resolve_session() as session:
+            cs = ClientService(session)
+            await cs.switch_city(user_id, active_city_slot)
+            return await self.get_cities(user_id)

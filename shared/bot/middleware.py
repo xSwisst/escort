@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from contextvars import ContextVar
 from typing import Any, Awaitable, Callable, Dict
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
@@ -16,15 +17,23 @@ from services import (
     SupportService,
 )
 
+current_session_var: ContextVar[AsyncSession | None] = ContextVar("current_session_var", default=None)
+
+
+def get_current_session() -> AsyncSession | None:
+    """Return the current AsyncSession from context, if available."""
+    return current_session_var.get()
+
 
 class DatabaseMiddleware(BaseMiddleware):
     """
     Middleware for aiogram:
     1. Creates a new AsyncSession on each event
     2. Instantiates domain services and injects them into the event handler kwargs
-    3. Commits the session on success
-    4. Rolls back on error
-    5. Closes the session safely
+    3. Sets current session contextvar for any in-process service consumers
+    4. Commits the session on success
+    5. Rolls back on error
+    6. Closes the session safely
     """
 
     def __init__(self, session_maker: async_sessionmaker[AsyncSession]) -> None:
@@ -38,6 +47,7 @@ class DatabaseMiddleware(BaseMiddleware):
         data: Dict[str, Any],
     ) -> Any:
         async with self.session_maker() as session:
+            token = current_session_var.set(session)
             # Inject session
             data["session"] = session
 
@@ -64,3 +74,5 @@ class DatabaseMiddleware(BaseMiddleware):
             except Exception:
                 await session.rollback()
                 raise
+            finally:
+                current_session_var.reset(token)
