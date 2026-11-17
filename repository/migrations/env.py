@@ -1,12 +1,20 @@
 import asyncio
+import os
 from logging.config import fileConfig
 
 from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-from core.settings import settings
-from models import Base
+from repository.models import Base
+
+config = context.config
+
+if config.config_file_name is not None:
+    fileConfig(config.config_file_name)
+
+target_metadata = Base.metadata
+
 
 def _normalize_async_url(url: str) -> str:
     if not url.startswith("postgresql+asyncpg://"):
@@ -14,14 +22,13 @@ def _normalize_async_url(url: str) -> str:
     return url
 
 
-db_url = _normalize_async_url(settings.DB_URL)
-config = context.config
+def get_url() -> str:
+    raw_url = os.getenv("DATABASE_URL") or os.getenv("DB_URL") or "postgresql+asyncpg://admin:P6jpA-TkrrKW@postgres:5432/escort_db"
+    return _normalize_async_url(raw_url)
+
+
+db_url = get_url()
 config.set_main_option("sqlalchemy.url", db_url)
-
-if config.config_file_name is not None:
-    fileConfig(config.config_file_name)
-
-target_metadata = Base.metadata
 
 
 def run_migrations_offline() -> None:
