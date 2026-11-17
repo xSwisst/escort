@@ -2,7 +2,7 @@ from datetime import datetime
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from domain.exceptions import (
+from services.exceptions import (
     AgreementNotAcceptedError,
     ClientBannedError,
     FormUnavailableError,

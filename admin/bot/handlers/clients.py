@@ -15,8 +15,7 @@ from bot.assets.texts import t
 from bot.keyboards import kb_agreements, kb_back, kb_client_card, kb_clients_list, kb_clients_menu
 from bot.states import ClientSearchState, VASendMessage
 from clients.api import ApiNotFoundError, api_client
-from core.settings import settings
-from services import build_client_card_text, build_client_list_text
+from bot.services import build_client_card_text, build_client_list_text
 from shared.utils.date import format_datetime_ru
 
 logger = logging.getLogger(__name__)

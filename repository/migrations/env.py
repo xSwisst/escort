@@ -1,6 +1,15 @@
 import asyncio
 import os
+import sys
 from logging.config import fileConfig
+from pathlib import Path
+
+# Ensure root and shared are on sys.path
+_root = str(Path(__file__).resolve().parent.parent.parent)
+_shared = str(Path(_root) / "shared")
+for _p in (_root, _shared):
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
 
 from alembic import context
 from sqlalchemy import pool

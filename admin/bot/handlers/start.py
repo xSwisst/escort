@@ -7,7 +7,7 @@ from aiogram.types import Message
 from bot.assets.texts import t
 from bot.keyboards import kb_client_card, kb_log_detail, kb_model_card
 from clients.api import api_client
-from services import (
+from bot.services import (
     build_client_card_text,
     build_log_detail_text,
     build_model_card_text,

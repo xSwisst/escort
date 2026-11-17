@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from domain.exceptions import FormNotFoundError, FormUnavailableError
+from services.exceptions import FormNotFoundError, FormUnavailableError
 from repository.repositories.favorites import FavoriteRepository
 from repository.repositories.form_additionals import FormAdditionalRepository
 from repository.repositories.form_services import FormServiceRepository

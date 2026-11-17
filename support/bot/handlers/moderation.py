@@ -3,8 +3,7 @@ from aiogram.filters import Command
 from aiogram.types import Message
 
 from bot.assets.texts import t
-from clients.api import ApiNotFoundError, api_client
-from services import emit_support_info
+from bot.services import emit_support_info
 
 router = Router(name="support_moderation")
 

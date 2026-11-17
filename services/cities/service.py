@@ -41,3 +41,11 @@ async def validate_city(city_name: str) -> str | None:
         return None
 
     return results[0].get("name") or None
+
+
+class CityService:
+    def __init__(self, session=None) -> None:
+        self._session = session
+
+    async def validate_city(self, city_name: str) -> str | None:
+        return await validate_city(city_name)

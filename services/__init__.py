@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from .addresses.service import AddressService
 from .admin_service import AdminService
-from .cities.service import CityService
+from .cities.service import CityService, validate_city
 from .clients.service import ClientService
 from .forms.service import FormService
 from .orders.service import OrderService
@@ -18,4 +18,5 @@ __all__ = [
     "OrderService",
     "PaymentService",
     "SupportService",
+    "validate_city",
 ]

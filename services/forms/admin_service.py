@@ -5,7 +5,7 @@ import string
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from domain.exceptions import FormNotFoundError
+from services.exceptions import FormNotFoundError
 from repository.repositories.form_additionals import FormAdditionalRepository
 from repository.repositories.form_photos import FormPhotoRepository
 from repository.repositories.form_services import FormServiceRepository
@@ -288,3 +288,8 @@ class AdminFormService:
         if result:
             await self._session.commit()
         return result
+
+
+AdminFormsService = AdminFormService
+
+__all__ = ["AdminFormService", "AdminFormsService"]

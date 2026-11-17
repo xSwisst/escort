@@ -10,8 +10,10 @@ RUN apt-get update && apt-get install -y \
     fonts-dejavu-core \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy shared library
+# Copy shared libraries and modules
 COPY shared /app/shared
+COPY repository /app/repository
+COPY services /app/services
 
 # Copy requirements
 COPY api/requirements.txt .

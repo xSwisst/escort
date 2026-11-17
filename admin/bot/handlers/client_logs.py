@@ -14,8 +14,7 @@ from aiogram.types import (
 
 from bot.assets.texts import t
 from bot.keyboards import kb_log_detail
-from clients.api import api_client
-from services import build_log_detail_text
+from bot.services import build_log_detail_text
 from shared.utils.date import format_datetime_ru
 
 logger = logging.getLogger(__name__)

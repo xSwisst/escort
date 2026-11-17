@@ -43,8 +43,7 @@ from bot.states import (
     VANewService,
 )
 from clients.api import ApiNotFoundError, api_client
-from core.settings import settings
-from services import build_model_card_text
+from bot.services import build_model_card_text
 
 router = Router(name="admin_forms")
 logger = logging.getLogger(__name__)

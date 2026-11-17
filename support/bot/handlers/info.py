@@ -6,8 +6,7 @@ from aiogram.types import CallbackQuery, Message
 
 from bot.assets.texts import t
 from bot.keyboards import kb_agreements, kb_user_info
-from clients.api import ApiNotFoundError, api_client
-from services import build_client_info_text
+from bot.services import build_client_info_text
 
 router = Router(name="support_info")
 

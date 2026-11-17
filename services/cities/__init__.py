@@ -1,3 +1,3 @@
-from .service import validate_city
+from .service import CityService, validate_city
 
-__all__ = ["validate_city"]
+__all__ = ["CityService", "validate_city"]

@@ -109,3 +109,8 @@ class ClientActivityLogRepository(BaseRepository[ClientActivityLog]):
         items = list(items_res.scalars().all())
 
         return items, total
+
+
+ClientLogRepository = ClientActivityLogRepository
+
+__all__ = ["ClientActivityLogRepository", "ClientLogRepository"]

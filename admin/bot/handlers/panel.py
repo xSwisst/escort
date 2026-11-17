@@ -5,8 +5,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
 from bot.keyboards import kb_panel
-from clients.api import api_client
-from services import build_panel_text
+from bot.services import build_panel_text
 
 router = Router(name="admin_panel")
 

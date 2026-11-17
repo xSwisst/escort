@@ -503,7 +503,7 @@ async def send_malling(call: CallbackQuery, state: FSMContext) -> None:
     report = t("va_malling_done", sent=sent, total=total, failed=failed)
 
     try:
-        from services.logs import emit_admin_info
+        from bot.services.logs import emit_admin_info
         await emit_admin_info(
             event_type="mailing",
             payload={
