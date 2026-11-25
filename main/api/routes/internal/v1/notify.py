@@ -90,3 +90,22 @@ async def notify_invoice_status(payload: InvoiceStatusNotifyRequest, request: Re
             logger.warning("Failed to send payment rejected notification to user %s: %s", payload.user_id, exc)
 
     return {"ok": True}
+
+
+class DirectMessageRequest(BaseModel):
+    user_id: int
+    text: str
+
+
+@router.post("/direct-message")
+async def send_direct_message(payload: DirectMessageRequest, request: Request):
+    bot: Bot = getattr(request.app.state, "bot", None)
+    if not bot:
+        logger.error("Bot instance not found on app.state")
+        return {"ok": False, "error": "bot_not_found"}
+    try:
+        await bot.send_message(payload.user_id, payload.text, parse_mode="HTML")
+        return {"ok": True}
+    except Exception as exc:
+        logger.warning("Failed to send direct message to user %s: %s", payload.user_id, exc)
+        return {"ok": False, "error": str(exc)}

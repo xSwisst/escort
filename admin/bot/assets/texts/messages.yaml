@@ -2197,37 +2197,27 @@ va_malling_button_delete_confirm: '<blockquote>❗️ <b>Подтвердить 
 
   '
 va_client_card: '<blockquote>👤 <b>Клиент</b></blockquote>
-
   <b>• Имя:</b> <code>{client_name}</code>
-
   <b>• Username:</b> {username}
-
   <b>• ID:</b> <code>{client_id}</code>
 
-
   <blockquote>📊 <b>Статистика</b></blockquote>
-
+  <b>• Баланс:</b> <code>{balance} ₽</code>
   <b>• Заказы:</b> <code>{orders}</code>
-
   <b>• Рейтинг:</b> <code>{rating}</code>
-
   <b>• Адреса:</b> <code>{addresses}</code>
-
   <b>• Избранные:</b> <code>{favorites}</code>
 
-
   <blockquote>⚙️ <b>Данные</b></blockquote>
-
   <b>• Город:</b> <code>{city}</code>
-
   <b>• Промокод:</b> <code>{promo}</code>
-
   <b>• Соглашение:</b> {agreement}
-
   <b>• Бан:</b> {ban}
 
-
-  <blockquote>🕗 Зарегистрирован: <b>{registered}</b></blockquote>'
+  <blockquote>🕒 Последнее действие: <b>{last_active}</b>
+  🕗 Зарегистрирован: <b>{registered}</b></blockquote>'
+client_ban_status_locked: 🔒 Заблокирован
+client_ban_status_unlocked: 🔓 Разблокирован
 va_client_card_worker: '
 
 

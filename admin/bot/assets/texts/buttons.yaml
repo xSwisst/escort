@@ -802,3 +802,67 @@ city_second:
   text: Второй город
   icon_custom_emoji_id: null
   color: null
+pin_client:
+  text: 📌 Закрепить
+  icon_custom_emoji_id: null
+  color: null
+unpin_client:
+  text: ⛓️‍💥 Открепить
+  icon_custom_emoji_id: null
+  color: null
+client_actions:
+  text: История действий
+  icon_custom_emoji_id: null
+  color: null
+client_orders:
+  text: Заказы
+  icon_custom_emoji_id: null
+  color: null
+client_transactions:
+  text: Операции
+  icon_custom_emoji_id: null
+  color: null
+client_payments:
+  text: Заявки на пополнение
+  icon_custom_emoji_id: null
+  color: null
+manage_balance:
+  text: Управление балансом
+  icon_custom_emoji_id: null
+  color: null
+balance_set:
+  text: Изменить баланс
+  icon_custom_emoji_id: null
+  color: null
+balance_add:
+  text: Прибавить к балансу
+  icon_custom_emoji_id: null
+  color: null
+balance_sub:
+  text: Убавить с баланса
+  icon_custom_emoji_id: null
+  color: null
+balance_notify_on:
+  text: Включить оповещение
+  icon_custom_emoji_id: null
+  color: null
+balance_notify_off:
+  text: Выключить оповещение
+  icon_custom_emoji_id: null
+  color: null
+client_ban_toggle:
+  text: 🔒 Заблокирован
+  icon_custom_emoji_id: null
+  color: null
+back_to_client:
+  text: ⬅️ Назад к клиенту
+  icon_custom_emoji_id: null
+  color: null
+back_to_balance:
+  text: ⬅️ Назад
+  icon_custom_emoji_id: null
+  color: null
+back_to_menu:
+  text: ⬅️ В меню
+  icon_custom_emoji_id: null
+  color: null

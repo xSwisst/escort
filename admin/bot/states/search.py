@@ -7,3 +7,7 @@ class ClientSearchState(StatesGroup):
 
 class VASendMessage(StatesGroup):
     text = State()
+
+
+class VAManageBalance(StatesGroup):
+    waiting_amount = State()

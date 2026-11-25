@@ -7,8 +7,8 @@ from bot.assets.texts import btn
 from shared.bot.keyboards.pagination import build_pagination_row
 
 
-def back_btn(cb: str = "admin:panel") -> InlineKeyboardButton:
-    return InlineKeyboardButton(**btn("back", callback_data=cb))
+def back_btn(cb: str = "admin:panel", *, text_key: str = "back") -> InlineKeyboardButton:
+    return InlineKeyboardButton(**btn(text_key, callback_data=cb))
 
 
 def back_ikb(cb: str = "admin:panel") -> InlineKeyboardMarkup:

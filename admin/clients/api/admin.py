@@ -109,9 +109,12 @@ class AdminApi:
                         primary_city=c.primary_city,
                         secondary_city=c.secondary_city,
                         active_city_slot=c.active_city_slot,
+                        active_city=(c.secondary_city if int(c.active_city_slot or 1) == 2 and c.secondary_city else (c.primary_city or c.secondary_city)),
                         balance=c.balance,
                         is_banned=bool(c.is_banned),
+                        is_pinned=bool(getattr(c, "is_pinned", False)),
                         registered_at=c.registered_at,
+                        last_active_at=getattr(c, "last_active_at", None),
                     )
                     for c in items
                 ],
@@ -120,61 +123,75 @@ class AdminApi:
                 per_page=per_page,
             )
 
+    @staticmethod
+    async def _build_client_detail(session, c) -> AdminClientDetailResponse:
+        from sqlalchemy import func, select
+        from repository.models.addresses import Address
+        from repository.models.forms import FormFavorite
+        from repository.models.orders import Order
+
+        orders_count = int((await session.execute(select(func.count()).select_from(Order).where(Order.user_id == c.user_id))).scalar_one() or 0)
+        addresses_count = int((await session.execute(select(func.count()).select_from(Address).where(Address.user_id == c.user_id))).scalar_one() or 0)
+        favorites_count = int((await session.execute(select(func.count()).select_from(FormFavorite).where(FormFavorite.user_id == c.user_id))).scalar_one() or 0)
+        active_city = c.secondary_city if int(c.active_city_slot or 1) == 2 and c.secondary_city else (c.primary_city or c.secondary_city)
+        return AdminClientDetailResponse(
+            id=c.id,
+            user_id=c.user_id,
+            first_name=c.first_name,
+            last_name=c.last_name,
+            username=c.username,
+            avatar_url=getattr(c, "avatar_url", None),
+            primary_city=c.primary_city,
+            secondary_city=c.secondary_city,
+            active_city_slot=c.active_city_slot,
+            active_city=active_city,
+            balance=int(c.balance or 0),
+            rating=float(c.rating or 0.0),
+            promo=c.promo_code,
+            has_accepted_agreement=bool(c.has_accepted_agreement),
+            agreement_id=c.agreement_id,
+            title=c.agreement.title if c.agreement else None,
+            document_url=c.agreement.document_url if c.agreement else None,
+            is_banned=bool(c.is_banned),
+            is_pinned=bool(getattr(c, "is_pinned", False)),
+            orders_count=orders_count,
+            addresses_count=addresses_count,
+            favorites_count=favorites_count,
+            registered_at=c.registered_at,
+            last_active_at=getattr(c, "last_active_at", None),
+        )
+
     async def get_client(self, user_id: int, *, admin_id: int | None = None) -> AdminClientDetailResponse:
         async with resolve_session() as session:
             admin = AdminService(session)
-            c = await admin.clients.get(user_id, include_agreement=True, include_orders=True, include_addresses=True)
+            c = await admin.clients.get(user_id, include_agreement=True)
             if not c or (admin_id is not None and c.admin_id != admin_id):
                 raise ApiNotFoundError(f"Client not found: {user_id}")
-            orders_count = await admin.clients.orders.count_by_user(user_id) if hasattr(admin.clients, "orders") else len(c.orders)
-            return AdminClientDetailResponse(
-                id=c.id,
-                user_id=c.user_id,
-                first_name=c.first_name,
-                last_name=c.last_name,
-                username=c.username,
-                primary_city=c.primary_city,
-                secondary_city=c.secondary_city,
-                active_city_slot=c.active_city_slot,
-                balance=c.balance,
-                rating=float(c.rating or 0.0),
-                is_banned=bool(c.is_banned),
-                promo_code=c.promo_code,
-                agreement_title=c.agreement.title if c.agreement else None,
-                orders_count=orders_count,
-                registered_at=c.registered_at,
-            )
+            return await self._build_client_detail(session, c)
 
     async def get_client_by_db_id(self, db_id: int, *, admin_id: int | None = None) -> AdminClientDetailResponse:
         async with resolve_session() as session:
             admin = AdminService(session)
-            c = await admin.clients.get_by_db_id(db_id, include_agreement=True, include_orders=True, include_addresses=True)
+            c = await admin.clients.get_by_db_id(db_id, include_agreement=True)
             if not c or (admin_id is not None and c.admin_id != admin_id):
                 raise ApiNotFoundError(f"Client not found by db_id: {db_id}")
-            orders_count = len(c.orders) if c.orders else 0
-            return AdminClientDetailResponse(
-                id=c.id,
-                user_id=c.user_id,
-                first_name=c.first_name,
-                last_name=c.last_name,
-                username=c.username,
-                primary_city=c.primary_city,
-                secondary_city=c.secondary_city,
-                active_city_slot=c.active_city_slot,
-                balance=c.balance,
-                rating=float(c.rating or 0.0),
-                is_banned=bool(c.is_banned),
-                promo_code=c.promo_code,
-                agreement_title=c.agreement.title if c.agreement else None,
-                orders_count=orders_count,
-                registered_at=c.registered_at,
-            )
+            return await self._build_client_detail(session, c)
 
     async def set_ban(self, *, user_id: int, is_banned: bool) -> ActionStatusResponse:
         async with resolve_session() as session:
             admin = AdminService(session)
             await admin.clients.update_by_user_id(user_id, is_banned=is_banned)
             return ActionStatusResponse(ok=True)
+
+    async def toggle_pin(self, *, user_id: int) -> bool:
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            c = await admin.clients.get(user_id)
+            if not c:
+                raise ApiNotFoundError(f"Client not found: {user_id}")
+            new_pinned = not bool(getattr(c, "is_pinned", False))
+            await admin.clients.update_by_user_id(user_id, is_pinned=new_pinned)
+            return new_pinned
 
     async def set_agreement(self, *, user_id: int, agreement_id: str) -> ActionStatusResponse:
         async with resolve_session() as session:
@@ -183,7 +200,136 @@ class AdminApi:
             return ActionStatusResponse(ok=True)
 
     async def send_message_to_client(self, *, user_id: int, text: str) -> ActionStatusResponse:
-        return ActionStatusResponse(ok=True)
+        url = f"{settings.MAIN_BOT_URL.rstrip('/')}/internal/v1/notify/direct-message"
+        try:
+            async with httpx.AsyncClient(timeout=10.0) as client:
+                resp = await client.post(url, json={"user_id": user_id, "text": text})
+                if resp.status_code == 200 and resp.json().get("ok"):
+                    return ActionStatusResponse(ok=True)
+        except Exception:
+            pass
+        return ActionStatusResponse(ok=False)
+
+    async def adjust_balance(
+        self,
+        *,
+        user_id: int,
+        action: str,
+        amount: int,
+        notify: bool = False,
+    ) -> int:
+        from repository.models.payments import Transaction, TransactionType
+
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            c = await admin.clients.get(user_id)
+            if not c:
+                raise ApiNotFoundError(f"Client not found: {user_id}")
+            old_balance = int(c.balance or 0)
+            if action == "set":
+                new_balance = max(0, int(amount))
+            elif action == "add":
+                new_balance = max(0, old_balance + int(amount))
+            elif action == "sub":
+                new_balance = max(0, old_balance - int(amount))
+            else:
+                raise ValueError(f"Unknown balance action: {action}")
+
+            delta = new_balance - old_balance
+            await admin.clients.update_by_user_id(user_id, balance=new_balance)
+            session.add(
+                Transaction(
+                    user_id=user_id,
+                    type=TransactionType.ADMIN_ADJUST,
+                    amount=delta,
+                    balance_after=new_balance,
+                    description="Корректировка баланса администратором",
+                )
+            )
+            await session.flush()
+
+        if notify:
+            sign = "+" if delta >= 0 else ""
+            await self.send_message_to_client(
+                user_id=user_id,
+                text=(
+                    f"💳 <b>Ваш баланс обновлён</b>\n\n"
+                    f"Изменение: <b>{sign}{delta} RUB</b>\n"
+                    f"Текущий баланс: <b>{new_balance} RUB</b>"
+                ),
+            )
+        return new_balance
+
+    async def get_client_orders(self, user_id: int, *, search: str = "", offset: int = 0, limit: int = 20) -> list[dict]:
+        from sqlalchemy import select
+        from repository.models.orders import Order
+
+        async with resolve_session() as session:
+            stmt = select(Order).where(Order.user_id == user_id).order_by(Order.created_at.desc())
+            rows = list((await session.execute(stmt)).scalars().all())
+            q = search.strip().lower()
+            items = []
+            for o in rows:
+                status_val = o.status.value if hasattr(o.status, "value") else str(o.status or "")
+                model_info = o.form_snapshot or o.form_code or "Анкета"
+                city = o.city_name or "—"
+                if q and q not in str(o.id) and q not in model_info.lower() and q not in city.lower() and q not in status_val.lower():
+                    continue
+                items.append({
+                    "id": o.id,
+                    "status": status_val,
+                    "model_info": model_info,
+                    "city": city,
+                    "tariff": o.tariff_name or "—",
+                    "created_at_dt": o.created_at,
+                })
+            return items[offset : offset + limit]
+
+    async def get_client_transactions(self, user_id: int, *, search: str = "", offset: int = 0, limit: int = 20) -> list[dict]:
+        from sqlalchemy import select
+        from repository.models.payments import Transaction
+
+        async with resolve_session() as session:
+            stmt = select(Transaction).where(Transaction.user_id == user_id).order_by(Transaction.created_at.desc())
+            rows = list((await session.execute(stmt)).scalars().all())
+            q = search.strip().lower()
+            items = []
+            for tx in rows:
+                tx_type = tx.type.value if hasattr(tx.type, "value") else str(tx.type or "")
+                if q and q not in str(tx.id) and q not in (tx.description or "").lower() and q not in tx_type.lower():
+                    continue
+                items.append({
+                    "id": tx.id,
+                    "type": tx_type,
+                    "amount": tx.amount,
+                    "balance_after": tx.balance_after,
+                    "description": tx.description,
+                    "created_at_dt": tx.created_at,
+                })
+            return items[offset : offset + limit]
+
+    async def get_client_payments(self, user_id: int, *, search: str = "", offset: int = 0, limit: int = 20) -> list[dict]:
+        from sqlalchemy import select
+        from repository.models.payments import PaymentInvoice
+
+        async with resolve_session() as session:
+            stmt = select(PaymentInvoice).where(PaymentInvoice.user_id == user_id).order_by(PaymentInvoice.created_at.desc())
+            rows = list((await session.execute(stmt)).scalars().all())
+            q = search.strip().lower()
+            items = []
+            for inv in rows:
+                st = inv.status.value if hasattr(inv.status, "value") else str(inv.status or "")
+                if q and q not in str(inv.id) and q not in (inv.invoice_number or "").lower() and q not in st.lower():
+                    continue
+                items.append({
+                    "id": inv.id,
+                    "invoice_number": inv.invoice_number,
+                    "status": st,
+                    "amount": inv.amount,
+                    "payment_method": inv.payment_method,
+                    "created_at_dt": inv.created_at,
+                })
+            return items[offset : offset + limit]
 
     async def list_client_logs(
         self,

@@ -10,7 +10,7 @@ from bot.keyboards.info import (
     kb_faq,
     kb_info,
 )
-from clients.api import api_client
+from clients.api import ApiNotFoundError, api_client
 from shared.bot.utils.media_banner import answer_banner, edit_banner
 
 router = Router(name="info")
@@ -22,8 +22,11 @@ async def _edit_info(call: CallbackQuery, text: str, reply_markup):
 
 
 async def _get_document_url(user_id: int) -> str | None:
-    agreement = await api_client.info.get_agreement(user_id)
-    return agreement.document_url
+    try:
+        agreement = await api_client.info.get_agreement(user_id)
+        return agreement.document_url
+    except ApiNotFoundError:
+        return None
 
 
 async def render_info(

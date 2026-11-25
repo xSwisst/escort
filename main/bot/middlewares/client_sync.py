@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import logging
 import re
 from datetime import datetime, timedelta, timezone
@@ -10,8 +11,10 @@ from urllib.parse import urlparse
 import httpx
 from aiogram import BaseMiddleware, Bot
 from aiogram.types import TelegramObject, User
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from core.settings import settings
+from repository.repositories.clients import ClientRepository
 from shared.auth import create_service_token
 from shared.utils.time import now_msk
 
@@ -41,14 +44,25 @@ def _is_sync_due(synced_at: datetime | None, now: datetime) -> bool:
 class ClientSyncMiddleware(BaseMiddleware):
     """
     Periodically (once per day) refreshes client profile fields (first_name,
-    last_name, username) and compressed Telegram avatar in the photos service.
+    last_name, username) and compressed Telegram avatar in the photos service
+    in the background without blocking bot responses.
     """
 
-    def __init__(self, *, photos_url: str | None = None, sync_interval: timedelta = _SYNC_INTERVAL) -> None:
+    def __init__(
+        self,
+        session_maker: async_sessionmaker[AsyncSession] | None = None,
+        *,
+        photos_url: str | None = None,
+        sync_interval: timedelta = _SYNC_INTERVAL,
+    ) -> None:
         super().__init__()
+        self._session_maker = session_maker
         self._photos_url = (photos_url or settings.PHOTOS_API_URL or "http://photos:8005").rstrip("/")
         self._sync_interval = sync_interval
         self._http: httpx.AsyncClient | None = None
+        self._in_flight: set[int] = set()
+        self._synced_until: dict[int, datetime] = {}
+        self._tasks: set[asyncio.Task[None]] = set()
 
     def _get_http(self) -> httpx.AsyncClient:
         if self._http is None or self._http.is_closed:
@@ -56,6 +70,10 @@ class ClientSyncMiddleware(BaseMiddleware):
         return self._http
 
     async def close(self) -> None:
+        for task in list(self._tasks):
+            task.cancel()
+        if self._tasks:
+            await asyncio.gather(*self._tasks, return_exceptions=True)
         if self._http is not None and not self._http.is_closed:
             await self._http.aclose()
             self._http = None
@@ -75,6 +93,7 @@ class ClientSyncMiddleware(BaseMiddleware):
     async def _upload_avatar(self, content: bytes) -> str | None:
         headers = self._service_headers()
         if not headers:
+            logger.warning("ClientSyncMiddleware: PHOTOS_SECRET_KEY / API_SECRET_KEY is empty, cannot upload avatar")
             return None
         resp = await self._get_http().post(
             f"{self._photos_url}/internal/v1/files",
@@ -83,10 +102,17 @@ class ClientSyncMiddleware(BaseMiddleware):
             files={"file": ("avatar.jpg", content, "image/jpeg")},
         )
         if resp.status_code != 200:
-            logger.warning("photos upload avatar returned status=%s", resp.status_code)
+            logger.warning(
+                "ClientSyncMiddleware: photos upload failed status=%s body=%s",
+                resp.status_code,
+                resp.text[:200],
+            )
             return None
         payload = resp.json()
-        return payload.get("public_url") or payload.get("path")
+        url = payload.get("public_url") or payload.get("path")
+        if not url:
+            logger.warning("ClientSyncMiddleware: photos upload returned empty url payload=%s", payload)
+        return url
 
     async def _delete_avatar(self, old_url: str | None) -> None:
         fn = _extract_filename(old_url)
@@ -121,25 +147,69 @@ class ClientSyncMiddleware(BaseMiddleware):
         client.last_name = tg_user.last_name
         client.username = tg_user.username
 
+        avatar_synced = False
         if bot is not None:
             try:
                 raw_avatar = await self._fetch_tg_avatar(bot, tg_user.id)
                 if raw_avatar:
                     new_url = await self._upload_avatar(raw_avatar)
-                    if new_url and new_url != client.avatar_url:
+                    if new_url:
+                        avatar_synced = True
+                        if new_url != client.avatar_url:
+                            old_url = client.avatar_url
+                            client.avatar_url = new_url
+                            logger.info("ClientSyncMiddleware: updated avatar_url for user_id=%s url=%s", tg_user.id, new_url)
+                            if old_url:
+                                await self._delete_avatar(old_url)
+                else:
+                    avatar_synced = True
+                    if client.avatar_url is not None:
                         old_url = client.avatar_url
-                        client.avatar_url = new_url
-                        if old_url:
-                            await self._delete_avatar(old_url)
-                elif client.avatar_url is not None:
-                    old_url = client.avatar_url
-                    client.avatar_url = None
-                    await self._delete_avatar(old_url)
+                        client.avatar_url = None
+                        await self._delete_avatar(old_url)
             except Exception as exc:
-                logger.warning("Failed to sync avatar for user_id=%s: %s", tg_user.id, exc)
+                logger.warning("ClientSyncMiddleware: failed to sync avatar for user_id=%s: %s", tg_user.id, exc)
+        else:
+            logger.warning("ClientSyncMiddleware: bot instance missing for user_id=%s", tg_user.id)
 
-        client.profile_synced_at = now
+        if avatar_synced:
+            client.profile_synced_at = now
+            self._synced_until[tg_user.id] = now + self._sync_interval
         await session.flush()
+
+    async def _sync_in_background(self, tg_user: User, bot: Bot | None) -> None:
+        if self._session_maker is None:
+            return
+        try:
+            async with self._session_maker() as session:
+                repo = ClientRepository(session)
+                client = await repo.get(tg_user.id)
+                if client is None:
+                    return
+                now = now_msk()
+                if not _is_sync_due(getattr(client, "profile_synced_at", None), now):
+                    synced_at = client.profile_synced_at
+                    if synced_at.tzinfo is None:
+                        synced_at = synced_at.replace(tzinfo=timezone.utc)
+                    self._synced_until[tg_user.id] = synced_at + self._sync_interval
+                    return
+                await self._sync_client(client, tg_user, bot, session)
+                await session.commit()
+        except Exception as exc:
+            logger.warning("ClientSyncMiddleware: background sync error for user_id=%s: %s", tg_user.id, exc)
+        finally:
+            self._in_flight.discard(tg_user.id)
+
+    def _schedule_sync(self, tg_user: User, bot: Bot | None) -> None:
+        if tg_user.id in self._in_flight or self._session_maker is None:
+            return
+        cached_until = self._synced_until.get(tg_user.id)
+        if cached_until is not None and now_msk() < cached_until:
+            return
+        self._in_flight.add(tg_user.id)
+        task = asyncio.create_task(self._sync_in_background(tg_user, bot))
+        self._tasks.add(task)
+        task.add_done_callback(self._tasks.discard)
 
     async def __call__(
         self,
@@ -148,20 +218,10 @@ class ClientSyncMiddleware(BaseMiddleware):
         data: Dict[str, Any],
     ) -> Any:
         tg_user: User | None = getattr(event, "from_user", None)
-        client_service = data.get("client_service")
-        session = data.get("session")
         bot: Bot | None = data.get("bot")
 
-        if tg_user is None or tg_user.is_bot or client_service is None or session is None:
+        try:
             return await handler(event, data)
-
-        client = await client_service.get_client(tg_user.id)
-        if client is not None:
-            await self._sync_client(client, tg_user, bot, session)
-            return await handler(event, data)
-
-        result = await handler(event, data)
-        client = await client_service.get_client(tg_user.id)
-        if client is not None:
-            await self._sync_client(client, tg_user, bot, session)
-        return result
+        finally:
+            if tg_user is not None and not tg_user.is_bot and self._session_maker is not None:
+                self._schedule_sync(tg_user, bot)

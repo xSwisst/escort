@@ -13,10 +13,11 @@ from .forms import (
 from .cards import VANewCard
 from .malling import VAMalling
 from .promos import VANewPromo
-from .search import ClientSearchState, VASendMessage
+from .search import ClientSearchState, VAManageBalance, VASendMessage
 
 __all__ = [
     "ClientSearchState",
+    "VAManageBalance",
     "VASendMessage",
     "VANewModel",
     "VAEditParam",

@@ -1,5 +1,8 @@
+import html
 import logging
 import math
+from datetime import datetime
+from urllib.parse import parse_qs
 from aiogram import Bot, F, Router
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
@@ -13,10 +16,12 @@ from aiogram.types import (
 
 from bot.assets.texts import t
 from bot.keyboards import kb_agreements, kb_back, kb_client_card, kb_clients_list, kb_clients_menu
-from bot.states import ClientSearchState, VASendMessage
+from bot.keyboards.clients import balance_input_cancel_ikb, confirm_balance_ikb, manage_balance_ikb
+from bot.states import ClientSearchState, VAManageBalance, VASendMessage
 from clients.api import ApiNotFoundError, api_client
 from bot.services import build_client_card_text, build_client_list_text
 from shared.utils.date import format_datetime_ru
+from shared.utils.time import MSK, now_msk
 
 logger = logging.getLogger(__name__)
 
@@ -73,9 +78,140 @@ async def _show_client(call: CallbackQuery, *, user_id: int) -> None:
         reply_markup=kb_client_card(
             user_id=user_id,
             is_banned=client.is_banned,
+            is_pinned=getattr(client, "is_pinned", False),
             client_id=getattr(client, "id", None),
         ),
     )
+
+
+def _plural(n: int, one: str, few: str, many: str) -> str:
+    n_abs = abs(n)
+    if 11 <= n_abs % 100 <= 19:
+        return many
+    r = n_abs % 10
+    if r == 1:
+        return one
+    if 2 <= r <= 4:
+        return few
+    return many
+
+
+def _format_time_ago(dt: datetime | None, *, prefix: str) -> str:
+    if dt is None:
+        return f"{prefix} (—)"
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=MSK)
+    else:
+        dt = dt.astimezone(MSK)
+    date_time = dt.strftime("%d.%m.%Y %H:%M")
+    diff_seconds = max(0, int((now_msk() - dt).total_seconds()))
+    if diff_seconds < 60:
+        return f"{prefix} несколько секунд назад ({date_time})"
+    minutes = diff_seconds // 60
+    if minutes < 60:
+        return f"{prefix} {minutes} {_plural(minutes, 'минуту', 'минуты', 'минут')} назад ({date_time})"
+    hours = diff_seconds // 3600
+    if hours < 24:
+        return f"{prefix} {hours} {_plural(hours, 'час', 'часа', 'часов')} назад ({date_time})"
+    days = diff_seconds // 86400
+    return f"{prefix} {days} {_plural(days, 'день', 'дня', 'дней')} назад ({date_time})"
+
+
+def _parse_inline_params(raw_text: str) -> tuple[str, int | None, str]:
+    cmd, _, qs = raw_text.partition("?")
+    params = parse_qs(qs, keep_blank_values=True)
+    cid_raw = (params.get("client_id") or [""])[0].strip()
+    client_id = int(cid_raw) if cid_raw.isdigit() else None
+    search = (params.get("search") or [""])[0].strip()
+    return cmd.strip().lower(), client_id, search
+
+
+async def _handle_client_sub_inline(query: InlineQuery, raw_text: str) -> bool:
+    cmd, client_id, search = _parse_inline_params(raw_text)
+    if cmd not in {
+        "get_client_orders",
+        "get_client_order",
+        "get_client_transaction",
+        "get_client_transactions",
+        "get_client_payments",
+        "get_client_payment",
+    }:
+        return False
+
+    if not client_id:
+        await query.answer([], cache_time=1, is_personal=True, switch_pm_text="Клиент не указан", switch_pm_parameter="start")
+        return True
+
+    offset = int(query.offset) if query.offset and query.offset.isdigit() else 0
+    limit = 20
+    results: list[InlineQueryResultArticle] = []
+
+    if cmd in {"get_client_orders", "get_client_order"}:
+        items = await api_client.admin.get_client_orders(client_id, search=search, offset=offset, limit=limit)
+        if not items and offset == 0:
+            await query.answer([], cache_time=1, is_personal=True, switch_pm_text="Заказы отсутствуют", switch_pm_parameter="start")
+            return True
+        status_titles = {"pending": "В ожидании", "completed": "Завершён", "rejected": "Отклонён"}
+        for idx, ord_item in enumerate(items):
+            st = ord_item["status"]
+            st_title = status_titles.get(st, st or "Заказ")
+            dt_str = format_datetime_ru(ord_item["created_at_dt"]) if ord_item.get("created_at_dt") else "—"
+            results.append(
+                InlineQueryResultArticle(
+                    id=f"va-ord:{client_id}:{ord_item['id']}:{idx}",
+                    title=f"Заказ #{ord_item['id']} • {ord_item['model_info']}",
+                    description=f"{dt_str} • {st_title} • {ord_item['city']}",
+                    thumbnail_url=_CLIENT_INLINE_ICON,
+                    input_message_content=InputTextMessageContent(message_text="None"),
+                )
+            )
+        next_offset = str(offset + limit) if len(items) == limit else ""
+        await query.answer(results=results, cache_time=0, is_personal=True, next_offset=next_offset)
+        return True
+
+    if cmd in {"get_client_transaction", "get_client_transactions"}:
+        items = await api_client.admin.get_client_transactions(client_id, search=search, offset=offset, limit=limit)
+        if not items and offset == 0:
+            await query.answer([], cache_time=1, is_personal=True, switch_pm_text="Операции отсутствуют", switch_pm_parameter="start")
+            return True
+        for idx, tx in enumerate(items):
+            amt = int(tx["amount"])
+            amt_str = f"+{amt}" if amt > 0 else str(amt)
+            desc = _format_time_ago(tx.get("created_at_dt"), prefix="Операция выполнена")
+            results.append(
+                InlineQueryResultArticle(
+                    id=f"va-tx:{client_id}:{tx['id']}:{idx}",
+                    title=f"{tx['description']} • {amt_str} RUB",
+                    description=desc,
+                    thumbnail_url=_CLIENT_INLINE_ICON,
+                    input_message_content=InputTextMessageContent(message_text="None"),
+                )
+            )
+        next_offset = str(offset + limit) if len(items) == limit else ""
+        await query.answer(results=results, cache_time=0, is_personal=True, next_offset=next_offset)
+        return True
+
+    # get_client_payments / get_client_payment
+    items = await api_client.admin.get_client_payments(client_id, search=search, offset=offset, limit=limit)
+    if not items and offset == 0:
+        await query.answer([], cache_time=1, is_personal=True, switch_pm_text="Заявки на пополнение отсутствуют", switch_pm_parameter="start")
+        return True
+    pay_titles = {"pending": "Ожидает", "paid": "Оплачена", "canceled": "Отменена", "expired": "Истекла", "rejected": "Отклонена"}
+    for idx, pay in enumerate(items):
+        st_title = pay_titles.get(pay["status"], pay["status"])
+        dt_str = format_datetime_ru(pay["created_at_dt"]) if pay.get("created_at_dt") else "—"
+        results.append(
+            InlineQueryResultArticle(
+                id=f"va-pay:{client_id}:{pay['id']}:{idx}",
+                title=f"Заявка #{pay['id']} • {pay['amount']} RUB",
+                description=f"Статус: {st_title}\nДата и время: {dt_str}",
+                thumbnail_url=_CLIENT_INLINE_ICON,
+                input_message_content=InputTextMessageContent(message_text="None"),
+            )
+        )
+    next_offset = str(offset + limit) if len(items) == limit else ""
+    await query.answer(results=results, cache_time=0, is_personal=True, next_offset=next_offset)
+    return True
 
 
 # ── Inline Query для клиентов (my_clients) ───────────────────────────────────
@@ -86,6 +222,8 @@ async def handle_clients_inline(query: InlineQuery) -> None:
     if raw_text.startswith("log_history"):
         from .client_logs import handle_log_history_inline
         await handle_log_history_inline(query)
+        return
+    if await _handle_client_sub_inline(query, raw_text):
         return
 
     search_text = raw_text
@@ -123,6 +261,7 @@ async def handle_clients_inline(query: InlineQuery) -> None:
         results = []
         for client in response.items:
             full_name = f"{client.first_name or ''} {client.last_name or ''}".strip() or "Клиент"
+            title = f"📌 {full_name}" if getattr(client, "is_pinned", False) else full_name
             username_text = f"@{client.username}" if client.username else "Без юзернейма"
             reg_date = getattr(client, "registered_at", None) or getattr(client, "created_at", None)
             created_str = format_datetime_ru(reg_date) if reg_date else "—"
@@ -134,7 +273,7 @@ async def handle_clients_inline(query: InlineQuery) -> None:
             results.append(
                 InlineQueryResultArticle(
                     id=f"client:{client.user_id}",
-                    title=full_name,
+                    title=title,
                     description=desc,
                     thumbnail_url=thumb_url,
                     input_message_content=InputTextMessageContent(
@@ -179,6 +318,7 @@ async def open_client_from_inline(message: Message, state: FSMContext, bot: Bot)
     markup = kb_client_card(
         user_id=user_id,
         is_banned=client.is_banned,
+        is_pinned=getattr(client, "is_pinned", False),
         client_id=getattr(client, "id", None),
     )
 
@@ -314,6 +454,7 @@ async def command_search_client(message: Message, state: FSMContext, bot: Bot):
     markup = kb_client_card(
         user_id=user_id,
         is_banned=client.is_banned,
+        is_pinned=getattr(client, "is_pinned", False),
         client_id=getattr(client, "id", None),
     )
 
@@ -472,3 +613,215 @@ async def approve_send_message(call: CallbackQuery, state: FSMContext) -> None:
         pass
 
 
+
+
+# ── Закрепление / Открепление клиента ────────────────────────────────────────
+
+@router.callback_query(F.data.startswith("admin:user:pin:"))
+async def toggle_pin_client(call: CallbackQuery) -> None:
+    user_id = int(call.data.rsplit(":", 1)[1])
+    try:
+        await api_client.admin.toggle_pin(user_id=user_id)
+        await _show_client(call, user_id=user_id)
+    except ApiNotFoundError:
+        await call.answer(t("client_not_found"), show_alert=True)
+        return
+    await call.answer()
+
+
+# ── Управление балансом клиента ──────────────────────────────────────────────
+
+def _format_balance_confirm_text(
+    client_name: str,
+    action: str,
+    current_balance: int,
+    new_balance: int,
+    notify: bool,
+) -> str:
+    action_titles = {
+        "set": "Изменить баланс",
+        "add": "Прибавить к балансу",
+        "sub": "Убавить с баланса",
+    }
+    method_title = action_titles.get(action, "Изменить баланс")
+    notify_text = "Включено" if notify else "Выключено"
+    return (
+        f"<blockquote>💳 <b>Управление балансом</b></blockquote>\n\n"
+        f"Клиент: <b>{html.escape(client_name)}</b>\n"
+        f"Метод изменения: <b>{method_title}</b>\n"
+        f"Оповещение клиенту: <b>{notify_text}</b>\n\n"
+        f"Текущий баланс: <b>{current_balance} RUB</b>\n"
+        f"Обновленный баланс: <b>{new_balance} RUB</b>"
+    )
+
+
+@router.callback_query(F.data.startswith("admin:user:balance:"))
+async def manage_client_balance(call: CallbackQuery, state: FSMContext) -> None:
+    user_id = int(call.data.rsplit(":", 1)[1])
+    try:
+        admin_id = await _resolve_admin_id(call.from_user)
+        client = await api_client.admin.get_client(user_id, admin_id=admin_id)
+    except ApiNotFoundError:
+        await call.answer(t("client_not_found"), show_alert=True)
+        return
+
+    balance = int(getattr(client, "balance", 0) or 0)
+    client_name = f"{client.first_name or ''} {client.last_name or ''}".strip() or f"Клиент {user_id}"
+    text = (
+        f"<blockquote>💳 <b>Управление балансом</b></blockquote>\n\n"
+        f"Клиент: <b>{html.escape(client_name)}</b>\n"
+        f"Текущий баланс: <b>{balance} RUB</b>\n\n"
+        f"Выберите действие:"
+    )
+    await state.set_state(None)
+    await state.update_data(
+        bal_user_id=user_id,
+        bal_client_name=client_name,
+        bal_current=balance,
+        bal_msg_id=call.message.message_id,
+        bal_chat_id=call.message.chat.id,
+    )
+    await call.message.edit_text(text, parse_mode="HTML", reply_markup=manage_balance_ikb(user_id))
+    await call.answer()
+
+
+@router.callback_query(
+    F.data.startswith("admin:user:bal:set:")
+    | F.data.startswith("admin:user:bal:add:")
+    | F.data.startswith("admin:user:bal:sub:")
+)
+async def prompt_balance_amount(call: CallbackQuery, state: FSMContext) -> None:
+    parts = call.data.split(":")
+    action = parts[3]
+    user_id = int(parts[4])
+
+    data = await state.get_data()
+    balance = int(data.get("bal_current", 0) or 0)
+    client_name = data.get("bal_client_name") or f"Клиент {user_id}"
+    prompts = {
+        "set": "Введите новый баланс клиента",
+        "add": "Введите сумму для прибавления к балансу",
+        "sub": "Введите сумму для списания с баланса",
+    }
+    text = (
+        f"<blockquote>💳 <b>Управление балансом</b></blockquote>\n\n"
+        f"Клиент: <b>{html.escape(client_name)}</b>\n"
+        f"Текущий баланс: <b>{balance} RUB</b>\n\n"
+        f"{prompts.get(action, 'Введите сумму')} (в <b>RUB</b>):"
+    )
+    await state.set_state(VAManageBalance.waiting_amount)
+    await state.update_data(
+        bal_action=action,
+        bal_user_id=user_id,
+        bal_client_name=client_name,
+        bal_notify=False,
+        bal_msg_id=call.message.message_id,
+        bal_chat_id=call.message.chat.id,
+    )
+    await call.message.edit_text(text, parse_mode="HTML", reply_markup=balance_input_cancel_ikb(user_id))
+    await call.answer()
+
+
+@router.message(VAManageBalance.waiting_amount, F.chat.type == "private")
+async def process_balance_amount(message: Message, state: FSMContext, bot: Bot) -> None:
+    try:
+        await message.delete()
+    except Exception:
+        pass
+
+    data = await state.get_data()
+    chat_id = data.get("bal_chat_id") or message.chat.id
+    msg_id = data.get("bal_msg_id")
+    user_id = int(data.get("bal_user_id") or 0)
+    action = data.get("bal_action", "set")
+    current_balance = int(data.get("bal_current", 0) or 0)
+    client_name = data.get("bal_client_name") or f"Клиент {user_id}"
+
+    raw_text = (message.text or "").strip().replace(" ", "").replace(",", ".")
+    try:
+        amount = int(float(raw_text))
+        if action in ("add", "sub") and amount <= 0:
+            raise ValueError()
+        if action == "set" and amount < 0:
+            raise ValueError()
+    except (ValueError, TypeError):
+        err_text = (
+            "<blockquote>⚠️ <b>Некорректная сумма</b></blockquote>\n\n"
+            "Пожалуйста, введите положительное число:"
+        )
+        if msg_id:
+            await bot.edit_message_text(
+                chat_id=chat_id,
+                message_id=msg_id,
+                text=err_text,
+                parse_mode="HTML",
+                reply_markup=balance_input_cancel_ikb(user_id),
+            )
+        return
+
+    if action == "set":
+        new_balance = amount
+    elif action == "add":
+        new_balance = current_balance + amount
+    else:
+        new_balance = max(0, current_balance - amount)
+
+    notify = False
+    await state.update_data(bal_amount=amount, bal_new_balance=new_balance, bal_notify=notify)
+    text = _format_balance_confirm_text(client_name, action, current_balance, new_balance, notify)
+    if msg_id:
+        await bot.edit_message_text(
+            chat_id=chat_id,
+            message_id=msg_id,
+            text=text,
+            parse_mode="HTML",
+            reply_markup=confirm_balance_ikb(user_id, notify),
+        )
+
+
+@router.callback_query(F.data.startswith("admin:user:bal:toggle-notify:"))
+async def toggle_balance_notify(call: CallbackQuery, state: FSMContext) -> None:
+    data = await state.get_data()
+    notify = not bool(data.get("bal_notify", False))
+    await state.update_data(bal_notify=notify)
+
+    user_id = int(data.get("bal_user_id") or call.data.rsplit(":", 1)[1])
+    action = data.get("bal_action", "set")
+    current_balance = int(data.get("bal_current", 0) or 0)
+    new_balance = int(data.get("bal_new_balance", current_balance) or 0)
+    client_name = data.get("bal_client_name") or f"Клиент {user_id}"
+
+    text = _format_balance_confirm_text(client_name, action, current_balance, new_balance, notify)
+    await call.message.edit_text(text, parse_mode="HTML", reply_markup=confirm_balance_ikb(user_id, notify))
+    await call.answer()
+
+
+@router.callback_query(F.data.startswith("admin:user:bal:confirm:"))
+async def confirm_balance_change(call: CallbackQuery, state: FSMContext) -> None:
+    data = await state.get_data()
+    user_id = int(data.get("bal_user_id") or call.data.rsplit(":", 1)[1])
+    action = data.get("bal_action", "set")
+    amount = int(data.get("bal_amount", 0) or 0)
+    notify = bool(data.get("bal_notify", False))
+
+    try:
+        await api_client.admin.adjust_balance(
+            user_id=user_id,
+            action=action,
+            amount=amount,
+            notify=notify,
+        )
+        await state.set_state(None)
+        await _show_client(call, user_id=user_id)
+    except ApiNotFoundError:
+        await call.answer(t("client_not_found"), show_alert=True)
+        return
+    await call.answer("Баланс успешно обновлен")
+
+
+@router.message(F.chat.type == "private", F.text.func(lambda text: (text or "").strip() == "None"))
+async def handle_delete_none_message(message: Message) -> None:
+    try:
+        await message.delete()
+    except Exception:
+        pass

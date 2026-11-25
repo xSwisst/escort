@@ -4,7 +4,7 @@ from aiogram.fsm.storage.redis import RedisStorage
 
 from api.routes.internal.v1 import router as internal_router
 from bot.handlers import get_routers
-from bot.middlewares import ClientSyncMiddleware
+from bot.middlewares import ClientActivityMiddleware, ClientSyncMiddleware
 from clients.api import api_client
 from clients.logs import logs_client
 from core.settings import settings
@@ -13,10 +13,12 @@ from shared.bot.middleware import DatabaseMiddleware
 from shared.server.webhook import create_webhook_app
 
 db = Database(settings.DATABASE_URL)
-client_sync_middleware = ClientSyncMiddleware()
+client_sync_middleware = ClientSyncMiddleware(db.session_maker)
+client_activity_middleware = ClientActivityMiddleware(db.session_maker)
 
 
 async def _close_clients() -> None:
+    await client_activity_middleware.close()
     await client_sync_middleware.close()
     await api_client.close()
     await logs_client.close()
@@ -35,15 +37,20 @@ def create_app():
 
     dispatcher = Dispatcher(storage=storage) if storage else Dispatcher()
     
+    # Sync client profile/avatar & track last_active_at in background (outer so DB session commits first)
+    dispatcher.message.outer_middleware(client_sync_middleware)
+    dispatcher.callback_query.outer_middleware(client_sync_middleware)
+    dispatcher.inline_query.outer_middleware(client_sync_middleware)
+
+    dispatcher.message.outer_middleware(client_activity_middleware)
+    dispatcher.callback_query.outer_middleware(client_activity_middleware)
+    dispatcher.inline_query.outer_middleware(client_activity_middleware)
+
     # Attach database and service injection middleware
     db_middleware = DatabaseMiddleware(db.session_maker)
     dispatcher.message.middleware(db_middleware)
     dispatcher.callback_query.middleware(db_middleware)
     dispatcher.inline_query.middleware(db_middleware)
-
-    dispatcher.message.middleware(client_sync_middleware)
-    dispatcher.callback_query.middleware(client_sync_middleware)
-    dispatcher.inline_query.middleware(client_sync_middleware)
 
     for router in get_routers():
         dispatcher.include_router(router)

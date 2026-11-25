@@ -164,7 +164,7 @@ class ClientRepository(BaseRepository[Client]):
             base_stmt = base_stmt.where(filters)
             count_stmt = count_stmt.where(filters)
 
-        base_stmt = base_stmt.order_by(Client.registered_at.desc()).offset((page - 1) * per_page).limit(per_page)
+        base_stmt = base_stmt.order_by(Client.is_pinned.desc(), Client.registered_at.desc()).offset((page - 1) * per_page).limit(per_page)
         items = list((await self._session.execute(base_stmt)).scalars().all())
         total = int((await self._session.execute(count_stmt)).scalar_one())
         return items, total

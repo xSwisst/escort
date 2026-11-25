@@ -110,6 +110,11 @@ def build_client_card_text(client) -> str:
     else:
         agreement_str = f"{agreement_title} (❌ Не принято)"
 
+    last_active_dt = getattr(client, "last_active_at", None)
+    last_active_str = format_datetime_ru(last_active_dt) if last_active_dt else "—"
+    rating_val = getattr(client, "rating", 0.0)
+    rating_str = f"{float(rating_val):.1f}" if rating_val is not None else "0.0"
+
     return t(
         "va_client_card",
         client_name=full_name,
@@ -117,10 +122,11 @@ def build_client_card_text(client) -> str:
         username=username_str,
         client_id=client.user_id,
         user_id=client.user_id,
-        orders=0,
-        rating="5.0",
-        addresses="—",
-        favorites="—",
+        balance=int(getattr(client, "balance", 0) or 0),
+        orders=int(getattr(client, "orders_count", 0) or 0),
+        rating=rating_str,
+        addresses=int(getattr(client, "addresses_count", 0) or 0),
+        favorites=int(getattr(client, "favorites_count", 0) or 0),
         city=client.active_city or client.primary_city or t("client_city_missing"),
         primary_city=client.primary_city or t("client_city_missing"),
         secondary_city=client.secondary_city or t("client_city_missing"),
@@ -131,6 +137,7 @@ def build_client_card_text(client) -> str:
         has_accepted_agreement=t("word_yes") if client.has_accepted_agreement else t("word_no"),
         ban=t("word_ban_yes") if client.is_banned else t("word_ban_no"),
         ban_status=t("client_ban_enabled") if client.is_banned else t("client_ban_disabled"),
+        last_active=last_active_str,
         registered=format_datetime_ru(client.registered_at),
         registered_at=format_datetime_ru(client.registered_at),
     )

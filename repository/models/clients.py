@@ -25,6 +25,7 @@ class Client(Base):
     profile_synced_at: Mapped[DateTime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     balance: Mapped[int] = mapped_column(Integer, default=0, server_default="0", nullable=False)
     is_banned: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_pinned: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false", nullable=False)
     has_accepted_agreement: Mapped[bool] = mapped_column(Boolean, default=False)
     agreement_id: Mapped[str | None] = mapped_column(
         String(64),
@@ -37,6 +38,7 @@ class Client(Base):
     rating: Mapped[float] = mapped_column(Float, default=0.0)
     registered_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), default=now_msk, server_default=func.now())
     updated_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), default=now_msk, onupdate=now_msk, server_default=func.now())
+    last_active_at: Mapped[DateTime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     promo_code: Mapped[str | None] = mapped_column(
         String(64),
         ForeignKey("promotions.code", ondelete="SET NULL"),

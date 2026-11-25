@@ -34,28 +34,92 @@ def kb_clients_list(*, items: list, page: int, total: int, per_page: int, query:
     return builder.as_markup()
 
 
-def kb_client_card(*, user_id: int, is_banned: bool, client_id: int | None = None) -> InlineKeyboardMarkup:
+def kb_client_card(
+    *,
+    user_id: int,
+    is_banned: bool,
+    is_pinned: bool = False,
+    client_id: int | None = None,
+) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
+
+    # Ряд 0: Закрепить / Открепить
+    pin_btn_key = "unpin_client" if is_pinned else "pin_client"
     builder.row(
-        InlineKeyboardButton(
-            **btn(
-                "cf_client_btn_ban_toggle",
-                callback_data=f"admin:user:ban:{user_id}",
-                text=t("cf_client_ban_status_locked" if is_banned else "cf_client_ban_status_unlocked"),
-            )
-        ),
-        InlineKeyboardButton(**btn("send_message", callback_data=f"admin:user:msg:{user_id}")),
+        InlineKeyboardButton(**btn(pin_btn_key, callback_data=f"admin:user:pin:{user_id}"))
     )
+
+    # Ряд 1: История действий
     cid = client_id if client_id is not None else user_id
     builder.row(
         InlineKeyboardButton(
-            text="📜 История активности",
-            switch_inline_query_current_chat=f"log_history?client_id={cid}&search=",
+            **btn("client_actions", switch_inline_query_current_chat=f"log_history?client_id={cid}&search=")
         )
     )
-    builder.row(InlineKeyboardButton(**btn("change_agreement", callback_data=f"admin:user:agreements:{user_id}")))
+
+    # Ряд 2: Заказы | Операции
+    builder.row(
+        InlineKeyboardButton(
+            **btn("client_orders", switch_inline_query_current_chat=f"get_client_orders?client_id={user_id}&search=")
+        ),
+        InlineKeyboardButton(
+            **btn("client_transactions", switch_inline_query_current_chat=f"get_client_transaction?client_id={user_id}&search=")
+        ),
+    )
+
+    # Ряд 3: Заявки на пополнение
+    builder.row(
+        InlineKeyboardButton(
+            **btn("client_payments", switch_inline_query_current_chat=f"get_client_payments?client_id={user_id}&search=")
+        )
+    )
+
+    # Ряд 4: Отправить сообщение
+    builder.row(InlineKeyboardButton(**btn("send_message", callback_data=f"admin:user:msg:{user_id}")))
+
+    # Ряд 5: Управление балансом
+    builder.row(InlineKeyboardButton(**btn("manage_balance", callback_data=f"admin:user:balance:{user_id}")))
+
+    # Ряд 6: Соглашение | Заблокирован/Разблокирован
+    ban_text = t("client_ban_status_locked" if is_banned else "client_ban_status_unlocked")
+    builder.row(
+        InlineKeyboardButton(**btn("change_agreement", callback_data=f"admin:user:agreements:{user_id}")),
+        InlineKeyboardButton(
+            **btn("client_ban_toggle", callback_data=f"admin:user:ban:{user_id}", text=ban_text)
+        ),
+    )
+
+    # Ряд 7: Обновить
     builder.row(InlineKeyboardButton(**btn("refresh", callback_data=f"admin:user:refresh:{user_id}")))
-    builder.row(back_btn("admin:clients:back"))
+
+    # Ряд 8: Назад в меню
+    builder.row(back_btn("admin:panel", text_key="back_to_menu"))
+    return builder.as_markup()
+
+
+def manage_balance_ikb(user_id: int) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    builder.row(InlineKeyboardButton(**btn("balance_set", callback_data=f"admin:user:bal:set:{user_id}")))
+    builder.row(InlineKeyboardButton(**btn("balance_add", callback_data=f"admin:user:bal:add:{user_id}")))
+    builder.row(InlineKeyboardButton(**btn("balance_sub", callback_data=f"admin:user:bal:sub:{user_id}")))
+    builder.row(back_btn(f"admin:user:{user_id}", text_key="back_to_client"))
+    return builder.as_markup()
+
+
+def confirm_balance_ikb(user_id: int, notify: bool) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    notify_btn = "balance_notify_off" if notify else "balance_notify_on"
+    builder.row(InlineKeyboardButton(**btn(notify_btn, callback_data=f"admin:user:bal:toggle-notify:{user_id}")))
+    builder.row(
+        back_btn(f"admin:user:balance:{user_id}", text_key="back_to_balance"),
+        InlineKeyboardButton(**btn("confirm", callback_data=f"admin:user:bal:confirm:{user_id}")),
+    )
+    return builder.as_markup()
+
+
+def balance_input_cancel_ikb(user_id: int) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    builder.row(back_btn(f"admin:user:balance:{user_id}", text_key="back_to_balance"))
     return builder.as_markup()
 
 
