@@ -3,6 +3,7 @@ from .admins import AdminRepository
 from .agreements import AgreementRepository
 from .base import BaseRepository
 from .cards import CardRepository
+from .cities import CityRepository, ClientCityRepository
 from .client_logs import ClientActivityLogRepository, ClientLogRepository
 from .clients import ClientRepository
 from .favorites import FavoriteRepository
@@ -24,6 +25,8 @@ __all__ = [
     "AgreementRepository",
     "BaseRepository",
     "CardRepository",
+    "CityRepository",
+    "ClientCityRepository",
     "ClientActivityLogRepository",
     "ClientLogRepository",
     "ClientRepository",

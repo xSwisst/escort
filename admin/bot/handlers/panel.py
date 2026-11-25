@@ -26,25 +26,6 @@ async def _load_panel_data(tg_user: User) -> tuple[str, bool, int]:
     stats = await api_client.admin.get_worker_client_stats(admin.id)
     total_clients = stats.all
 
-    total_forms = 0
-    forms_city_1 = 0
-    forms_city_2 = 0
-    total_promos = 0
-
-    try:
-        forms_resp = await api_client.admin.list_forms(admin_id=admin.id)
-        total_forms = len(forms_resp.items)
-        forms_city_1 = sum(1 for f in forms_resp.items if getattr(f, "city_slot", 1) == 1)
-        forms_city_2 = sum(1 for f in forms_resp.items if getattr(f, "city_slot", 1) == 2)
-    except Exception:
-        pass
-
-    try:
-        promos_resp = await api_client.admin.list_promos(admin_id=admin.id)
-        total_promos = len(promos_resp.items)
-    except Exception:
-        pass
-
     bot_info = await api_client.admin.get_main_bot_info()
     username = (bot_info.username or "").lstrip("@").strip()
     bot_name = bot_info.full_name or "ESCORT V1"
@@ -55,10 +36,6 @@ async def _load_panel_data(tg_user: User) -> tuple[str, bool, int]:
 
     text = build_panel_text(
         total_clients=total_clients,
-        total_forms=total_forms,
-        total_promos=total_promos,
-        forms_city_1=forms_city_1,
-        forms_city_2=forms_city_2,
         bot_name=bot_name,
         bot_link_text=bot_link_text,
         service_status=service_status,

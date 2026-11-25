@@ -7,18 +7,6 @@ from bot.assets.texts import btn
 from bot.keyboards.common import back_btn, nav_buttons
 
 
-def kb_choice_city() -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(text=btn("city_first")["text"], callback_data="admin:forms:city:1:1"),
-                InlineKeyboardButton(text=btn("city_second")["text"], callback_data="admin:forms:city:2:1"),
-            ],
-            [back_btn("admin:panel")],
-        ]
-    )
-
-
 def kb_models_list(
     forms: list,
     city_slot: int,
@@ -43,7 +31,7 @@ def kb_models_list(
     nav = nav_buttons(page, total_pages, f"admin:forms:city:{city_slot}")
     if nav:
         rows.append(nav)
-    rows.append([back_btn("admin:forms:city")])
+    rows.append([back_btn("admin:panel")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
@@ -81,8 +69,6 @@ def kb_model_card(form, city_slot: int) -> InlineKeyboardMarkup:
             InlineKeyboardButton(text=btn("toggle_show" if is_visible else "toggle_hide")["text"], callback_data=f"admin:form:toggle:{code}:is_visible"),
         ],
         # Row 8
-        [InlineKeyboardButton(text=btn("change_city")["text"], callback_data=f"admin:form:move-city:{code}")],
-        # Row 9
         [InlineKeyboardButton(text=btn("manage_photos")["text"], callback_data=f"admin:form:photos:{code}:0")],
         # Row 10
         [InlineKeyboardButton(**btn("delete", callback_data=f"admin:form:del:{code}"))],

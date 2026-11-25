@@ -48,14 +48,12 @@ class ClientApi:
     async def get_cities(self, user_id: int) -> ClientCities:
         async with resolve_session() as session:
             cs = ClientService(session)
-            client = await cs.get_client(user_id)
-            active_slot = int(getattr(client, "active_city_slot", 1) or 1)
-            active_city = client.secondary_city if active_slot == 2 and client.secondary_city else (client.primary_city if client else None)
+            profile = await cs.get_profile(user_id)
             return ClientCities(
-                primary_city=client.primary_city if client else None,
-                secondary_city=client.secondary_city if client else None,
-                active_city_slot=active_slot,
-                active_city=active_city,
+                primary_city=profile.primary_city,
+                secondary_city=profile.secondary_city,
+                active_city_slot=profile.active_city_slot,
+                active_city=profile.city,
             )
 
     async def set_city(self, user_id: int, *, city: str, slot: int) -> ClientCities:

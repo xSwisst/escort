@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from repository.repositories.addresses import AddressRepository
 from repository.repositories.admins import AdminRepository
 from repository.repositories.agreements import AgreementRepository
+from repository.repositories.cities import CityRepository, ClientCityRepository
 from repository.repositories.clients import ClientRepository
 from repository.repositories.favorites import FavoriteRepository
 from repository.repositories.orders import OrderRepository
@@ -41,6 +42,8 @@ class ClientService:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
         self.admins = AdminRepository(session)
+        self.cities = CityRepository(session)
+        self.client_cities = ClientCityRepository(session)
         self.clients = ClientRepository(session)
         self.agreements = AgreementRepository(session)
         self.orders = OrderRepository(session)
@@ -123,13 +126,25 @@ class ClientService:
     async def get_profile(self, user_id: int) -> ClientProfile:
         client, _ = await self.get_or_create_client(user_id)
         orders_count = await self.get_orders_count(user_id)
-        active_slot = int(getattr(client, "active_city_slot", 1) or 1)
-        active_city = client.secondary_city if active_slot == 2 and client.secondary_city else client.primary_city
+        links = await self.client_cities.get_by_client(user_id)
+        if links:
+            slot1 = next((c for c in links if c.slot == 1), None)
+            slot2 = next((c for c in links if c.slot == 2), None)
+            active_link = next((c for c in links if c.is_active), None) or slot1 or links[0]
+            primary_city = slot1.city_name if slot1 else client.primary_city
+            secondary_city = slot2.city_name if slot2 else client.secondary_city
+            active_slot = active_link.slot
+            active_city = active_link.city_name
+        else:
+            active_slot = int(getattr(client, "active_city_slot", 1) or 1)
+            primary_city = client.primary_city
+            secondary_city = client.secondary_city
+            active_city = secondary_city if active_slot == 2 and secondary_city else primary_city
         return ClientProfile(
             id=client.id,
             user_id=client.user_id,
-            primary_city=client.primary_city,
-            secondary_city=client.secondary_city,
+            primary_city=primary_city,
+            secondary_city=secondary_city,
             active_city_slot=active_slot,
             city=active_city,
             rating=float(client.rating or 0.0),
@@ -141,9 +156,15 @@ class ClientService:
         )
 
     async def set_city(self, user_id: int, city: str, slot: int = 1) -> None:
+        city_id: int | None = None
+        if slot >= 2:
+            city_obj = await self.cities.get_by_name(city)
+            city_id = city_obj.id if city_obj is not None else None
+        await self.client_cities.set_city(user_id, city, slot=slot, city_id=city_id, activate=True)
         await self.clients.set_city(user_id, city, slot)
 
     async def switch_city(self, user_id: int, active_city_slot: int):
+        await self.client_cities.switch_slot(user_id, active_city_slot)
         return await self.clients.update_by_user_id(user_id, active_city_slot=active_city_slot)
 
     async def set_promo(self, user_id: int, promo_code: str) -> None:

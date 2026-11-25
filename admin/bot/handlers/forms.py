@@ -17,7 +17,6 @@ from bot.keyboards import (
     kb_additionals_list,
     kb_approve_new_model,
     kb_back,
-    kb_choice_city,
     kb_confirm_delete_model,
     kb_edit_params,
     kb_form_photos,
@@ -117,19 +116,19 @@ async def _render_text_menu(call: CallbackQuery, text: str, reply_markup=None) -
             await call.message.answer(text, parse_mode="HTML", reply_markup=reply_markup)
 
 
-# ── Выбор города и список анкет ──────────────────────────────────────────────
+# ── Список анкет ──────────────────────────────────────────────────────────────
 
 @router.callback_query(F.data == "admin:forms:city")
 async def choose_city(call: CallbackQuery, state: FSMContext) -> None:
     await state.clear()
-    await _render_text_menu(call, t("models_city_choose"), reply_markup=kb_choice_city())
-    await call.answer()
+    call.data = "admin:forms:city:1:1"
+    await show_forms_list(call, state)
 
 
 @router.callback_query(F.data.startswith("admin:forms:city:"))
 async def show_forms_list(call: CallbackQuery, state: FSMContext) -> None:
     parts = call.data.split(":")
-    city_slot = int(parts[3])
+    city_slot = 1
     page = int(parts[4]) if len(parts) > 4 else 1
 
     admin_id = await _resolve_admin_id(call.from_user)
@@ -510,20 +509,6 @@ async def toggle_model_field(call: CallbackQuery, state: FSMContext) -> None:
         admin_id = await _resolve_admin_id(call.from_user)
         await api_client.admin.toggle_form_field(code, field, admin_id=admin_id)
         await call.answer(t("model_toggled"))
-        await show_model_card(call, state, code=code)
-    except Exception as exc:
-        await call.answer(f"Ошибка: {exc}", show_alert=True)
-
-
-@router.callback_query(F.data.startswith("admin:form:move-city:"))
-async def move_model_city(call: CallbackQuery, state: FSMContext) -> None:
-    code = call.data.split(":")[3]
-    try:
-        admin_id = await _resolve_admin_id(call.from_user)
-        form = await api_client.admin.get_form(code, admin_id=admin_id)
-        new_slot = 2 if form.city_slot == 1 else 1
-        await api_client.admin.update_form(code, {"city_slot": new_slot}, admin_id=admin_id)
-        await call.answer(t("model_city_moved", city_slot=new_slot))
         await show_model_card(call, state, code=code)
     except Exception as exc:
         await call.answer(f"Ошибка: {exc}", show_alert=True)

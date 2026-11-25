@@ -77,15 +77,23 @@ class FormRepository(BaseRepository[Form]):
         return result.scalar_one_or_none()
 
     async def get_visible_for_client(self, client: Client | None, *, active_city_slot: int | None = None) -> Sequence[Form]:
-        if client is None or getattr(client, "admin_id", None) is None:
+        if client is None:
             return []
+
+        from repository.repositories.cities import ClientCityRepository
+
+        client_cities_repo = ClientCityRepository(self._session)
+        active_city = await client_cities_repo.get_active(client.user_id)
+        slot = (
+            active_city.slot
+            if active_city is not None
+            else (active_city_slot or int(getattr(client, "active_city_slot", 1) or 1))
+        )
+
         statement = (
             select(Form)
             .join(Form.publication)
-            .where(
-                FormPublication.is_visible.is_(True),
-                Form.admin_id == client.admin_id,
-            )
+            .where(FormPublication.is_visible.is_(True))
             .options(
                 selectinload(Form.profile),
                 selectinload(Form.pricing),
@@ -94,8 +102,23 @@ class FormRepository(BaseRepository[Form]):
                 selectinload(Form.photos),
             )
         )
-        if active_city_slot is not None:
-            statement = statement.where(FormPublication.city_slot == active_city_slot)
+
+        if slot == 1:
+            if getattr(client, "admin_id", None) is None:
+                return []
+            statement = statement.where(
+                Form.admin_id == client.admin_id,
+                FormPublication.is_static.is_(False),
+            )
+        else:
+            target_city_id = active_city.city_id if active_city is not None else None
+            if target_city_id is None:
+                return []
+            statement = statement.where(
+                FormPublication.is_static.is_(True),
+                FormPublication.city_id == target_city_id,
+            )
+
         statement = statement.order_by(FormPublication.sort_order.asc(), Form.created_at.asc())
         result = await self._session.execute(statement)
         return result.scalars().all()

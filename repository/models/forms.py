@@ -68,6 +68,7 @@ class FormProfile(Base):
     name: Mapped[str] = mapped_column(String(128), nullable=False)
     age: Mapped[int] = mapped_column(Integer, nullable=False)
     height: Mapped[int] = mapped_column(Integer, nullable=False)
+    weight: Mapped[int | None] = mapped_column(Integer, nullable=True)
     bust_size: Mapped[int] = mapped_column(Integer, nullable=False)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
 
@@ -120,9 +121,17 @@ class FormPublication(Base):
     is_visible: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     public_channel_url: Mapped[str | None] = mapped_column(String(256), nullable=True)
     city_slot: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
+    city_id: Mapped[int | None] = mapped_column(
+        Integer,
+        ForeignKey("cities.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+    is_static: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false", nullable=False, index=True)
     sort_order: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
 
     form: Mapped["Form"] = relationship("Form", back_populates="publication")
+    city: Mapped["City | None"] = relationship("City", back_populates="publications")
 
 
 class FormReview(Base):

@@ -42,6 +42,12 @@ class Client(Base):
     )
 
     addresses: Mapped[list["Address"]] = relationship("Address", back_populates="client")
+    cities: Mapped[list["ClientCity"]] = relationship(
+        "ClientCity",
+        back_populates="client",
+        cascade="all, delete-orphan",
+        order_by="ClientCity.slot.asc()",
+    )
     orders: Mapped[list["Order"]] = relationship("Order", back_populates="client")
     invoices: Mapped[list["PaymentInvoice"]] = relationship("PaymentInvoice", back_populates="client")
     transactions: Mapped[list["Transaction"]] = relationship("Transaction", back_populates="client")

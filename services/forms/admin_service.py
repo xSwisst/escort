@@ -65,6 +65,7 @@ class AdminFormService:
             "name": data["name"],
             "age": data["age"],
             "height": data["height"],
+            "weight": data.get("weight"),
             "bust_size": data["bust_size"],
             "caption": data.get("caption"),
         }

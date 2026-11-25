@@ -18,6 +18,7 @@ class FormCard:
     age: int
     height: int
     bust_size: int
+    weight: int | None = None
     one_hour_price: int | None
     two_hour_price: int | None
     three_hour_price: int | None
@@ -124,8 +125,10 @@ class FormService:
         except FormNotFoundError:
             return None
 
-        if enforce_admin and (client_admin_id is None or form.admin_id != client_admin_id):
-            return None
+        if enforce_admin:
+            is_static = bool(form.publication and getattr(form.publication, "is_static", False))
+            if not is_static and (client_admin_id is None or form.admin_id != client_admin_id):
+                return None
 
         reviews = await self.get_reviews(form_code)
         services = await self.get_services(form_code)
@@ -148,6 +151,7 @@ class FormService:
             name=profile.name if profile else "",
             age=int(profile.age or 0) if profile else 0,
             height=int(profile.height or 0) if profile else 0,
+            weight=int(profile.weight) if profile and profile.weight is not None else None,
             bust_size=int(profile.bust_size or 0) if profile else 0,
             one_hour_price=pricing.one_hour_price if pricing else None,
             two_hour_price=pricing.two_hour_price if pricing else None,

@@ -3,6 +3,7 @@ from shared.db import Base
 from .addresses import Address
 from .admins import Admin
 from .cards import Card
+from .cities import City, ClientCity
 from .client_activity_logs import ClientActivityLog
 from .clients import Client
 from .forms import (
@@ -30,6 +31,8 @@ __all__ = [
     "Admin",
     "Agreement",
     "Card",
+    "City",
+    "ClientCity",
     "Client",
     "ClientActivityLog",
     "Form",

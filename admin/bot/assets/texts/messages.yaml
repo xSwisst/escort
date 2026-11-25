@@ -2360,21 +2360,7 @@ panel_caption: '<blockquote>👨🏻‍💻 <b>Воркер панель ESCORT 
 
   За месяц: <b>{month}</b>
 
-  Всего: <b>{total_clients}</b>
-
-
-  <blockquote>🦋 <b>Анкеты</b></blockquote>
-
-  Всего: <b>{total_forms}</b>
-
-  Город 1: <b>{forms_city_1}</b>
-
-  Город 2: <b>{forms_city_2}</b>
-
-
-  <blockquote>🎟 <b>Промокоды</b></blockquote>
-
-  Всего: <b>{total_promos}</b>'
+  Всего: <b>{total_clients}</b>'
 model_card: "<blockquote><b>\U0001F98B Карточка модели</b></blockquote>\n\n<blockquote><b>\U0001F464\
   \ Модель</b></blockquote>\nИмя: <b>{name}</b> \nВозраст: <b>{age}</b>\nРост: <b>{height}</b>\n\
   Размер груди: <b>{tits}</b>\nКод: <code>{code}</code>\n\n<blockquote><b>\U0001F4B0\
@@ -2390,7 +2376,7 @@ models_city_choose: '<blockquote><b>🏙 Список городов</b></blockq
   <i>— Вы можете добавить модель в определенный город.</i>
 
   '
-models_list_caption: '<blockquote><b>🦋 Список анкет · Город {city_slot}</b></blockquote>
+models_list_caption: '<blockquote><b>🦋 Список анкет</b></blockquote>
 
 
   Всего анкет: <b>{total}</b>
@@ -2401,7 +2387,7 @@ models_list_caption: '<blockquote><b>🦋 Список анкет · Город 
   <i>— Выберите модель или добавьте новую.</i>
 
   '
-models_list_empty: '<blockquote><b>🦋 В этом городе пока нет анкет</b></blockquote>
+models_list_empty: '<blockquote><b>🦋 Анкет пока нет</b></blockquote>
 
 
   <i>— Нажмите кнопку ниже, чтобы добавить первую анкету.</i>
@@ -2442,8 +2428,6 @@ models_new_confirm: '<blockquote><b>❗️ Подтвердите создани
   Рост: <b>{height} см</b>
 
   Размер груди: <b>{bust_size}</b>
-
-  Город: <b>Город {city_slot}</b>
 
 
   <blockquote><b>💰 Цены</b></blockquote>
