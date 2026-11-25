@@ -104,7 +104,7 @@ class ClientRepository(BaseRepository[Client]):
         await self._session.refresh(client)
         return client
 
-    async def set_agreement(self, user_id: int, agreement_id: str) -> None:
+    async def set_agreement(self, user_id: int, agreement_id: str | None = None) -> None:
         await self.update_by_user_id(user_id, has_accepted_agreement=True, agreement_id=agreement_id)
 
     async def set_city(self, user_id: int, city: str, slot: int = 1) -> None:

@@ -91,10 +91,14 @@ class ClientService:
     async def accept_agreement(self, user_id: int, agreement_id: str | None = None) -> None:
         if not agreement_id:
             agreement = await self.get_active_agreement(user_id)
-            agreement_id = getattr(agreement, "agreement_id", None) or "default"
+            agreement_id = getattr(agreement, "agreement_id", None) if agreement else None
+        else:
+            existing = await self.agreements.get(agreement_id)
+            if not existing:
+                agreement_id = None
         await self.set_agreement(user_id, agreement_id)
 
-    async def set_agreement(self, user_id: int, agreement_id: str) -> None:
+    async def set_agreement(self, user_id: int, agreement_id: str | None = None) -> None:
         await self.clients.set_agreement(user_id, agreement_id)
 
     async def get_active_agreement(self, user_id: int):
