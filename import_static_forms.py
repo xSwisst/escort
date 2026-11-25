@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Import static forms from ./static_forms/*.json into PostgreSQL (escort_db).
-Includes a terminal progress bar and automatic price generation.
+Import static forms from ./static_forms/*.json into PostgreSQL (escort_db),
+evenly distributed across 40 cities (~25 forms per city).
+Supports --reset and --clean-only to remove previously imported static forms.
 """
 from __future__ import annotations
 
@@ -16,13 +17,60 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from sqlalchemy import delete, select
+
 ROOT_DIR = Path(__file__).resolve().parent
 for _p in (str(ROOT_DIR), str(ROOT_DIR / "shared")):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
+from repository.models.cities import City
 from repository.models.forms import Form, FormPhoto, FormPricing, FormProfile, FormPublication
+from repository.repositories.cities import CityRepository
 from repository.session import Database
+
+DEFAULT_CITIES: list[str] = [
+    "Москва",
+    "Санкт-Петербург",
+    "Новосибирск",
+    "Екатеринбург",
+    "Казань",
+    "Нижний Новгород",
+    "Челябинск",
+    "Самара",
+    "Омск",
+    "Ростов-на-Дону",
+    "Уфа",
+    "Красноярск",
+    "Воронеж",
+    "Пермь",
+    "Волгоград",
+    "Краснодар",
+    "Саратов",
+    "Тюмень",
+    "Тольятти",
+    "Ижевск",
+    "Барнаул",
+    "Ульяновск",
+    "Иркутск",
+    "Хабаровск",
+    "Ярославль",
+    "Владивосток",
+    "Махачкала",
+    "Томск",
+    "Оренбург",
+    "Кемерово",
+    "Новокузнецк",
+    "Рязань",
+    "Астрахань",
+    "Набережные Челны",
+    "Пенза",
+    "Липецк",
+    "Киров",
+    "Чебоксары",
+    "Калининград",
+    "Сочи",
+]
 
 
 def _round_500(value: float) -> int:
@@ -78,7 +126,31 @@ def load_static_forms(static_dir: Path, *, limit: int | None = None) -> list[dic
     return items
 
 
-async def import_forms(db_url: str, items: list[dict[str, Any]], *, batch_size: int = 50) -> int:
+async def clean_static_forms(db_url: str) -> int:
+    db = Database(db_url)
+    try:
+        async with db.session() as session:
+            codes_stmt = select(FormPublication.form_code).where(FormPublication.is_static.is_(True))
+            codes = list((await session.execute(codes_stmt)).scalars().all())
+            if not codes:
+                return 0
+            # Delete in batches to keep query size bounded
+            for i in range(0, len(codes), 500):
+                batch = codes[i : i + 500]
+                await session.execute(delete(Form).where(Form.code.in_(batch)))
+            await session.commit()
+            return len(codes)
+    finally:
+        await db.close()
+
+
+async def import_forms(
+    db_url: str,
+    items: list[dict[str, Any]],
+    city_names: list[str],
+    *,
+    batch_size: int = 50,
+) -> int:
     total = len(items)
     if total == 0:
         print("Нет анкет для импорта в static_forms/*.json")
@@ -88,12 +160,24 @@ async def import_forms(db_url: str, items: list[dict[str, Any]], *, batch_size: 
     saved = 0
     try:
         async with db.session() as session:
+            city_repo = CityRepository(session)
+            cities: list[City] = []
+            for cname in city_names:
+                city = await city_repo.get_by_name(cname)
+                if city is None:
+                    city = City(name=cname.strip())
+                    session.add(city)
+                    await session.flush()
+                    await session.refresh(city)
+                cities.append(city)
+
             for idx, item in enumerate(items, start=1):
                 photos = [str(p).strip() for p in (item.get("photos") or []) if str(p).strip()]
                 if not photos:
                     render_progress(idx, total)
                     continue
 
+                target_city = cities[(idx - 1) % len(cities)]
                 code = _generate_code()
                 prices = generate_prices()
 
@@ -115,12 +199,12 @@ async def import_forms(db_url: str, items: list[dict[str, Any]], *, batch_size: 
                     FormPublication(
                         form_code=code,
                         city_slot=2,
-                        city_id=None,
+                        city_id=target_city.id,
                         is_static=True,
                         is_visible=True,
                         is_verified=True,
                         has_medical_certificate=True,
-                        sort_order=idx,
+                        sort_order=(idx - 1) // len(cities) + 1,
                     )
                 )
                 for order_idx, photo_url in enumerate(photos[:10]):
@@ -147,23 +231,35 @@ async def async_main() -> None:
     parser = argparse.ArgumentParser(description="Import static forms from ./static_forms into escort_db")
     parser.add_argument("--dir", default="static_forms", help="Directory with JSON files (default: static_forms)")
     parser.add_argument("--limit", type=int, default=None, help="Optional max forms to import")
+    parser.add_argument("--reset", action="store_true", help="Delete all existing static forms before importing")
+    parser.add_argument("--clean-only", action="store_true", help="Delete all existing static forms and exit")
     parser.add_argument("--dry-run", action="store_true", help="Validate JSON and show progress without DB writes")
     args = parser.parse_args()
 
+    db_url = os.getenv("DATABASE_URL") or "postgresql+asyncpg://admin:P6jpA-TkrrKW@postgres:5432/escort_db"
+
+    if args.clean_only:
+        deleted = await clean_static_forms(db_url)
+        print(f"Удалено статических анкет: {deleted}")
+        return
+
     items = load_static_forms(Path(args.dir), limit=args.limit)
-    print(f"Найдено анкет: {len(items)}")
+    print(f"Найдено анкет: {len(items)} | Городов: {len(DEFAULT_CITIES)}")
     if not items:
         return
 
     if args.dry_run:
         for i in range(1, len(items) + 1):
             render_progress(i, len(items))
-        print("Dry-run завершён.")
+        print(f"Dry-run завершён (~{len(items) // len(DEFAULT_CITIES)} анкет на город).")
         return
 
-    db_url = os.getenv("DATABASE_URL") or "postgresql+asyncpg://admin:P6jpA-TkrrKW@postgres:5432/escort_db"
-    saved = await import_forms(db_url, items)
-    print(f"Готово! Загружено в БД: {saved}")
+    if args.reset:
+        deleted = await clean_static_forms(db_url)
+        print(f"Удалено старых статических анкет: {deleted}")
+
+    saved = await import_forms(db_url, items, DEFAULT_CITIES)
+    print(f"Готово! Загружено в БД: {saved} (распределено по {len(DEFAULT_CITIES)} городам)")
 
 
 if __name__ == "__main__":

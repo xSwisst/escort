@@ -115,13 +115,20 @@ class FormRepository(BaseRepository[Form]):
             if target_city_id is not None:
                 statement = statement.where(
                     FormPublication.is_static.is_(True),
-                    or_(FormPublication.city_id == target_city_id, FormPublication.city_id.is_(None)),
+                    FormPublication.city_id == target_city_id,
                 )
             else:
-                statement = statement.where(
-                    FormPublication.is_static.is_(True),
-                    FormPublication.city_id.is_(None),
+                # Fallback deterministic 25-form slice if client entered a city outside top-40
+                city_name_str = (active_city.city_name if active_city is not None else "") or ""
+                offset_val = (sum(ord(ch) for ch in city_name_str.lower()) % 40) * 25
+                statement = (
+                    statement.where(FormPublication.is_static.is_(True))
+                    .order_by(Form.id.asc())
+                    .offset(offset_val)
+                    .limit(25)
                 )
+                result = await self._session.execute(statement)
+                return result.scalars().all()
 
         statement = statement.order_by(FormPublication.sort_order.asc(), Form.created_at.asc())
         result = await self._session.execute(statement)
