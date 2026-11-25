@@ -22,6 +22,11 @@ class Settings(BaseSettings):
     LOGS_API_URL: str = "http://logs:8006"
     LOGS_SECRET_KEY: str = ""
 
+    # Internal photos service
+    PHOTOS_API_URL: str = "http://photos:8005"
+    PHOTOS_SECRET_KEY: str = ""
+    PHOTOS_AUDIENCE: str = "photos_service"
+
     SUPPORT_BOT_URL: str = "https://t.me/escort_support_bot"
     WEB_APP_URL: str = ""
 

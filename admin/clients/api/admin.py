@@ -105,6 +105,7 @@ class AdminApi:
                         first_name=c.first_name,
                         last_name=c.last_name,
                         username=c.username,
+                        avatar_url=getattr(c, "avatar_url", None),
                         primary_city=c.primary_city,
                         secondary_city=c.secondary_city,
                         active_city_slot=c.active_city_slot,

@@ -21,6 +21,8 @@ class Client(Base):
     first_name: Mapped[str | None] = mapped_column(String(64), nullable=True)
     last_name: Mapped[str | None] = mapped_column(String(64), nullable=True)
     username: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    avatar_url: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    profile_synced_at: Mapped[DateTime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     balance: Mapped[int] = mapped_column(Integer, default=0, server_default="0", nullable=False)
     is_banned: Mapped[bool] = mapped_column(Boolean, default=False)
     has_accepted_agreement: Mapped[bool] = mapped_column(Boolean, default=False)

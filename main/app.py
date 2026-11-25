@@ -4,6 +4,7 @@ from aiogram.fsm.storage.redis import RedisStorage
 
 from api.routes.internal.v1 import router as internal_router
 from bot.handlers import get_routers
+from bot.middlewares import ClientSyncMiddleware
 from clients.api import api_client
 from clients.logs import logs_client
 from core.settings import settings
@@ -12,9 +13,11 @@ from shared.bot.middleware import DatabaseMiddleware
 from shared.server.webhook import create_webhook_app
 
 db = Database(settings.DATABASE_URL)
+client_sync_middleware = ClientSyncMiddleware()
 
 
 async def _close_clients() -> None:
+    await client_sync_middleware.close()
     await api_client.close()
     await logs_client.close()
     await db.close()
@@ -37,6 +40,10 @@ def create_app():
     dispatcher.message.middleware(db_middleware)
     dispatcher.callback_query.middleware(db_middleware)
     dispatcher.inline_query.middleware(db_middleware)
+
+    dispatcher.message.middleware(client_sync_middleware)
+    dispatcher.callback_query.middleware(client_sync_middleware)
+    dispatcher.inline_query.middleware(client_sync_middleware)
 
     for router in get_routers():
         dispatcher.include_router(router)

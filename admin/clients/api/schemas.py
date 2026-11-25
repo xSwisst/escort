@@ -25,6 +25,7 @@ class AdminClientListItem(BaseModel):
     first_name: str | None = None
     last_name: str | None = None
     username: str | None = None
+    avatar_url: str | None = None
     active_city: str | None = None
     is_banned: bool = False
     registered_at: datetime

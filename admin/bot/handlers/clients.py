@@ -128,12 +128,15 @@ async def handle_clients_inline(query: InlineQuery) -> None:
             created_str = format_datetime_ru(reg_date) if reg_date else "—"
             desc = f"{username_text} | {client.user_id}\nДата регистрации: {created_str}"
 
+            raw_avatar = getattr(client, "avatar_url", None) or ""
+            thumb_url = raw_avatar if raw_avatar.startswith(("http://", "https://")) else _CLIENT_INLINE_ICON
+
             results.append(
                 InlineQueryResultArticle(
                     id=f"client:{client.user_id}",
                     title=full_name,
                     description=desc,
-                    thumbnail_url=_CLIENT_INLINE_ICON,
+                    thumbnail_url=thumb_url,
                     input_message_content=InputTextMessageContent(
                         message_text=f"get_client_profile_{client.user_id}",
                     ),

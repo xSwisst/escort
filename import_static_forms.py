@@ -12,11 +12,13 @@ import asyncio
 import json
 import os
 import random
+import re
 import secrets
 import string
 import sys
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
 import httpx
 from sqlalchemy import delete, select
@@ -120,14 +122,38 @@ def render_progress(current: int, total: int, *, width: int = 32) -> None:
 
 
 def _load_photos_secret() -> str:
-    if env_secret := (os.getenv("PHOTOS_SECRET_KEY") or os.getenv("API_SECRET_KEY")):
+    if env_secret := os.getenv("PHOTOS_SECRET_KEY"):
         return env_secret
     photos_env = ROOT_DIR / "photos" / ".env"
     if photos_env.exists():
         for line in photos_env.read_text(encoding="utf-8", errors="ignore").splitlines():
             if line.strip().startswith("API_SECRET_KEY="):
-                return line.split("=", 1)[1].strip().strip('"').strip("'")
+                val = line.split("=", 1)[1].strip().strip('"').strip("'")
+                if val:
+                    return val
+    if api_secret := os.getenv("API_SECRET_KEY"):
+        return api_secret
     return "change-me-use-openssl-rand-hex-32"
+
+
+async def _resolve_photos_url(configured_url: str) -> str:
+    candidates = []
+    if configured_url and configured_url.startswith("http://photos:"):
+        candidates.append(configured_url)
+    else:
+        candidates.append("http://photos:8005")
+        if configured_url:
+            candidates.append(configured_url)
+
+    async with httpx.AsyncClient(timeout=3.0) as client:
+        for url in candidates:
+            try:
+                r = await client.get(f"{url.rstrip('/')}/health")
+                if r.status_code == 200:
+                    return url.rstrip("/")
+            except Exception:
+                continue
+    return (configured_url or "http://photos:8005").rstrip("/")
 
 
 async def rehost_photo(
@@ -136,10 +162,13 @@ async def rehost_photo(
     *,
     photos_url: str,
     auth_token: str,
+    errors: list[str] | None = None,
 ) -> str | None:
     try:
         dl = await http_client.get(source_url, headers=DOWNLOAD_HEADERS, follow_redirects=True)
         if dl.status_code != 200 or not dl.content:
+            if errors is not None and len(errors) < 5:
+                errors.append(f"download {dl.status_code}: {source_url}")
             return None
         ctype = (dl.headers.get("content-type") or "image/jpeg").split(";")[0].strip().lower()
         if ctype not in ("image/jpeg", "image/png", "image/webp", "image/gif"):
@@ -147,14 +176,19 @@ async def rehost_photo(
         ext = {"image/png": ".png", "image/webp": ".webp", "image/gif": ".gif"}.get(ctype, ".jpg")
         upload_resp = await http_client.post(
             f"{photos_url.rstrip('/')}/internal/v1/files",
+            params={"category": "models"},
             headers={"Authorization": f"Bearer {auth_token}"},
             files={"file": (f"static{ext}", dl.content, ctype)},
         )
         if upload_resp.status_code != 200:
+            if errors is not None and len(errors) < 5:
+                errors.append(f"upload {upload_resp.status_code} ({photos_url}): {upload_resp.text[:160]}")
             return None
         payload = upload_resp.json()
         return payload.get("public_url") or payload.get("path")
-    except Exception:
+    except Exception as exc:
+        if errors is not None and len(errors) < 5:
+            errors.append(f"exception ({source_url}): {exc}")
         return None
 
 
@@ -175,21 +209,69 @@ def load_static_forms(static_dir: Path, *, limit: int | None = None) -> list[dic
     return items
 
 
-async def clean_static_forms(db_url: str) -> int:
+_PHOTO_FILE_RE = re.compile(r"^[a-f0-9]{64}\.(jpg|png|webp|gif)$")
+
+
+def _extract_photo_filename(storage_key: str) -> str | None:
+    path = urlparse(storage_key.strip()).path
+    name = path.rsplit("/", 1)[-1]
+    return name if _PHOTO_FILE_RE.fullmatch(name) else None
+
+
+async def _delete_photos_from_service(
+    storage_keys: list[str],
+    *,
+    photos_url: str,
+) -> int:
+    file_names = sorted({fn for k in storage_keys if (fn := _extract_photo_filename(k))})
+    if not file_names:
+        return 0
+
+    secret_key = _load_photos_secret()
+    audience = os.getenv("PHOTOS_AUDIENCE") or "photos_service"
+    auth_token = create_service_token(secret_key=secret_key, issuer="api", audience=audience, ttl_hours=1)
+    headers = {"Authorization": f"Bearer {auth_token}"}
+    base = photos_url.rstrip("/")
+    sem = asyncio.Semaphore(20)
+    deleted_count = 0
+
+    async with httpx.AsyncClient(timeout=15.0) as http_client:
+        async def _del_one(fn: str) -> None:
+            nonlocal deleted_count
+            async with sem:
+                try:
+                    resp = await http_client.delete(f"{base}/internal/v1/files/{fn}", headers=headers)
+                    if resp.status_code == 200:
+                        deleted_count += 1
+                except Exception:
+                    pass
+
+        await asyncio.gather(*(_del_one(fn) for fn in file_names))
+    return deleted_count
+
+
+async def clean_static_forms(db_url: str, *, photos_url: str) -> tuple[int, int]:
     db = Database(db_url)
+    all_storage_keys: list[str] = []
+    deleted_forms = 0
     try:
         async with db.session() as session:
             codes_stmt = select(FormPublication.form_code).where(FormPublication.is_static.is_(True))
             codes = list((await session.execute(codes_stmt)).scalars().all())
             if not codes:
-                return 0
+                return 0, 0
             for i in range(0, len(codes), 500):
                 batch = codes[i : i + 500]
+                keys_stmt = select(FormPhoto.storage_key).where(FormPhoto.form_code.in_(batch))
+                all_storage_keys.extend((await session.execute(keys_stmt)).scalars().all())
                 await session.execute(delete(Form).where(Form.code.in_(batch)))
             await session.commit()
-            return len(codes)
+            deleted_forms = len(codes)
     finally:
         await db.close()
+
+    deleted_photos = await _delete_photos_from_service(all_storage_keys, photos_url=photos_url)
+    return deleted_forms, deleted_photos
 
 
 async def import_forms(
@@ -235,6 +317,7 @@ async def import_forms(
                 shuffled_items = list(items)
                 random.shuffle(shuffled_items)
                 per_city_order: dict[int, int] = {}
+                rehost_errors: list[str] = []
 
                 for idx, item in enumerate(shuffled_items, start=1):
                     raw_photos = [str(p).strip() for p in (item.get("photos") or []) if str(p).strip()]
@@ -249,11 +332,18 @@ async def import_forms(
                             src_url,
                             photos_url=photos_url,
                             auth_token=auth_token,
+                            errors=rehost_errors,
                         )
                         if hosted:
                             uploaded_keys.append(hosted)
 
                     if not uploaded_keys:
+                        if idx >= 5 and saved == 0:
+                            sys.stdout.write("\n")
+                            print("ОШИБКА: первые 5 анкет не смогли загрузить фото в photos! Примеры ошибок:")
+                            for err in rehost_errors:
+                                print("  -", err)
+                            return 0
                         render_progress(idx, total)
                         continue
 
@@ -314,15 +404,17 @@ async def async_main() -> None:
     parser.add_argument("--limit", type=int, default=None, help="Optional max forms to import")
     parser.add_argument("--no-clean", action="store_true", help="Do NOT delete existing static forms before importing")
     parser.add_argument("--clean-only", action="store_true", help="Delete all existing static forms and exit")
+    parser.add_argument("--photos-url", default=None, help="Override photos service URL")
     parser.add_argument("--dry-run", action="store_true", help="Validate JSON and show progress without DB writes")
     args = parser.parse_args()
 
     db_url = os.getenv("DATABASE_URL") or "postgresql+asyncpg://admin:P6jpA-TkrrKW@postgres:5432/escort_db"
-    photos_url = os.getenv("PHOTOS_API_URL") or "http://photos:8005"
+    configured_photos_url = args.photos_url or os.getenv("PHOTOS_API_URL") or "http://photos:8005"
+    photos_url = configured_photos_url if args.dry_run else await _resolve_photos_url(configured_photos_url)
 
     if args.clean_only:
-        deleted = await clean_static_forms(db_url)
-        print(f"Удалено статических анкет: {deleted}")
+        deleted_forms, deleted_photos = await clean_static_forms(db_url, photos_url=photos_url)
+        print(f"Удалено статических анкет: {deleted_forms} | Удалено фото из photos: {deleted_photos}")
         return
 
     items = load_static_forms(Path(args.dir), limit=args.limit)
@@ -337,8 +429,8 @@ async def async_main() -> None:
         return
 
     if not args.no_clean:
-        deleted = await clean_static_forms(db_url)
-        print(f"Удалено старых статических анкет: {deleted}")
+        deleted_forms, deleted_photos = await clean_static_forms(db_url, photos_url=photos_url)
+        print(f"Удалено старых статических анкет: {deleted_forms} | Удалено старых фото: {deleted_photos}")
 
     saved = await import_forms(db_url, items, DEFAULT_CITIES, photos_url=photos_url)
     print(f"Готово! Загружено в БД: {saved} (фото перекачаны на наш хостинг)")

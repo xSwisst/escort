@@ -14,6 +14,9 @@ class Settings(BaseSettings):
     PHOTOS_SCHEME: str = "https"
     PHOTOS_DOMAIN: str = ""
     PHOTOS_MAX_FILE_SIZE_MB: int = 15
+    PHOTOS_WATERMARK_ENABLED: bool = True
+    PHOTOS_WATERMARK_TEXT: str = "elegant-agency.fun"
+    PHOTOS_WATERMARK_OPACITY: int = 115
 
     model_config = SettingsConfigDict(case_sensitive=True, extra="ignore")
 

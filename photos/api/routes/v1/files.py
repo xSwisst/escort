@@ -2,14 +2,20 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
 from fastapi.responses import FileResponse
 
 from api.dependencies import service_auth
 from assets.texts import t
 from core.settings import settings
 from schemas import FileDeleteResponse, FileUploadResponse
-from services import delete_file, get_file_path, save_upload_stream
+from services import (
+    ALLOWED_CATEGORIES,
+    delete_file,
+    get_file_path,
+    get_model_serving_path,
+    save_upload_stream,
+)
 
 router = APIRouter(tags=["photos-files"])
 
@@ -21,10 +27,10 @@ _ALLOWED_TYPES = {
 }
 
 
-def _build_public_url(file_name: str) -> str | None:
+def _build_public_url(category: str, file_name: str) -> str | None:
     if not settings.public_base_url:
         return None
-    return f"{settings.public_base_url}/c/{file_name}"
+    return f"{settings.public_base_url}/{category}/{file_name}"
 
 
 def _media_type(file_name: str) -> str:
@@ -41,7 +47,10 @@ def _media_type(file_name: str) -> str:
 async def upload_file(
     _: dict = Depends(service_auth),
     file: UploadFile = File(...),
+    category: str = Query(default="models"),
 ) -> FileUploadResponse:
+    if category not in ALLOWED_CATEGORIES:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="invalid_category")
     if file is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=t("error_file_is_required"))
     extension = _ALLOWED_TYPES.get(file.content_type or "")
@@ -56,6 +65,7 @@ async def upload_file(
             file,
             extension=extension,
             max_file_size_bytes=settings.max_file_size_bytes,
+            category=category,
         )
     except ValueError as exc:
         code = str(exc)
@@ -68,10 +78,23 @@ async def upload_file(
     return FileUploadResponse(
         file_name=file_name,
         content_hash=content_hash,
-        content_type=file.content_type or "application/octet-stream",
-        path=f"/c/{file_name}",
-        public_url=_build_public_url(file_name),
+        content_type="image/jpeg" if category == "clients" and extension != ".gif" else (file.content_type or "application/octet-stream"),
+        path=f"/{category}/{file_name}",
+        public_url=_build_public_url(category, file_name),
     )
+
+
+@router.delete("/internal/v1/files/{category}/{file_name}", response_model=FileDeleteResponse)
+async def remove_categorized_file(
+    category: str,
+    file_name: str,
+    _: dict = Depends(service_auth),
+) -> FileDeleteResponse:
+    if category not in ALLOWED_CATEGORIES:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="invalid_category")
+    if not delete_file(file_name, category=category):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=t("error_file_not_found"))
+    return FileDeleteResponse(file_name=file_name)
 
 
 @router.delete("/internal/v1/files/{file_name}", response_model=FileDeleteResponse)
@@ -84,9 +107,25 @@ async def remove_file(
     return FileDeleteResponse(file_name=file_name)
 
 
-@router.get("/c/{file_name}")
-async def get_public_file(file_name: str):
-    path = get_file_path(file_name)
+@router.get("/clients/{file_name}")
+async def get_client_file(file_name: str):
+    path = get_file_path(file_name, category="clients")
     if path is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=t("error_file_not_found"))
-    return FileResponse(path, media_type=_media_type(file_name))
+    return FileResponse(path, media_type=_media_type(path.name))
+
+
+@router.get("/models/{file_name}")
+async def get_model_file(file_name: str):
+    path = get_model_serving_path(file_name)
+    if path is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=t("error_file_not_found"))
+    return FileResponse(path, media_type=_media_type(path.name))
+
+
+@router.get("/c/{file_name}")
+async def get_legacy_file(file_name: str):
+    path = get_model_serving_path(file_name)
+    if path is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=t("error_file_not_found"))
+    return FileResponse(path, media_type=_media_type(path.name))
