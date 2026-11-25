@@ -175,7 +175,7 @@ export default function Experience() {
         className={s.skipLink}
         tabIndex={intro ? -1 : 0}
       >
-        Skip to content
+        Перейти к содержимому
       </a>
 
       <div className={s.progress} aria-hidden="true" />
@@ -184,15 +184,15 @@ export default function Experience() {
         <a
           className={s.wordmark}
           href="#top"
-          aria-label="Elegant Agency, home"
+          aria-label="Elegant Agency, на главную"
         >
           ELEGANT<span>AGENCY</span>
         </a>
 
-        <nav className={s.desktopNav} aria-label="Main navigation">
-          <a href="#experience">THE EXPERIENCE</a>
-          <a href="#muses">OUR MUSES</a>
-          <a href="#contact">CONTACT</a>
+        <nav className={s.desktopNav} aria-label="Основная навигация">
+          <a href="#experience">НАШ ПОДХОД</a>
+          <a href="#muses">НАШИ МУЗЫ</a>
+          <a href="#contact">КОНТАКТЫ</a>
         </nav>
 
         <button
@@ -201,7 +201,7 @@ export default function Experience() {
           onClick={() => setOverlay({ type: 'menu' })}
           aria-haspopup="dialog"
         >
-          MENU
+          МЕНЮ
           <span aria-hidden="true"><i /><i /></span>
         </button>
       </header>
@@ -220,7 +220,7 @@ export default function Experience() {
         <Footer open={setOverlay} />
       </div>
 
-      <div className={s.cursor} aria-hidden="true">VIEW ↗</div>
+      <div className={s.cursor} aria-hidden="true">СМОТРЕТЬ ↗</div>
 
       {overlay && (
         <Dialogs
@@ -236,7 +236,7 @@ export default function Experience() {
           id="intro"
           className={s.intro}
           ref={introNode}
-          aria-label="Opening sequence"
+          aria-label="Вводная заставка"
         >
           <div className={s.introBrand}>
             <div className={s.introWord}>
@@ -252,7 +252,7 @@ export default function Experience() {
             type="button"
             onClick={finish}
           >
-            SKIP INTRO ↗
+            ПРОПУСТИТЬ ↗
           </button>
         </div>
       )}

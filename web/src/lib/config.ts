@@ -81,24 +81,24 @@ export const site = {
 export const muses = [
   {
     id: '01',
-    title: 'The Poise',
-    note: 'A quiet confidence. An unmistakable presence.',
+    title: 'Грация',
+    note: 'Тихая уверенность. Безупречное присутствие.',
     index: 0,
-    chapter: 'Composure, without effort.',
+    chapter: 'Самообладание без лишних усилий.',
   },
   {
     id: '02',
-    title: 'The Presence',
-    note: 'Warmth, intelligence and a world of her own.',
+    title: 'Обаяние',
+    note: 'Теплота, интеллект и собственный притягательный мир.',
     index: 1,
-    chapter: 'The room changes.',
+    chapter: 'Пространство преображается.',
   },
   {
     id: '03',
-    title: 'The Intrigue',
-    note: 'A considered glance. A conversation worth having.',
+    title: 'Интрига',
+    note: 'Вдумчивый взгляд. Беседа, стоящая каждого мгновения.',
     index: 2,
-    chapter: 'Something left to discover.',
+    chapter: 'Всегда есть что открыть.',
   },
 ] as const;
 

@@ -2,9 +2,9 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'ELEGANT AGENCY — The art of private company',
+  title: 'ELEGANT AGENCY — Искусство приватного общения',
   description:
-    'Private by nature. A considered approach to adult companionship, personal introductions and exceptional occasions.',
+    'Приватность по природе. Изысканный подход к личному общению, знакомствам и исключительным моментам.',
   robots: { index: false, follow: false },
 };
 
@@ -18,7 +18,7 @@ export default function Layout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="ru">
       <head>
         <script src="/config.js" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />

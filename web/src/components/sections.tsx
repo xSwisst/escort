@@ -16,33 +16,33 @@ export function Hero() {
         index={2}
         priority
         className={s.heroPhoto}
-        alt="Fictional adult fashion model in a black evening dress, framed by burgundy architecture"
+        alt="Абстрактная архитектурная композиция Elegant Agency"
       />
       <div className={s.heroShade} />
 
       <div className={s.heroTopline} data-hero-detail>
-        <span>PRIVATE COMPANY. EXCEPTIONALLY CONSIDERED.</span>
-        <span>AN ELEGANT STATE OF MIND.</span>
+        <span>ЛИЧНЫЙ СЕРВИС. ИСКЛЮЧИТЕЛЬНОЕ ВНИМАНИЕ.</span>
+        <span>ЭЛЕГАНТНОСТЬ КАК ОБРАЗ МЫСЛЕЙ.</span>
       </div>
 
       <h1 className={s.heroTitle}>
-        <Mask className={s.heroElegance}>ELEGANCE</Mask>
-        <Mask className={s.heroArt}><i>is an art.</i></Mask>
+        <Mask className={s.heroElegance}>ЭЛЕГАНТНОСТЬ</Mask>
+        <Mask className={s.heroArt}><i>— это искусство.</i></Mask>
       </h1>
 
       <div className={s.heroBottom} data-hero-detail>
         <a href="#philosophy" className={s.scrollLink}>
-          SCROLL TO DISCOVER <Arrow down />
+          УЗНАТЬ БОЛЬШЕ <Arrow down />
         </a>
         <p>
-          The rarest kind of connection
+          Самая редкая близость
           <br />
-          never needs an audience.
+          не нуждается в зрителях.
         </p>
         <span className={s.heroEdition}>
-          A PRIVATE WORLD
+          ПРИВАТНЫЙ МИР
           <br />
-          18+ / BY NATURE
+          18+ / ПО ПРИРОДЕ
         </span>
       </div>
 
@@ -53,8 +53,8 @@ export function Hero() {
 
 export function Philosophy() {
   const words = [
-    'Some', 'moments', 'are', 'not',
-    'meant', 'for', 'everyone.',
+    'Некоторые', 'моменты', 'созданы', 'не',
+    'для', 'всех.',
   ];
 
   return (
@@ -64,7 +64,7 @@ export function Philosophy() {
       className={s.philosophy}
       data-scene="philosophy"
     >
-      <Eyebrow number="02">THE PHILOSOPHY</Eyebrow>
+      <Eyebrow number="02">ФИЛОСОФИЯ</Eyebrow>
 
       <h2 className={s.statement} aria-label={words.join(' ')}>
         {words.map((word, i) => (
@@ -72,7 +72,7 @@ export function Philosophy() {
             key={word}
             data-word
             aria-hidden="true"
-            className={i === 6 ? s.serif : ''}
+            className={i === words.length - 1 ? s.serif : ''}
           >
             {word}{' '}
           </span>
@@ -80,15 +80,15 @@ export function Philosophy() {
       </h2>
 
       <div className={s.philosophyAside}>
-        <span className={s.micro}>THE ART OF PERSONAL ATTENTION</span>
+        <span className={s.micro}>ИСКУССТВО ЛИЧНОГО ВНИМАНИЯ</span>
         <p>
-          There is a particular pleasure in being understood.
-          In company that feels natural. In an evening shaped
-          around you, rather than an itinerary.
+          Особое удовольствие — быть понятым без лишних слов.
+          Быть в компании, где всё естественно. В вечере, созданном
+          вокруг вас, а не по чужому расписанию.
         </p>
         <p>
-          Elegant begins with a conversation. A thoughtful
-          introduction. The space to let something exceptional unfold.
+          Элегантность начинается с беседы. Вдумчивого
+          знакомства. И пространства, где рождается нечто исключительное.
         </p>
       </div>
     </section>
@@ -102,7 +102,7 @@ export function PrivateWorld() {
       className={s.world}
       data-scene="world"
     >
-      <Eyebrow number="03">A WORLD APART</Eyebrow>
+      <Eyebrow number="03">ОСОБЫЙ МИР</Eyebrow>
 
       <div className={s.worldCollage} aria-hidden="true">
         <Photo index={0} className={s.worldOne} />
@@ -113,24 +113,24 @@ export function PrivateWorld() {
       <Photo
         wide
         className={s.worldCampaign}
-        alt="Three fictional adult models photographed in one restrained black and burgundy fashion campaign"
+        alt="Абстрактное художественное панно Elegant Agency в глубоких винных и бордовых тонах"
       />
 
       <div className={s.worldVeil} />
 
       <h2 className={s.worldTitle}>
-        <span data-world-word>PRIVATE</span>
-        <i data-world-word>by nature.</i>
+        <span data-world-word>ПРИВАТНО</span>
+        <i data-world-word>по природе.</i>
       </h2>
 
       <p className={s.worldCaption}>
-        A different rhythm.
+        Другой ритм.
         <br />
-        An entirely personal world.
+        Исключительно ваш личный мир.
       </p>
 
       <span className={s.worldSide}>
-        CONTROLLED INTENSITY / UNFORCED CONNECTION
+        БЕЗУПРЕЧНЫЙ СТИЛЬ / ЕСТЕСТВЕННАЯ БЛИЗОСТЬ
       </span>
     </section>
   );
@@ -145,18 +145,18 @@ export function SelectedMuses({ open }: Props) {
       data-scene="gallery"
     >
       <div className={s.galleryHead}>
-        <Eyebrow number="04">SELECTED MUSES</Eyebrow>
+        <Eyebrow number="04">НАШИ МУЗЫ</Eyebrow>
 
         <h2>
-          Presence.
+          Присутствие.
           <br />
-          <i>Beyond appearance.</i>
+          <i>Больше, чем внешность.</i>
         </h2>
 
         <p>
-          Three expressions of individuality.
+          Три грани индивидуальности.
           <br />
-          <span>Editorial portraits · fictional identities.</span>
+          <span>Галерея образов · авторские концепты.</span>
         </p>
       </div>
 
@@ -166,23 +166,23 @@ export function SelectedMuses({ open }: Props) {
             <button
               type="button"
               data-muse={i}
-              data-cursor="VIEW"
+              data-cursor="СМОТРЕТЬ"
               className={s.museButton}
               onClick={() => open({ type: 'muse', index: i })}
               aria-label={
-                'Discover ' + muse.title +
-                ', editorial portrait ' + muse.id
+                'Познакомиться: ' + muse.title +
+                ', образ ' + muse.id
               }
               key={muse.id}
             >
               <div className={s.museImage}>
                 <Photo
                   index={muse.index}
-                  alt={'Fictional adult fashion portrait: ' + muse.title}
+                  alt={'Художественный образ: ' + muse.title}
                 />
                 <span className={s.imageRed} />
                 <span className={s.museDiscover}>
-                  DISCOVER <Arrow />
+                  ПОЗНАКОМИТЬСЯ <Arrow />
                 </span>
               </div>
 
@@ -204,16 +204,16 @@ export function SelectedMuses({ open }: Props) {
 export function TheExperience() {
   const entries = [
     [
-      'A considered introduction',
-      'A conversation about the company you enjoy, the occasion you have in mind and the details that matter to you. Personal attention starts with listening.',
+      'Вдумчивое знакомство',
+      'Беседа о компании, которую вы цените, о событии, которое предстоит, и о деталях, важных для вас. Личный подход начинается с умения слушать.',
     ],
     [
-      'An occasion, made personal',
-      'An intimate dinner. A cultural evening. A meaningful celebration. The setting is only the beginning; the connection gives it character.',
+      'Событие, ставшее особенным',
+      'Уединенный ужин. Культурный вечер. Значимое торжество. Обстановка — лишь начало; характер вечеру задает общение.',
     ],
     [
-      'Room to be yourself',
-      'Thoughtful companionship leaves space for the unscripted. Mutual respect, clear expectations and the freedom to enjoy the moment.',
+      'Пространство быть собой',
+      'Истинное взаимопонимание оставляет место непринужденности. Взаимное уважение, прозрачность ожиданий и свобода наслаждаться моментом.',
     ],
   ];
 
@@ -224,18 +224,18 @@ export function TheExperience() {
       className={s.experience}
       data-scene="experience"
     >
-      <Eyebrow number="05">THE EXPERIENCE</Eyebrow>
+      <Eyebrow number="05">НАШ ПОДХОД</Eyebrow>
 
       <h2 className={s.experienceTitle}>
-        <span data-experience-line>YOUR TIME.</span>
-        <i data-experience-line>Your terms.</i>
+        <span data-experience-line>ВАШЕ ВРЕМЯ.</span>
+        <i data-experience-line>Ваши правила.</i>
       </h2>
 
       <div className={s.experienceBody}>
         <p className={s.experienceIntro}>
-          The best plans leave
+          Лучшие планы оставляют
           <br />
-          something to possibility.
+          место для вдохновения.
         </p>
 
         <div className={s.experienceList}>
@@ -262,13 +262,13 @@ export function Discretion() {
       className={s.discretion}
       data-scene="discretion"
     >
-      <Eyebrow number="06">THE UNSPOKEN STANDARD</Eyebrow>
+      <Eyebrow number="06">НЕГЛАСНЫЙ СТАНДАРТ</Eyebrow>
 
       <div className={s.discretionStage}>
         <h2>
-          <Characters text="DISCRETION" />
+          <Characters text="КОНФИДЕНЦИАЛЬНОСТЬ" />
           <span className={s.discretionItalic}>
-            <i>is our signature.</i>
+            <i>— наш главный принцип.</i>
           </span>
         </h2>
         <span className={s.discretionShutter} aria-hidden="true" />
@@ -276,16 +276,16 @@ export function Discretion() {
 
       <div className={s.discretionFoot}>
         <p>
-          Some things are better
+          Некоторые вещи остаются
           <br />
-          kept between us.
+          только между нами.
         </p>
         <p>
-          Only the details you choose to share.
+          Только те подробности, которыми вы решите поделиться.
           <br />
-          A conversation handled with care.
+          Диалог, окруженный абсолютной заботой.
         </p>
-        <span>PRIVATE, BY CHOICE.</span>
+        <span>ПРИВАТНОСТЬ ПО УБЕЖДЕНИЮ.</span>
       </div>
     </section>
   );
@@ -301,19 +301,19 @@ export function PrivateEnquiry({ open }: Props) {
     >
       <div className={s.enquiryCurtain} aria-hidden="true" />
       <Eyebrow number="07">
-        AN INVITATION, NOT AN ANNOUNCEMENT
+        ПРИГЛАШЕНИЕ, А НЕ ЗАЯВЛЕНИЕ
       </Eyebrow>
 
       <h2>
-        <Mask>ENTER THE</Mask>
-        <Mask><i>private world.</i></Mask>
+        <Mask>ВОЙДИТЕ В</Mask>
+        <Mask><i>приватный мир.</i></Mask>
       </h2>
 
       <div className={s.enquiryBottom}>
         <p>
-          Every exceptional connection
+          Каждая исключительная встреча
           <br />
-          begins with a simple hello.
+          начинается с простого приветствия.
         </p>
 
         <button
@@ -322,7 +322,7 @@ export function PrivateEnquiry({ open }: Props) {
           data-magnetic
           onClick={() => open({ type: 'enquiry' })}
         >
-          <span>BEGIN A PRIVATE ENQUIRY</span>
+          <span>ОСТАВИТЬ ЗАЯВКУ</span>
           <Arrow />
         </button>
       </div>
@@ -334,14 +334,14 @@ export function Footer({ open }: Props) {
   return (
     <footer className={s.footer} data-scene="footer">
       <div className={s.footerTop}>
-        <span>08 / THE FINAL WORD</span>
-        <a href="#top">BACK TO THE BEGINNING <Arrow /></a>
+        <span>08 / ЗАКЛЮЧИТЕЛЬНОЕ СЛОВО</span>
+        <a href="#top">В НАЧАЛО <Arrow /></a>
       </div>
 
       <a
         href="#top"
         className={s.footerBrand}
-        aria-label="Elegant Agency, back to top"
+        aria-label="Elegant Agency, наверх"
       >
         <span data-footer-brand>ELEGANT</span>
         <i data-footer-brand>Agency.</i>
@@ -354,16 +354,16 @@ export function Footer({ open }: Props) {
             type="button"
             onClick={() => open({ type: 'privacy' })}
           >
-            PRIVACY
+            КОНФИДЕНЦИАЛЬНОСТЬ
           </button>
           <button
             type="button"
             onClick={() => open({ type: 'legal' })}
           >
-            SITE INFORMATION
+            ИНФОРМАЦИЯ О САЙТЕ
           </button>
         </div>
-        <span>EXCLUSIVELY FOR ADULTS. 18+</span>
+        <span>ИСКЛЮЧИТЕЛЬНО ДЛЯ СОВЕРШЕННОЛЕТНИХ. 18+</span>
       </div>
     </footer>
   );

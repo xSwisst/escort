@@ -5,11 +5,12 @@
   --font-bodoni: 'Bodoni Moda', 'Didot', 'Bodoni MT', Georgia, serif;
   --black: #080808;
   --surface: #101010;
-  --oxblood: #1a0508;
-  --burgundy: #39070f;
-  --wine: #720c1b;
-  --red: #ae1026;
-  --ivory: #e7ded9;
+  --oxblood: #180306;
+  --burgundy: #380610;
+  --wine: #7c0c1e;
+  --red: #e51937;
+  --red-hover: #ff2a4b;
+  --ivory: #ece3de;
   color-scheme: dark;
 }
 

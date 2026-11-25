@@ -85,11 +85,11 @@ export default function Dialogs({
   }
 
   const title =
-    value.type === 'menu' ? 'A private world.' :
-    value.type === 'enquiry' ? 'Let us begin.' :
+    value.type === 'menu' ? 'Приватный мир.' :
+    value.type === 'enquiry' ? 'Давайте начнем.' :
     value.type === 'muse' ? muses[value.index].title :
-    value.type === 'privacy' ? 'Privacy, considered.' :
-    'Site information.';
+    value.type === 'privacy' ? 'Конфиденциальность.' :
+    'Информация о сайте.';
 
   return (
     <dialog
@@ -112,9 +112,9 @@ export default function Dialogs({
             type="button"
             className={s.closeButton}
             onClick={() => close()}
-            aria-label="Close dialog"
+            aria-label="Закрыть окно"
           >
-            <span>CLOSE</span>
+            <span>ЗАКРЫТЬ</span>
             <svg
               width="20"
               height="20"
@@ -135,14 +135,14 @@ export default function Dialogs({
             <h2 id={headingId} className={s.menuHeading}>{title}</h2>
 
             <nav
-              aria-label="Full navigation"
+              aria-label="Полная навигация"
               className={s.menuLinks}
             >
               {[
-                ['philosophy', 'The philosophy'],
-                ['muses', 'Our muses'],
-                ['experience', 'The experience'],
-                ['contact', 'Private enquiry'],
+                ['philosophy', 'Философия'],
+                ['muses', 'Наши музы'],
+                ['experience', 'Наш подход'],
+                ['contact', 'Личный запрос'],
               ].map(([id, label], i) => (
                 <div className={s.mask} key={id}>
                   <a
@@ -174,7 +174,7 @@ export default function Dialogs({
                     rel="noopener noreferrer"
                   >
                     <span>05</span>
-                    <span>Telegram Bot</span>
+                    <span>Telegram-бот</span>
                     <Arrow />
                   </a>
                 </div>
@@ -182,19 +182,19 @@ export default function Dialogs({
             </nav>
 
             <p className={s.menuFoot}>
-              PRIVATE BY NATURE. / EXCLUSIVELY 18+
+              ПРИВАТНОСТЬ ПО ПРИРОДЕ. / СТРОГО 18+
             </p>
           </>
         ) : value.type === 'muse' ? (
           <div className={s.profile}>
             <Photo
               index={muses[value.index].index}
-              alt={'Fictional adult fashion portrait: ' + title}
+              alt={'Художественный образ: ' + title}
             />
 
             <div>
               <p className={s.micro}>
-                EDITORIAL PORTRAIT / {muses[value.index].id}
+                ОБРАЗ / {muses[value.index].id}
               </p>
 
               <h2 id={headingId}>{title}</h2>
@@ -202,9 +202,9 @@ export default function Dialogs({
               <p>{muses[value.index].note}</p>
 
               <p className={s.profileNote}>
-                A fictional adult muse from the Elegant editorial
-                collection. The portrait expresses an atmosphere;
-                it is not a live availability listing.
+                Авторский образ из коллекции Elegant.
+                Портрет передает настроение и атмосферу;
+                не является публичным каталогом или списком доступности.
               </p>
 
               <button
@@ -215,68 +215,66 @@ export default function Dialogs({
                   muse: title,
                 })}
               >
-                START A CONVERSATION <Arrow />
+                НАЧАТЬ ДИАЛОГ <Arrow />
               </button>
             </div>
           </div>
         ) : value.type === 'enquiry' ? (
           <div className={s.formLayout}>
             <div>
-              <p className={s.micro}>A PERSONAL INTRODUCTION</p>
+              <p className={s.micro}>ЛИЧНОЕ ЗНАКОМСТВО</p>
               <h2 id={headingId}>{title}</h2>
               <p>
-                A few considered details.
+                Несколько важных деталей.
                 <br />
-                The beginning of a conversation.
+                Начало нашего диалога.
               </p>
             </div>
             <EnquiryForm muse={value.muse} />
           </div>
         ) : (
           <div className={s.legalCopy}>
-            <p className={s.micro}>ELEGANT AGENCY / INFORMATION</p>
+            <p className={s.micro}>ELEGANT AGENCY / ИНФОРМАЦИЯ</p>
             <h2 id={headingId}>{title}</h2>
 
             {value.type === 'privacy' ? (
               <>
                 <p>
-                  Enquiry details stay in this browser until you
-                  choose to copy them, download them or open your
-                  email application. They are not sent to a server
-                  by this website.
+                  Параметры вашего запроса сохраняются исключительно
+                  в вашем браузере до тех пор, пока вы сами не решите
+                  скопировать их, сохранить или отправить по почте.
+                  Этот сайт не передает данные на сторонние серверы.
                 </p>
                 <p>
-                  Session storage remembers whether you have seen
-                  the opening sequence. Closing your browsing
-                  session clears that preference. No analytics
-                  or advertising trackers are included.
+                  Сессионное хранилище запоминает только факт
+                  просмотра вступительной заставки. Закрытие браузера
+                  удаляет эти данные. На сайте отсутствуют сторонние
+                  трекеры и рекламная аналитика.
                 </p>
                 <p>
-                  If you send an email, your chosen email provider
-                  handles that communication under its own privacy
-                  terms. No claim of anonymous or encrypted
-                  delivery is made here.
+                  При отправке письма ваш почтовый сервис обрабатывает
+                  сообщение в соответствии со своими правилами
+                  конфиденциальности. Сервис не заявляет об анонимной
+                  или сквозной криптографической доставке писем.
                 </p>
               </>
             ) : (
               <>
                 <p>
-                  Exclusively for adults aged 18 and over.
-                  This website presents an editorial concept for
-                  private social companionship and personal
-                  introductions.
+                  Исключительно для лиц старше 18 лет.
+                  Данный сайт представляет концепцию приватного
+                  персонального сопровождения и знакомств.
                 </p>
                 <p>
-                  All campaign portraits depict fictional adults.
-                  Editorial titles are not verified profiles or
-                  statements of availability. No bookings or
-                  payments are processed through this website.
+                  Все портреты являются художественными образами.
+                  Названия и титулы не являются подтвержденными анкетами
+                  или гарантией доступности. Через этот сайт не производятся
+                  бронирования или финансовые транзакции.
                 </p>
                 <p>
-                  Any introduction requires mutual consent and
-                  clear expectations. Operator details and
-                  contact information must be supplied by the
-                  agency before commercial launch.
+                  Любое знакомство требует взаимного согласия и четких
+                  договоренностей. Контактные данные и информация оператора
+                  предоставляются агентством при личном обращении.
                 </p>
               </>
             )}
@@ -297,27 +295,27 @@ function EnquiryForm({ muse }: { muse?: string }) {
     const data = new FormData(event.currentTarget);
 
     setDraft([
-      'PRIVATE ENQUIRY — ELEGANT AGENCY',
+      'ЛИЧНЫЙ ЗАПРОС — ELEGANT AGENCY',
       '',
-      'Name: ' + String(data.get('name')).trim(),
-      'Contact: ' + String(data.get('email')).trim(),
-      muse ? 'Editorial interest: ' + muse : '',
+      'Имя: ' + String(data.get('name')).trim(),
+      'Контакт: ' + String(data.get('email')).trim(),
+      muse ? 'Интересующий образ: ' + muse : '',
       '',
       String(data.get('note')).trim(),
     ].filter(Boolean).join('\n'));
 
     setMessage(
-      'Your enquiry is prepared. Choose how you would like to share it.'
+      'Ваш запрос подготовлен. Выберите удобный способ отправить его.'
     );
   }
 
   async function copy() {
     try {
       await navigator.clipboard.writeText(draft);
-      setMessage('Enquiry copied.');
+      setMessage('Запрос скопирован в буфер обмена.');
     } catch {
       setMessage(
-        'Select and copy your enquiry from the text below.'
+        'Выделите и скопируйте текст запроса ниже.'
       );
     }
   }
@@ -325,19 +323,19 @@ function EnquiryForm({ muse }: { muse?: string }) {
   return (
     <form className={s.form} onSubmit={prepare}>
       <label htmlFor={prefix + '-name'}>
-        YOUR NAME
+        ВАШЕ ИМЯ
         <input
           id={prefix + '-name'}
           name="name"
           autoComplete="name"
           maxLength={100}
           required
-          placeholder="How should we address you?"
+          placeholder="Как к вам обращаться?"
         />
       </label>
 
       <label htmlFor={prefix + '-email'}>
-        CONTACT EMAIL
+        EMAIL ДЛЯ СВЯЗИ
         <input
           id={prefix + '-email'}
           name="email"
@@ -345,32 +343,31 @@ function EnquiryForm({ muse }: { muse?: string }) {
           autoComplete="email"
           maxLength={200}
           required
-          placeholder="Your preferred email address"
+          placeholder="Ваш контактный email"
         />
       </label>
 
       <label htmlFor={prefix + '-note'}>
-        A FEW WORDS
+        НЕСКОЛЬКО СЛОВ
         <textarea
           id={prefix + '-note'}
           name="note"
           maxLength={2000}
           rows={3}
           required
-          placeholder="The occasion. The atmosphere. What matters to you."
+          placeholder="Повод встречи. Атмосфера. Что для вас особенно важно."
         />
       </label>
 
       <label className={s.consent}>
         <input type="checkbox" required />
         <span>
-          I am 18 or over and understand that this step prepares
-          an enquiry for me to share.
+          Мне исполнилось 18 лет, и я понимаю, что это действие формирует черновик запроса.
         </span>
       </label>
 
       <button type="submit" className={s.cta}>
-        PREPARE MY ENQUIRY <Arrow />
+        СФОРМИРОВАТЬ ЗАПРОС <Arrow />
       </button>
 
       <p className={s.status} role="status" aria-live="polite">
@@ -380,7 +377,7 @@ function EnquiryForm({ muse }: { muse?: string }) {
       {draft && (
         <div className={s.draft}>
           <label htmlFor={prefix + '-draft'}>
-            YOUR PRIVATE ENQUIRY
+            ВАШ ПРИВАТНЫЙ ЗАПРОС
           </label>
 
           <textarea
@@ -392,7 +389,7 @@ function EnquiryForm({ muse }: { muse?: string }) {
 
           <div>
             <button type="button" onClick={copy}>
-              COPY ENQUIRY <Arrow />
+              СКОПИРОВАТЬ <Arrow />
             </button>
 
             <a
@@ -402,7 +399,7 @@ function EnquiryForm({ muse }: { muse?: string }) {
               }
               download="elegant-enquiry.txt"
             >
-              SAVE DRAFT <Arrow />
+              СОХРАНИТЬ ФАЙЛ <Arrow />
             </a>
 
             {site.contactEmail && (
@@ -410,12 +407,12 @@ function EnquiryForm({ muse }: { muse?: string }) {
                 href={
                   'mailto:' + site.contactEmail +
                   '?subject=' +
-                  encodeURIComponent('Private enquiry — Elegant Agency') +
+                  encodeURIComponent('Личный запрос — Elegant Agency') +
                   '&body=' +
                   encodeURIComponent(draft)
                 }
               >
-                OPEN EMAIL <Arrow />
+                ОТПРАВИТЬ EMAIL <Arrow />
               </a>
             )}
 
@@ -425,7 +422,7 @@ function EnquiryForm({ muse }: { muse?: string }) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                OPEN TELEGRAM BOT <Arrow />
+                ОТКРЫТЬ TELEGRAM-БОТ <Arrow />
               </a>
             )}
           </div>
