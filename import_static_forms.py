@@ -334,7 +334,7 @@ async def import_forms(
                             auth_token=auth_token,
                             errors=rehost_errors,
                         )
-                        if hosted:
+                        if hosted and hosted not in uploaded_keys:
                             uploaded_keys.append(hosted)
 
                     if not uploaded_keys:

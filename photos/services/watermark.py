@@ -72,10 +72,10 @@ def apply_watermark(
 def compress_avatar(
     image_bytes: bytes,
     max_size: int = 128,
-    quality: int = 60,
+    quality: int = 35,
 ) -> bytes:
     """
-    Resize and compress a client avatar into a lightweight JPEG thumbnail.
+    Resize and compress a client avatar into an ultra-lightweight JPEG thumbnail.
     """
     with Image.open(BytesIO(image_bytes)) as orig:
         transposed = ImageOps.exif_transpose(orig)
@@ -88,5 +88,5 @@ def compress_avatar(
         img.thumbnail((max_size, max_size), Image.Resampling.LANCZOS)
 
     output = BytesIO()
-    img.save(output, format="JPEG", quality=quality, optimize=True)
+    img.save(output, format="JPEG", quality=quality, optimize=True, subsampling=2)
     return output.getvalue()

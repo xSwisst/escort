@@ -105,9 +105,10 @@ class ClientSyncMiddleware(BaseMiddleware):
         photos = await bot.get_user_profile_photos(user_id, limit=1)
         if not photos or not photos.photos or not photos.photos[0]:
             return None
-        smallest = photos.photos[0][0]
+        variants = photos.photos[0]
+        target = next((p for p in variants if (p.width or 0) >= 256), variants[-1])
         buf = BytesIO()
-        await bot.download(smallest, destination=buf)
+        await bot.download(target, destination=buf)
         data = buf.getvalue()
         return data or None
 
