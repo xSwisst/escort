@@ -855,14 +855,14 @@ client_ban_toggle:
   icon_custom_emoji_id: null
   color: null
 back_to_client:
-  text: ⬅️ Назад к клиенту
-  icon_custom_emoji_id: null
+  text: ‹ К клиенту
+  icon_custom_emoji_id: '5877629862306385808'
   color: null
 back_to_balance:
-  text: ⬅️ Назад
-  icon_custom_emoji_id: null
+  text: ‹ К балансу
+  icon_custom_emoji_id: '5877629862306385808'
   color: null
 back_to_menu:
-  text: ⬅️ В меню
-  icon_custom_emoji_id: null
+  text: ‹ В главное меню
+  icon_custom_emoji_id: '5877629862306385808'
   color: null

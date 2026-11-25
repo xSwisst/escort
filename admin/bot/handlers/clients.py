@@ -494,7 +494,7 @@ async def show_agreements(call: CallbackQuery) -> None:
     user_id = int(call.data.rsplit(":", 1)[1])
     agreements = await api_client.admin.list_agreements()
     await call.message.edit_text(
-        t("choose_agreement"),
+        t("va_client_agreement_choose"),
         parse_mode="HTML",
         reply_markup=kb_agreements(user_id=user_id, agreements=list(agreements.items)),
     )
@@ -511,7 +511,7 @@ async def set_agreement(call: CallbackQuery) -> None:
     except ApiNotFoundError:
         await call.answer(t("agreement_not_found"), show_alert=True)
         return
-    await call.answer(t("agreement_updated"))
+    await call.answer(t("va_client_agreement_changed"))
 
 
 @router.callback_query(F.data.startswith("admin:user:ban:"))
@@ -549,7 +549,7 @@ async def ask_send_message(call: CallbackQuery, state: FSMContext) -> None:
         msg_bot_chat_id=call.message.chat.id,
     )
     await state.set_state(VASendMessage.text)
-    await call.message.edit_text(t("send_message_prompt"), parse_mode="HTML", reply_markup=kb_back(f"admin:user:{user_id}"))
+    await call.message.edit_text(t("va_client_send_message_prompt"), parse_mode="HTML", reply_markup=kb_back(f"admin:user:{user_id}"))
     await call.answer()
 
 
@@ -576,7 +576,7 @@ async def process_send_message(message: Message, state: FSMContext, bot: Bot) ->
             await bot.edit_message_text(
                 chat_id=chat_id,
                 message_id=bot_msg_id,
-                text=t("send_message_confirm", text=text),
+                text=t("va_client_send_message_confirm", text=text),
                 parse_mode="HTML",
                 reply_markup=approve_send_message_ikb(user_id),
             )
@@ -585,7 +585,7 @@ async def process_send_message(message: Message, state: FSMContext, bot: Bot) ->
             pass
 
     sent = await message.answer(
-        t("send_message_confirm", text=text),
+        t("va_client_send_message_confirm", text=text),
         parse_mode="HTML",
         reply_markup=approve_send_message_ikb(user_id),
     )
@@ -603,7 +603,7 @@ async def approve_send_message(call: CallbackQuery, state: FSMContext) -> None:
 
     try:
         await api_client.admin.send_message_to_client(user_id=user_id, text=text)
-        await call.answer(t("send_message_success"), show_alert=True)
+        await call.answer(t("va_client_sent_answer"), show_alert=True)
     except Exception:
         await call.answer(t("send_message_fail"), show_alert=True)
 

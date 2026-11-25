@@ -2196,7 +2196,8 @@ va_malling_button_delete_confirm: '<blockquote>❗️ <b>Подтвердить 
   <i>— После подтверждения удаления кнопки, она будет удалена из сообщения рассылки.</i>
 
   '
-va_client_card: '<blockquote>👤 <b>Клиент</b></blockquote>
+va_client_card: |-
+  <blockquote>👤 <b>Клиент</b></blockquote>
   <b>• Имя:</b> <code>{client_name}</code>
   <b>• Username:</b> {username}
   <b>• ID:</b> <code>{client_id}</code>
@@ -2215,7 +2216,12 @@ va_client_card: '<blockquote>👤 <b>Клиент</b></blockquote>
   <b>• Бан:</b> {ban}
 
   <blockquote>🕒 Последнее действие: <b>{last_active}</b>
-  🕗 Зарегистрирован: <b>{registered}</b></blockquote>'
+  🕗 Зарегистрирован: <b>{registered}</b></blockquote>
+client_name_missing: Клиент
+client_username_missing: Отсутствует
+client_city_missing: Не выбран
+client_promo_missing: Отсутствует
+client_agreement_missing: Не выбрано
 client_ban_status_locked: 🔒 Заблокирован
 client_ban_status_unlocked: 🔓 Разблокирован
 va_client_card_worker: '
