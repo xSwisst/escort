@@ -166,9 +166,32 @@ class PromosListResponse(BaseModel):
 # ── Broadcast ────────────────────────────────────────────────────────────────
 
 class BroadcastResponse(BaseModel):
-    sent: int
-    failed: int
-    total: int
+    sent: int = 0
+    failed: int = 0
+    total: int = 0
+    total_queued: int = 0
+    success: bool = True
+
+
+class AdminInfo(BaseModel):
+    id: int
+    telegram_id: int
+    username: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
+    created_at: datetime | None = None
+
+
+class MainBotInfo(BaseModel):
+    is_alive: bool = False
+    username: str | None = None
+    full_name: str | None = None
+
+
+class WorkerClientStats(BaseModel):
+    today: int = 0
+    month: int = 0
+    all: int = 0
 
 
 # ── Cards ────────────────────────────────────────────────────────────────────

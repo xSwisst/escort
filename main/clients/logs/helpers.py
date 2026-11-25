@@ -8,22 +8,34 @@ from .client import logs_client
 logger = logging.getLogger(__name__)
 
 
-_client_id_cache: dict[int, int] = {}
+_client_meta_cache: dict[int, dict[str, Any]] = {}
 
 
-async def _resolve_client_db_id(user_id: int) -> int | None:
-    if user_id in _client_id_cache:
-        return _client_id_cache[user_id]
+async def _resolve_client_meta(user_id: int) -> dict[str, Any]:
+    cached = _client_meta_cache.get(user_id)
+    if cached and cached.get("admin_id") is not None:
+        return cached
     try:
-        from clients.api import api_client
+        from repository.repositories.clients import ClientRepository
+        from shared.bot.session import resolve_session
 
-        profile = await api_client.profile.get_profile(user_id)
-        if profile and profile.id:
-            _client_id_cache[user_id] = profile.id
-            return profile.id
+        async with resolve_session() as session:
+            client = await ClientRepository(session).get(user_id, include_admin=True)
+            if client:
+                meta: dict[str, Any] = {
+                    "id": client.id,
+                    "admin_id": client.admin_id,
+                }
+                if client.admin is not None:
+                    admin_name = f"{client.admin.first_name or ''} {client.admin.last_name or ''}".strip()
+                    meta["admin_telegram_id"] = client.admin.telegram_id
+                    meta["admin_username"] = client.admin.username
+                    meta["admin_name"] = admin_name or client.admin.username or f"#{client.admin.id}"
+                _client_meta_cache[user_id] = meta
+                return meta
     except Exception as exc:
-        logger.debug("Failed to resolve client db_id for user_id=%s: %s", user_id, exc)
-    return None
+        logger.debug("Failed to resolve client meta for user_id=%s: %s", user_id, exc)
+    return cached or {}
 
 
 async def emit_log_event(
@@ -33,11 +45,6 @@ async def emit_log_event(
 ) -> bool:
     """
     Отправляет событие в logs сервис.
-    
-    Args:
-        event_type: Тип события (new_user, add_city, new_order и т.д.)
-        user_id: ID пользователя
-        data: Дополнительные данные события
     """
     if data is None:
         data = {}
@@ -45,10 +52,11 @@ async def emit_log_event(
     if "user_id" not in data:
         data["user_id"] = user_id
 
-    if not data.get("id"):
-        db_id = await _resolve_client_db_id(user_id)
-        if db_id:
-            data["id"] = db_id
+    if not data.get("id") or not data.get("admin_id"):
+        meta = await _resolve_client_meta(user_id)
+        for key, value in meta.items():
+            if value is not None and not data.get(key):
+                data[key] = value
 
     try:
         await logs_client.send_event(

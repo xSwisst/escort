@@ -16,7 +16,11 @@ back_to_city: {text: "‹ К выбору города", icon_custom_emoji_id: n
 
 confirm: {text: "Подтвердить", icon_custom_emoji_id: "5776375003280838798", color: null}
 cancel: {text: "Отмена", icon_custom_emoji_id: "5778527486270770928", color: null}
-main_menu_reply: {text: "Главное меню", icon_custom_emoji_id: "5276037869079666921", color: null}
+
+reply_models: {text: "Модели", icon_custom_emoji_id: "5765017520612315383", color: null}
+reply_profile: {text: "Профиль", icon_custom_emoji_id: "4904848288345228262", color: null}
+reply_search_code: {text: "Поиск по коду", icon_custom_emoji_id: "5870974879200711167", color: null}
+reply_information: {text: "Информация (о нас)", icon_custom_emoji_id: "5879785854284599288", color: null}
 
 agreement: {text: "Соглашение", icon_custom_emoji_id: "5764779661028495989", color: null}
 acquainted: {text: "Ознакомлен", icon_custom_emoji_id: "5776375003280838798", color: 'green'}

@@ -26,14 +26,23 @@ def extract_client_payload(client: Any = None, **extra: Any) -> dict[str, Any]:
             payload = {
                 "id": client.get("id"),
                 "user_id": client.get("user_id"),
+                "admin_id": client.get("admin_id"),
                 "first_name": client.get("first_name") or "",
                 "last_name": client.get("last_name") or "",
                 "username": client.get("username"),
             }
         else:
+            admin_obj = getattr(client, "admin", None)
+            admin_name = ""
+            if admin_obj is not None:
+                admin_name = f"{getattr(admin_obj, 'first_name', '') or ''} {getattr(admin_obj, 'last_name', '') or ''}".strip()
             payload = {
                 "id": getattr(client, "id", None),
                 "user_id": getattr(client, "user_id", None),
+                "admin_id": getattr(client, "admin_id", None),
+                "admin_telegram_id": getattr(admin_obj, "telegram_id", None) if admin_obj is not None else None,
+                "admin_username": getattr(admin_obj, "username", None) if admin_obj is not None else None,
+                "admin_name": admin_name or None,
                 "first_name": getattr(client, "first_name", "") or "",
                 "last_name": getattr(client, "last_name", "") or "",
                 "username": getattr(client, "username", None),

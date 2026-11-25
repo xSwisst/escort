@@ -16,6 +16,12 @@ class Form(Base):
 
     id: Mapped[int] = mapped_column(Integer, Identity(), nullable=False, unique=True, index=True)
     code: Mapped[str] = mapped_column(String(64), primary_key=True)
+    admin_id: Mapped[int | None] = mapped_column(
+        Integer,
+        ForeignKey("admins.id", ondelete="CASCADE"),
+        nullable=True,
+        index=True,
+    )
     created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), default=now_msk, server_default=func.now(), nullable=False)
     updated_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), default=now_msk, onupdate=now_msk, server_default=func.now(), nullable=False)
 
@@ -24,6 +30,7 @@ class Form(Base):
     rating: Mapped[float | None] = mapped_column(Float, nullable=True)
 
     # Relationships
+    admin: Mapped["Admin | None"] = relationship("Admin", back_populates="forms")
     profile: Mapped["FormProfile"] = relationship("FormProfile", back_populates="form", cascade="all, delete-orphan", uselist=False)
     pricing: Mapped["FormPricing"] = relationship("FormPricing", back_populates="form", cascade="all, delete-orphan", uselist=False)
     publication: Mapped["FormPublication"] = relationship("FormPublication", back_populates="form", cascade="all, delete-orphan", uselist=False)

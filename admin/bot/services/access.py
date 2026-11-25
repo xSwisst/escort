@@ -1,5 +1,5 @@
 from core.settings import settings
 
 
-def is_admin_allowed(user_id: int) -> bool:
-    return int(user_id) in settings.allowed_admin_ids
+def is_owner(user_id: int) -> bool:
+    return bool(settings.OWNER_ID and int(user_id) == int(settings.OWNER_ID))

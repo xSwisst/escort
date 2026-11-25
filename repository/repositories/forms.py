@@ -77,12 +77,15 @@ class FormRepository(BaseRepository[Form]):
         return result.scalar_one_or_none()
 
     async def get_visible_for_client(self, client: Client | None, *, active_city_slot: int | None = None) -> Sequence[Form]:
-        if client is None:
+        if client is None or getattr(client, "admin_id", None) is None:
             return []
         statement = (
             select(Form)
             .join(Form.publication)
-            .where(FormPublication.is_visible.is_(True))
+            .where(
+                FormPublication.is_visible.is_(True),
+                Form.admin_id == client.admin_id,
+            )
             .options(
                 selectinload(Form.profile),
                 selectinload(Form.pricing),
@@ -97,7 +100,12 @@ class FormRepository(BaseRepository[Form]):
         result = await self._session.execute(statement)
         return result.scalars().all()
 
-    async def get_all_admin(self, city_slot: int | None = None) -> Sequence[Form]:
+    async def get_all_admin(
+        self,
+        city_slot: int | None = None,
+        *,
+        admin_id: int | None = None,
+    ) -> Sequence[Form]:
         """Get all forms for admin panel with full relationships loaded"""
         stmt = (
             select(Form)
@@ -109,6 +117,8 @@ class FormRepository(BaseRepository[Form]):
             )
             .order_by(Form.created_at.desc())
         )
+        if admin_id is not None:
+            stmt = stmt.where(Form.admin_id == admin_id)
         if city_slot is not None:
             stmt = stmt.join(Form.publication).where(FormPublication.city_slot == city_slot)
         result = await self._session.execute(stmt)
@@ -120,9 +130,11 @@ class FormRepository(BaseRepository[Form]):
         profile_data: dict,
         pricing_data: dict,
         publication_data: dict,
+        *,
+        admin_id: int | None = None,
     ) -> Form:
         """Create a new form with all related entities"""
-        form = Form(code=code)
+        form = Form(code=code, admin_id=admin_id)
         self._session.add(form)
         await self._session.flush()
 

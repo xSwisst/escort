@@ -1,6 +1,10 @@
 from __future__ import annotations
 
 from typing import Any
+
+import httpx
+
+from core.settings import settings
 from services.admin_service import AdminService
 from shared.bot.session import resolve_session
 from .exceptions import ApiNotFoundError
@@ -14,6 +18,7 @@ from .schemas import (
     AdminClientLogDetailResponse,
     AdminClientLogItem,
     AdminClientLogsResponse,
+    AdminInfo,
     AgreementItem,
     AgreementsResponse,
     BroadcastResponse,
@@ -22,22 +27,76 @@ from .schemas import (
     FormDetailResponse,
     FormListItem,
     FormsListResponse,
+    MainBotInfo,
     PromoItem,
     PromosListResponse,
     ReviewItem,
     ReviewsListResponse,
     ServiceItem,
     ServicesListResponse,
+    WorkerClientStats,
 )
 
 
 class AdminApi:
-    # ── Clients ──────────────────────────────────────────────────────────────
+    # ── Workers / Admins & Main Bot Meta ──────────────────────────────────────
 
-    async def list_clients(self, *, query: str | None = None, page: int = 1, per_page: int = 10) -> AdminClientListResponse:
+    async def get_or_create_admin(
+        self,
+        telegram_id: int,
+        *,
+        username: str | None = None,
+        first_name: str | None = None,
+        last_name: str | None = None,
+    ) -> AdminInfo:
+        async with resolve_session() as session:
+            admin_svc = AdminService(session)
+            a = await admin_svc.get_or_create_admin(
+                telegram_id,
+                username=username,
+                first_name=first_name,
+                last_name=last_name,
+            )
+            return AdminInfo(
+                id=a.id,
+                telegram_id=a.telegram_id,
+                username=a.username,
+                first_name=a.first_name,
+                last_name=a.last_name,
+                created_at=a.created_at,
+            )
+
+    async def get_main_bot_info(self) -> MainBotInfo:
+        url = f"{settings.MAIN_BOT_URL.rstrip('/')}/internal/v1/bot-info"
+        try:
+            async with httpx.AsyncClient(timeout=3.0) as client:
+                resp = await client.get(url)
+                if resp.status_code == 200:
+                    data = resp.json()
+                    return MainBotInfo(**data)
+        except Exception:
+            pass
+        return MainBotInfo(is_alive=False)
+
+    async def get_worker_client_stats(self, admin_id: int) -> WorkerClientStats:
         async with resolve_session() as session:
             admin = AdminService(session)
-            items, total = await admin.clients.search(query, page=page, per_page=per_page)
+            stats = await admin.get_client_stats_by_admin(admin_id)
+            return WorkerClientStats(**stats)
+
+    # ── Clients ──────────────────────────────────────────────────────────────
+
+    async def list_clients(
+        self,
+        *,
+        query: str | None = None,
+        page: int = 1,
+        per_page: int = 10,
+        admin_id: int | None = None,
+    ) -> AdminClientListResponse:
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            items, total = await admin.clients.search(query, page=page, per_page=per_page, admin_id=admin_id)
             return AdminClientListResponse(
                 items=[
                     AdminClientItem(
@@ -60,11 +119,11 @@ class AdminApi:
                 per_page=per_page,
             )
 
-    async def get_client(self, user_id: int) -> AdminClientDetailResponse:
+    async def get_client(self, user_id: int, *, admin_id: int | None = None) -> AdminClientDetailResponse:
         async with resolve_session() as session:
             admin = AdminService(session)
             c = await admin.clients.get(user_id, include_agreement=True, include_orders=True, include_addresses=True)
-            if not c:
+            if not c or (admin_id is not None and c.admin_id != admin_id):
                 raise ApiNotFoundError(f"Client not found: {user_id}")
             orders_count = await admin.clients.orders.count_by_user(user_id) if hasattr(admin.clients, "orders") else len(c.orders)
             return AdminClientDetailResponse(
@@ -85,11 +144,11 @@ class AdminApi:
                 registered_at=c.registered_at,
             )
 
-    async def get_client_by_db_id(self, db_id: int) -> AdminClientDetailResponse:
+    async def get_client_by_db_id(self, db_id: int, *, admin_id: int | None = None) -> AdminClientDetailResponse:
         async with resolve_session() as session:
             admin = AdminService(session)
             c = await admin.clients.get_by_db_id(db_id, include_agreement=True, include_orders=True, include_addresses=True)
-            if not c:
+            if not c or (admin_id is not None and c.admin_id != admin_id):
                 raise ApiNotFoundError(f"Client not found by db_id: {db_id}")
             orders_count = len(c.orders) if c.orders else 0
             return AdminClientDetailResponse(
@@ -175,7 +234,18 @@ class AdminApi:
             )
 
     async def start_broadcast(self, payload: dict[str, Any]) -> BroadcastResponse:
-        return BroadcastResponse(total_queued=0, success=True)
+        url = f"{settings.MAIN_BOT_URL.rstrip('/')}/internal/v1/broadcast"
+        async with httpx.AsyncClient(timeout=120.0) as client:
+            resp = await client.post(url, json=payload)
+            resp.raise_for_status()
+            data = resp.json()
+            return BroadcastResponse(
+                sent=int(data.get("sent", 0)),
+                failed=int(data.get("failed", 0)),
+                total=int(data.get("total", 0)),
+                total_queued=int(data.get("total_queued", 0)),
+                success=bool(data.get("success", True)),
+            )
 
     # ── Agreements ────────────────────────────────────────────────────────────
 
@@ -214,10 +284,10 @@ class AdminApi:
 
     # ── Forms (Models) ────────────────────────────────────────────────────────
 
-    async def list_forms(self, city_slot: int | None = None) -> FormsListResponse:
+    async def list_forms(self, city_slot: int | None = None, *, admin_id: int | None = None) -> FormsListResponse:
         async with resolve_session() as session:
             admin = AdminService(session)
-            forms = await admin.forms.get_all_forms(city_slot=city_slot)
+            forms = await admin.forms.get_all_forms(city_slot=city_slot, admin_id=admin_id)
             return FormsListResponse(
                 items=[
                     FormListItem(
@@ -234,10 +304,10 @@ class AdminApi:
                 ]
             )
 
-    async def get_form(self, code: str) -> FormDetailResponse:
+    async def get_form(self, code: str, *, admin_id: int | None = None) -> FormDetailResponse:
         async with resolve_session() as session:
             admin = AdminService(session)
-            f = await admin.forms.get_form(code)
+            f = await admin.forms.get_form(code, admin_id=admin_id)
             p = f.profile
             pr = f.pricing
             pub = f.publication
@@ -268,42 +338,54 @@ class AdminApi:
                 private_channel_period=priv.subscription_period_days if priv else None,
             )
 
-    async def create_form(self, form_data: dict[str, Any], files: list[tuple] | None = None) -> FormDetailResponse:
+    async def create_form(
+        self,
+        form_data: dict[str, Any],
+        files: list[tuple] | None = None,
+        *,
+        admin_id: int | None = None,
+    ) -> FormDetailResponse:
         async with resolve_session() as session:
             admin = AdminService(session)
-            f = await admin.forms.create_form(form_data)
-            return await self.get_form(f.code)
+            f = await admin.forms.create_form(form_data, admin_id=admin_id)
+            return await self.get_form(f.code, admin_id=admin_id)
 
-    async def update_form(self, code: str, payload: dict[str, Any]) -> FormDetailResponse:
+    async def update_form(self, code: str, payload: dict[str, Any], *, admin_id: int | None = None) -> FormDetailResponse:
         async with resolve_session() as session:
             admin = AdminService(session)
+            await admin.forms.get_form(code, admin_id=admin_id)
             await admin.forms.update_form(code, payload)
-            return await self.get_form(code)
+            return await self.get_form(code, admin_id=admin_id)
 
-    async def delete_form(self, code: str) -> ActionStatusResponse:
+    async def delete_form(self, code: str, *, admin_id: int | None = None) -> ActionStatusResponse:
         async with resolve_session() as session:
             admin = AdminService(session)
+            await admin.forms.get_form(code, admin_id=admin_id)
             await admin.forms.delete_form(code)
             return ActionStatusResponse(ok=True)
 
-    async def toggle_form_field(self, code: str, field: str) -> ActionStatusResponse:
+    async def toggle_form_field(self, code: str, field: str, *, admin_id: int | None = None) -> ActionStatusResponse:
         async with resolve_session() as session:
             admin = AdminService(session)
+            await admin.forms.get_form(code, admin_id=admin_id)
             await admin.forms.toggle_field(code, field)
             return ActionStatusResponse(ok=True)
 
-    async def swap_positions(self, code_a: str, code_b: str) -> ActionStatusResponse:
+    async def swap_positions(self, code_a: str, code_b: str, *, admin_id: int | None = None) -> ActionStatusResponse:
         async with resolve_session() as session:
             admin = AdminService(session)
+            await admin.forms.get_form(code_a, admin_id=admin_id)
+            await admin.forms.get_form(code_b, admin_id=admin_id)
             await admin.forms.swap_positions(code_a, code_b)
             return ActionStatusResponse(ok=True)
 
     async def add_form_photos(self, code: str, files: list[tuple]) -> ActionStatusResponse:
         return ActionStatusResponse(ok=True)
 
-    async def delete_form_photo(self, code: str, index: int) -> ActionStatusResponse:
+    async def delete_form_photo(self, code: str, index: int, *, admin_id: int | None = None) -> ActionStatusResponse:
         async with resolve_session() as session:
             admin = AdminService(session)
+            await admin.forms.get_form(code, admin_id=admin_id)
             await admin.forms.delete_photo(code, index)
             return ActionStatusResponse(ok=True)
 
@@ -425,33 +507,34 @@ class AdminApi:
 
     # ── Promos ────────────────────────────────────────────────────────────────
 
-    async def list_promos(self) -> PromosListResponse:
+    async def list_promos(self, *, admin_id: int | None = None) -> PromosListResponse:
         async with resolve_session() as session:
             admin = AdminService(session)
-            promos = await admin.list_promos()
+            promos = await admin.list_promos(admin_id=admin_id)
             return PromosListResponse(
                 items=[
                     PromoItem(
                         id=p.id,
                         name=p.code,
                         discount=int(p.discount_amount or 0),
+                        created_at=p.created_at,
                     )
                     for p in promos
                 ]
             )
 
-    async def create_promo(self, payload: dict[str, Any]) -> PromoItem:
+    async def create_promo(self, payload: dict[str, Any], *, admin_id: int | None = None) -> PromoItem:
         async with resolve_session() as session:
             admin = AdminService(session)
             code = payload.get("name") or payload.get("code")
             discount = payload.get("discount") or payload.get("discount_amount") or 0
-            p = await admin.create_promo(code=code, discount_amount=discount)
-            return PromoItem(id=p.id, name=p.code, discount=int(p.discount_amount or 0))
+            p = await admin.create_promo(code=code, discount_amount=discount, admin_id=admin_id)
+            return PromoItem(id=p.id, name=p.code, discount=int(p.discount_amount or 0), created_at=p.created_at)
 
-    async def delete_promo(self, name: str) -> ActionStatusResponse:
+    async def delete_promo(self, name: str, *, admin_id: int | None = None) -> ActionStatusResponse:
         async with resolve_session() as session:
             admin = AdminService(session)
-            await admin.promos.delete_by_name(name)
+            await admin.promos.delete_by_name(name, admin_id=admin_id)
             return ActionStatusResponse(ok=True)
 
     # ── Cards ─────────────────────────────────────────────────────────────────

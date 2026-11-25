@@ -480,7 +480,15 @@ async def send_malling(call: CallbackQuery, state: FSMContext) -> None:
         if b.get("url"):
             valid_btns.append({"text": b["text"], "url": b["url"]})
 
+    admin = await api_client.admin.get_or_create_admin(
+        call.from_user.id,
+        username=call.from_user.username,
+        first_name=call.from_user.first_name,
+        last_name=call.from_user.last_name,
+    )
+
     payload = {
+        "admin_id": admin.id,
         "audience": audience,
         "text": text,
         "media_url": media,

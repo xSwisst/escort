@@ -1,4 +1,5 @@
 from .addresses import AddressRepository
+from .admins import AdminRepository
 from .agreements import AgreementRepository
 from .base import BaseRepository
 from .cards import CardRepository
@@ -19,6 +20,7 @@ from .transactions import TransactionRepository
 
 __all__ = [
     "AddressRepository",
+    "AdminRepository",
     "AgreementRepository",
     "BaseRepository",
     "CardRepository",

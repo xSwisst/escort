@@ -12,6 +12,12 @@ class Client(Base):
 
     id: Mapped[int] = mapped_column(Integer, Identity(), nullable=False, unique=True, index=True)
     user_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    admin_id: Mapped[int | None] = mapped_column(
+        Integer,
+        ForeignKey("admins.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
     first_name: Mapped[str | None] = mapped_column(String(64), nullable=True)
     last_name: Mapped[str | None] = mapped_column(String(64), nullable=True)
     username: Mapped[str | None] = mapped_column(String(64), nullable=True)
@@ -44,6 +50,7 @@ class Client(Base):
     support_messages: Mapped[list["SupportMessage"]] = relationship("SupportMessage", back_populates="client")
     agreement: Mapped["Agreement | None"] = relationship("Agreement", back_populates="clients")
     promo: Mapped["Promo | None"] = relationship("Promo", back_populates="clients")
+    admin: Mapped["Admin | None"] = relationship("Admin", back_populates="clients")
     activity_logs: Mapped[list["ClientActivityLog"]] = relationship(
         "ClientActivityLog",
         primaryjoin="Client.user_id == foreign(ClientActivityLog.user_id)",

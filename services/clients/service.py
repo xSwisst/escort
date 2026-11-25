@@ -6,6 +6,7 @@ from typing import Any
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from repository.repositories.addresses import AddressRepository
+from repository.repositories.admins import AdminRepository
 from repository.repositories.agreements import AgreementRepository
 from repository.repositories.clients import ClientRepository
 from repository.repositories.favorites import FavoriteRepository
@@ -39,6 +40,7 @@ class BootstrapResult:
 class ClientService:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
+        self.admins = AdminRepository(session)
         self.clients = ClientRepository(session)
         self.agreements = AgreementRepository(session)
         self.orders = OrderRepository(session)
@@ -53,12 +55,19 @@ class ClientService:
         first_name: str | None = None,
         last_name: str | None = None,
         username: str | None = None,
+        admin_id: int | None = None,
     ):
+        valid_admin_id: int | None = None
+        if admin_id is not None:
+            admin = await self.admins.get_by_id(admin_id)
+            if admin is not None:
+                valid_admin_id = admin.id
         return await self.clients.get_or_create(
             user_id,
             first_name=first_name,
             last_name=last_name,
             username=username,
+            admin_id=valid_admin_id,
         )
 
     async def get_client(self, user_id: int):
@@ -74,12 +83,14 @@ class ClientService:
         first_name: str | None = None,
         last_name: str | None = None,
         username: str | None = None,
+        admin_id: int | None = None,
     ) -> BootstrapResult:
         client, _ = await self.get_or_create_client(
             user_id,
             first_name=first_name,
             last_name=last_name,
             username=username,
+            admin_id=admin_id,
         )
         agreement = await self.get_active_agreement(user_id) if not client.has_accepted_agreement else None
         return BootstrapResult(
@@ -140,7 +151,10 @@ class ClientService:
 
     async def activate_promo(self, user_id: int, code: str) -> tuple[bool, str | None]:
         clean_code = (code or "").strip()
-        promo = await self.promos.get_by_code(clean_code)
+        client = await self.clients.get(user_id)
+        if not client or client.admin_id is None:
+            return False, None
+        promo = await self.promos.get_by_code(clean_code, admin_id=client.admin_id)
         if not promo:
             return False, None
         await self.set_promo(user_id, promo.code)

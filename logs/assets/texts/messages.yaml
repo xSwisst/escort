@@ -16,6 +16,12 @@ payload_block: |
   <blockquote><b> › Данные</b></blockquote>
   <pre><code>{payload_json}</code></pre>
 
+admin_info_block: |
+  <blockquote><b><tg-emoji emoji-id="5276371072642493917">✨</tg-emoji> › Админ #{admin_id}</b></blockquote>
+  Имя: <b>{admin_name}</b>
+  ID: <code>{admin_telegram_id}</code>
+  Username: <b>{admin_username_display}</b>
+
 meta_actor_id: "Actor ID: <code>{actor_id}</code>"
 meta_chat_id: "Chat ID: <code>{chat_id}</code>"
 meta_message_id: "Message ID: <code>{message_id}</code>"

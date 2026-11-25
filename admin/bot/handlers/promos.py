@@ -20,12 +20,23 @@ from shared.utils.date import format_datetime_ru
 router = Router(name="admin_promos")
 
 
+async def _resolve_admin_id(tg_user) -> int:
+    admin = await api_client.admin.get_or_create_admin(
+        tg_user.id,
+        username=tg_user.username,
+        first_name=tg_user.first_name,
+        last_name=tg_user.last_name,
+    )
+    return admin.id
+
+
 @router.callback_query(F.data.startswith("admin:promos:list:"))
 async def show_promos_list(call: CallbackQuery, state: FSMContext, page: int | None = None) -> None:
     await state.clear()
     if page is None:
         page = int(call.data.split(":")[3])
-    resp = await api_client.admin.list_promos()
+    admin_id = await _resolve_admin_id(call.from_user)
+    resp = await api_client.admin.list_promos(admin_id=admin_id)
     promos = resp.items
     await call.message.edit_text(t("va_promo_list"), parse_mode="HTML", reply_markup=kb_promos_list(promos, page=page))
     await call.answer()
@@ -34,7 +45,8 @@ async def show_promos_list(call: CallbackQuery, state: FSMContext, page: int | N
 @router.callback_query(F.data.startswith("admin:promo:info:"))
 async def show_promo_card(call: CallbackQuery) -> None:
     name = call.data.split(":")[3]
-    resp = await api_client.admin.list_promos()
+    admin_id = await _resolve_admin_id(call.from_user)
+    resp = await api_client.admin.list_promos(admin_id=admin_id)
     promo = next((p for p in resp.items if p.name == name), None)
     if not promo:
         await call.answer(t("va_promo_answer_not_found"), show_alert=True)
@@ -55,7 +67,8 @@ async def show_promo_card(call: CallbackQuery) -> None:
 async def confirm_delete_promo(call: CallbackQuery, state: FSMContext) -> None:
     name = call.data.split(":")[4]
     try:
-        await api_client.admin.delete_promo(name)
+        admin_id = await _resolve_admin_id(call.from_user)
+        await api_client.admin.delete_promo(name, admin_id=admin_id)
         await call.answer(t("va_promo_deleted_answer"))
     except Exception as exc:
         await call.answer(f"Ошибка удаления: {exc}", show_alert=True)
@@ -150,7 +163,8 @@ async def approve_new_promo(call: CallbackQuery, state: FSMContext) -> None:
         return
 
     try:
-        await api_client.admin.create_promo({"name": name, "discount": discount})
+        admin_id = await _resolve_admin_id(call.from_user)
+        await api_client.admin.create_promo({"name": name, "discount": discount}, admin_id=admin_id)
         await call.answer(t("va_promo_added_answer"))
     except Exception as exc:
         await call.answer(f"Ошибка создания: {exc}", show_alert=True)

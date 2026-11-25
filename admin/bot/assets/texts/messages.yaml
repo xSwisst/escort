@@ -2337,7 +2337,7 @@ va_check_rejected: '❌ <b>Оплата отклонена</b>
 va_logs_all_on_answer: ✅ Все включены
 va_logs_all_off_answer: ✅ Все выключены
 va_answer_review_not_found: Отзыв не найден
-panel_caption: '<blockquote>👨🏻‍💻 <b>Админ панель ESCORT V1</b></blockquote>
+panel_caption: '<blockquote>👨🏻‍💻 <b>Воркер панель ESCORT V1</b></blockquote>
 
 
   <blockquote>🤖 <b>Информация о сервисе</b></blockquote>
@@ -2349,9 +2349,18 @@ panel_caption: '<blockquote>👨🏻‍💻 <b>Админ панель ESCORT V1
   Состояние: <b>{service_status}</b> {service_status_emoji}
 
 
+  <blockquote>🔗 <b>Реферальная система</b></blockquote>
+
+  <code>{referral_link}</code>
+
+
   <blockquote>👥 <b>Клиенты</b></blockquote>
 
-  Клиентов всего: <b>{total_clients}</b>
+  За сегодня: <b>{today}</b>
+
+  За месяц: <b>{month}</b>
+
+  Всего: <b>{total_clients}</b>
 
 
   <blockquote>🦋 <b>Анкеты</b></blockquote>
@@ -2363,13 +2372,9 @@ panel_caption: '<blockquote>👨🏻‍💻 <b>Админ панель ESCORT V1
   Город 2: <b>{forms_city_2}</b>
 
 
-  <blockquote>📑 <b>Дополнительно</b></blockquote>
+  <blockquote>🎟 <b>Промокоды</b></blockquote>
 
-  Промокоды: <b>{total_promos}</b>
-
-  Соглашения: <b>{total_agreements}</b>
-
-  '
+  Всего: <b>{total_promos}</b>'
 model_card: "<blockquote><b>\U0001F98B Карточка модели</b></blockquote>\n\n<blockquote><b>\U0001F464\
   \ Модель</b></blockquote>\nИмя: <b>{name}</b> \nВозраст: <b>{age}</b>\nРост: <b>{height}</b>\n\
   Размер груди: <b>{tits}</b>\nКод: <code>{code}</code>\n\n<blockquote><b>\U0001F4B0\

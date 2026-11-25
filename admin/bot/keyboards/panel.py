@@ -6,7 +6,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from bot.assets.texts import btn, t
 
 
-def kb_panel(*, client_count: int = 0) -> InlineKeyboardMarkup:
+def kb_panel(*, client_count: int = 0, is_owner: bool = False) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.row(
         InlineKeyboardButton(
@@ -22,11 +22,11 @@ def kb_panel(*, client_count: int = 0) -> InlineKeyboardMarkup:
         InlineKeyboardButton(**btn("manage_promo", callback_data="admin:promos:list:1")),
     )
     builder.row(
-        InlineKeyboardButton(**btn("cards", callback_data="admin:cards:list:1")),
         InlineKeyboardButton(**btn("malling", callback_data="admin:malling:menu")),
     )
-    builder.row(
-        InlineKeyboardButton(**btn("va_admin_agreements", callback_data="admin:agreements:list")),
-    )
+    if is_owner:
+        builder.row(
+            InlineKeyboardButton(**btn("cards", callback_data="admin:cards:list:1")),
+            InlineKeyboardButton(**btn("va_admin_agreements", callback_data="admin:agreements:list")),
+        )
     return builder.as_markup()
-

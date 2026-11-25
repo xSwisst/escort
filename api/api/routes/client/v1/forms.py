@@ -41,7 +41,10 @@ def _serialize_photos(form) -> list[str]:
 async def _build_form_card(session: AsyncSession, *, user_id: int, form_code: str) -> FormCardResponse:
     client_service = ClientService(session)
     form_service = FormService(session)
+    client = await client_service.get_client(user_id)
     form = await _get_form_or_404(form_service, form_code)
+    if not client or client.admin_id is None or form.admin_id != client.admin_id:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Form not found")
     reviews = await form_service.get_reviews(form_code)
     services = await form_service.get_services(form_code)
     additionals = await form_service.get_additionals(form_code)

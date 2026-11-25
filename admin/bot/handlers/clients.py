@@ -24,6 +24,17 @@ router = Router(name="admin_clients")
 
 _CLIENT_INLINE_ICON = "https://i.postimg.cc/4dcLSvhc/mamont.png"
 _INLINE_PAGE_SIZE = 20
+_RESULTS_PER_PAGE = 8
+
+
+async def _resolve_admin_id(tg_user) -> int:
+    admin = await api_client.admin.get_or_create_admin(
+        tg_user.id,
+        username=tg_user.username,
+        first_name=tg_user.first_name,
+        last_name=tg_user.last_name,
+    )
+    return admin.id
 
 
 async def _store_search(state: FSMContext, *, query: str | None, page: int) -> None:
@@ -36,7 +47,8 @@ async def _load_search(state: FSMContext) -> tuple[str | None, int]:
 
 
 async def _show_clients(call: CallbackQuery, state: FSMContext, *, query: str | None, page: int) -> None:
-    response = await api_client.admin.list_clients(query=query, page=page, per_page=settings.ADMIN_RESULTS_PER_PAGE)
+    admin_id = await _resolve_admin_id(call.from_user)
+    response = await api_client.admin.list_clients(query=query, page=page, per_page=_RESULTS_PER_PAGE, admin_id=admin_id)
     await _store_search(state, query=query, page=page)
     await call.message.edit_text(
         build_client_list_text(response),
@@ -53,7 +65,8 @@ async def _show_clients(call: CallbackQuery, state: FSMContext, *, query: str | 
 
 
 async def _show_client(call: CallbackQuery, *, user_id: int) -> None:
-    client = await api_client.admin.get_client(user_id)
+    admin_id = await _resolve_admin_id(call.from_user)
+    client = await api_client.admin.get_client(user_id, admin_id=admin_id)
     await call.message.edit_text(
         build_client_card_text(client),
         parse_mode="HTML",
@@ -89,10 +102,12 @@ async def handle_clients_inline(query: InlineQuery) -> None:
     offset_page = int(query.offset) if query.offset and query.offset.isdigit() else 1
 
     try:
+        admin_id = await _resolve_admin_id(query.from_user)
         response = await api_client.admin.list_clients(
             query=search_text or None,
             page=offset_page,
             per_page=_INLINE_PAGE_SIZE,
+            admin_id=admin_id,
         )
 
         if not response.items:
@@ -236,7 +251,8 @@ async def apply_search(message: Message, state: FSMContext) -> None:
         admin_panel_chat_id=anchor.get("admin_panel_chat_id"),
         admin_panel_message_id=anchor.get("admin_panel_message_id"),
     )
-    response = await api_client.admin.list_clients(query=query, page=1, per_page=settings.ADMIN_RESULTS_PER_PAGE)
+    admin_id = await _resolve_admin_id(message.from_user)
+    response = await api_client.admin.list_clients(query=query, page=1, per_page=_RESULTS_PER_PAGE, admin_id=admin_id)
     await _store_search(state, query=query, page=1)
     chat_id = anchor.get("admin_panel_chat_id") or message.chat.id
     msg_id = anchor.get("admin_panel_message_id")

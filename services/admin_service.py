@@ -3,9 +3,11 @@ from __future__ import annotations
 from typing import Any
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from repository.models.admins import Admin
 from repository.models.cards import Card
 from repository.models.promos import Promo
 from repository.models.settings import Agreement
+from repository.repositories.admins import AdminRepository
 from repository.repositories.cards import CardRepository
 from repository.repositories.promos import PromoRepository
 from repository.repositories.agreements import AgreementRepository
@@ -19,12 +21,33 @@ class AdminService:
 
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
+        self.admins = AdminRepository(session)
         self.cards = CardRepository(session)
         self.promos = PromoRepository(session)
         self.agreements = AgreementRepository(session)
         self.clients = ClientRepository(session)
         self.client_logs = ClientLogRepository(session)
         self.forms = AdminFormsService(session)
+
+    # --- Admins / Workers ---
+    async def get_or_create_admin(
+        self,
+        telegram_id: int,
+        *,
+        username: str | None = None,
+        first_name: str | None = None,
+        last_name: str | None = None,
+    ) -> Admin:
+        admin, _ = await self.admins.get_or_create(
+            telegram_id,
+            username=username,
+            first_name=first_name,
+            last_name=last_name,
+        )
+        return admin
+
+    async def get_admin_by_telegram_id(self, telegram_id: int) -> Admin | None:
+        return await self.admins.get_by_telegram_id(telegram_id)
 
     # --- Cards ---
     async def list_cards(self, include_deleted: bool = False) -> list[Card]:
@@ -45,11 +68,11 @@ class AdminService:
         return await self.cards.soft_delete(card_id)
 
     # --- Promos ---
-    async def list_promos(self) -> list[Promo]:
-        return await self.promos.get_all()
+    async def list_promos(self, *, admin_id: int | None = None) -> list[Promo]:
+        return await self.promos.list_by_admin(admin_id=admin_id)
 
-    async def create_promo(self, *, code: str, discount_amount: int) -> Promo:
-        return await self.promos.create(code=code, discount_amount=discount_amount)
+    async def create_promo(self, *, code: str, discount_amount: int, admin_id: int | None = None) -> Promo:
+        return await self.promos.create(code=code, discount_amount=discount_amount, admin_id=admin_id)
 
     async def delete_promo(self, promo_id: int) -> bool:
         return await self.promos.delete_by_pk(promo_id)
@@ -69,8 +92,14 @@ class AdminService:
         return await self.agreements.delete_by_pk(agreement_id)
 
     # --- Clients ---
-    async def list_clients(self, page: int = 1, page_size: int = 20, search: str | None = None):
-        return await self.clients.list_clients(page=page, page_size=page_size, search=search)
+    async def list_clients(self, page: int = 1, page_size: int = 20, search: str | None = None, *, admin_id: int | None = None):
+        return await self.clients.search(search, page=page, per_page=page_size, admin_id=admin_id)
+
+    async def get_client_stats_by_admin(self, admin_id: int) -> dict[str, int]:
+        return await self.clients.get_stats_by_admin(admin_id)
+
+    async def get_broadcast_recipients(self, admin_id: int, audience: str = "all") -> list[int]:
+        return await self.clients.get_broadcast_recipients(admin_id, audience=audience)
 
     async def get_client(self, user_id: int):
         return await self.clients.get(user_id)

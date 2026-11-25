@@ -218,11 +218,31 @@ async def format_event_message(event: LogEventRequest, log_id: int | None = None
             f"\n<blockquote><b> › Реферальная ссылка</b></blockquote>\n"
             f"Код: <code>{_escape(deeplink)}</code>\n"
         )
+    else:
+        deeplink_block = ""
     # Заголовок для payment_request (Заявка на пополнение vs Заявка на оплату)
     meet_lower = str(payload.get("meet_info") or "").lower()
     model_lower = str(payload.get("model_info") or "").lower()
     is_topup = "пополнение" in meet_lower or "пополнение" in model_lower
     payment_request_title = "Заявка на пополнение" if is_topup else "Заявка на оплату"
+
+    # Блок информации об админе (воркере)
+    raw_admin_id = payload.get("admin_id")
+    if raw_admin_id not in (None, "", "—"):
+        raw_admin_un = payload.get("admin_username")
+        if raw_admin_un:
+            admin_un_display = f"@{str(raw_admin_un).lstrip('@').strip()}"
+        else:
+            admin_un_display = "Отсутствует"
+        admin_block = t(
+            "admin_info_block",
+            admin_id=_escape(raw_admin_id),
+            admin_name=_escape(payload.get("admin_name") or "Не указано"),
+            admin_telegram_id=_escape(payload.get("admin_telegram_id") or "—"),
+            admin_username_display=_escape(admin_un_display),
+        ).strip()
+    else:
+        admin_block = ""
 
     # Блок информации о клиенте (для fallback)
     if user_id_str:
@@ -253,6 +273,7 @@ async def format_event_message(event: LogEventRequest, log_id: int | None = None
         "payload_json": payload_json,
         "payload_block": t("payload_block", payload_json=payload_json),
         "client_info_block": client_info_block,
+        "admin_block": admin_block,
         "deeplink_block": deeplink_block,
         # Клиент
         "user_id": _escape(user_id_str),
@@ -327,6 +348,13 @@ async def format_event_message(event: LogEventRequest, log_id: int | None = None
     if t(event.event_type) == event.event_type:
         return ""
     text = t(event.event_type, **values).strip()
+
+    if admin_block and "{admin_block}" not in t(event.event_type):
+        date_marker = "<i>Дата и время:"
+        if date_marker in text:
+            text = text.replace(date_marker, f"{admin_block}\n\n{date_marker}", 1)
+        else:
+            text = f"{text}\n\n{admin_block}"
 
     # Оборачиваем верхний заголовок события в тег <a> с диплинком на лог (эмодзи остается снаружи <a>)
     if log_deeplink:

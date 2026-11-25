@@ -1,5 +1,5 @@
 from aiogram import Bot, F, Router
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, Message
 
 from bot.assets.media import get_banner_file
 from bot.assets.texts import t
@@ -11,7 +11,7 @@ from bot.keyboards.info import (
     kb_info,
 )
 from clients.api import api_client
-from shared.bot.utils.media_banner import edit_banner
+from shared.bot.utils.media_banner import answer_banner, edit_banner
 
 router = Router(name="info")
 
@@ -26,12 +26,28 @@ async def _get_document_url(user_id: int) -> str | None:
     return agreement.document_url
 
 
-@router.callback_query(F.data == "menu:info")
-async def show_info(call: CallbackQuery, bot: Bot):
+async def render_info(
+    target: Message,
+    user_id: int,
+    bot: Bot,
+    *,
+    is_edit: bool = True,
+) -> None:
     bot_info = await bot.get_me()
     text = t("info_main", bot_name=bot_info.full_name)
-    document_url = await _get_document_url(call.from_user.id)
-    await _edit_info(call, text, kb_info(document_url=document_url))
+    document_url = await _get_document_url(user_id)
+    banner = get_banner_file("info-banner")
+    markup = kb_info(document_url=document_url)
+    if is_edit:
+        await edit_banner(target, text, banner=banner, reply_markup=markup)
+    else:
+        await answer_banner(target, text, banner=banner, reply_markup=markup)
+
+
+@router.callback_query(F.data == "menu:info")
+async def show_info(call: CallbackQuery, bot: Bot):
+    await render_info(call.message, call.from_user.id, bot, is_edit=True)
+    await call.answer()
 
 
 @router.callback_query(F.data == "info:faq")

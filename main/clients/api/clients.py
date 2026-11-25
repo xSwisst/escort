@@ -13,10 +13,17 @@ class ClientApi:
         first_name: str | None = None,
         last_name: str | None = None,
         username: str | None = None,
+        admin_id: int | None = None,
     ) -> StartBootstrapResponse:
         async with resolve_session() as session:
             cs = ClientService(session)
-            res = await cs.bootstrap(user_id, first_name=first_name, last_name=last_name, username=username)
+            res = await cs.bootstrap(
+                user_id,
+                first_name=first_name,
+                last_name=last_name,
+                username=username,
+                admin_id=admin_id,
+            )
             ag_info = None
             if res.agreement:
                 ag_info = AgreementInfo(

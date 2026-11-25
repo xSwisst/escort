@@ -5,10 +5,24 @@ from bot.assets.texts import btn
 from shared.bot.keyboards import build_pagination_row
 
 
+def reply_btn(key: str, default_text: str | None = None) -> KeyboardButton:
+    data = btn(key)
+    text = data.get("text", default_text or key)
+    kwargs: dict[str, str] = {"text": text}
+    emoji_id = data.get("icon_custom_emoji_id")
+    if emoji_id:
+        kwargs["icon_custom_emoji_id"] = str(emoji_id)
+    return KeyboardButton(**kwargs)
+
+
 def main_reply_kb(is_admin: bool = False) -> ReplyKeyboardMarkup:
     del is_admin
     return ReplyKeyboardMarkup(
-        keyboard=[[KeyboardButton(text=btn("main_menu_reply")["text"])]],
+        keyboard=[
+            [reply_btn("reply_models", "Модели")],
+            [reply_btn("reply_profile", "Профиль"), reply_btn("reply_search_code", "Поиск по коду")],
+            [reply_btn("reply_information", "Информация (о нас)")],
+        ],
         resize_keyboard=True,
     )
 

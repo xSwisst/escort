@@ -18,7 +18,7 @@ from bot.keyboards.models_catalog import (
 from bot.states import CityState
 from clients.api import ApiNotFoundError, api_client
 from services import validate_city
-from shared.bot.utils.media_banner import bot_edit_banner, bot_edit_photo, edit_banner
+from shared.bot.utils.media_banner import answer_banner, bot_edit_banner, bot_edit_photo, edit_banner
 from utils.helpers import media_refs, models_banner_media
 
 router = Router(name="models_catalog")
@@ -104,32 +104,46 @@ async def _show_reviews_page(call: CallbackQuery, *, code: str, page: int) -> No
     await call.answer()
 
 
-@router.callback_query(F.data == "menu:models")
-async def show_models(call: CallbackQuery, state: FSMContext):
+async def render_models_catalog(
+    target: Message,
+    user_id: int,
+    state: FSMContext,
+    *,
+    is_edit: bool = True,
+) -> None:
+    await state.clear()
     await state.update_data(model_back_target="menu:models")
-    client = await api_client.clients.get_cities(call.from_user.id)
+    client = await api_client.clients.get_cities(user_id)
     city_slot = int(getattr(client, "active_city_slot", 1) or 1)
     active_city = client.active_city
 
     if not active_city:
         await state.set_state(CityState.waiting_city)
-        await state.update_data(city_slot=city_slot, bot_msg_id=call.message.message_id, next_route="menu:models")
-        await edit_banner(
-            call.message,
-            t("models_city_prompt"),
-            banner=get_banner_file("models-banner"),
-            reply_markup=kb_back("back_to_main", "menu:main"),
-        )
-        await call.answer()
+        text = t("models_city_prompt")
+        banner = get_banner_file("models-banner")
+        markup = kb_back("back_to_main", "menu:main")
+        if is_edit:
+            await state.update_data(city_slot=city_slot, bot_msg_id=target.message_id, next_route="menu:models")
+            await edit_banner(target, text, banner=banner, reply_markup=markup)
+        else:
+            sent = await answer_banner(target, text, banner=banner, reply_markup=markup)
+            if sent:
+                await state.update_data(city_slot=city_slot, bot_msg_id=sent.message_id, next_route="menu:models")
         return
 
-    forms = (await api_client.forms.list_forms(user_id=call.from_user.id, active_city_slot=city_slot)).items
-    await edit_banner(
-        call.message,
-        t("models_catalog", count=len(forms)),
-        banner=get_banner_file("models-banner"),
-        reply_markup=kb_models_list(forms, page=0),
-    )
+    forms = (await api_client.forms.list_forms(user_id=user_id, active_city_slot=city_slot)).items
+    text = t("models_catalog", count=len(forms))
+    banner = get_banner_file("models-banner")
+    markup = kb_models_list(forms, page=0)
+    if is_edit:
+        await edit_banner(target, text, banner=banner, reply_markup=markup)
+    else:
+        await answer_banner(target, text, banner=banner, reply_markup=markup)
+
+
+@router.callback_query(F.data == "menu:models")
+async def show_models(call: CallbackQuery, state: FSMContext):
+    await render_models_catalog(call.message, call.from_user.id, state, is_edit=True)
     await call.answer()
 
 

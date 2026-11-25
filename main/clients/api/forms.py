@@ -41,8 +41,15 @@ class FormsApi:
         async with resolve_session() as session:
             cs = ClientService(session)
             fs = FormService(session)
+            client = await cs.get_client(user_id)
             discount = await cs.get_discount_amount(user_id)
-            card = await fs.get_form_card(user_id, form_code, discount_amount=discount)
+            card = await fs.get_form_card(
+                user_id,
+                form_code,
+                discount_amount=discount,
+                client_admin_id=getattr(client, "admin_id", None),
+                enforce_admin=True,
+            )
             if not card:
                 raise ApiNotFoundError(f"Form not found: {form_code}")
             return FormCard(**card.__dict__)

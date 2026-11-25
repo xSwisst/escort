@@ -11,7 +11,6 @@ from bot.services import (
     build_client_card_text,
     build_log_detail_text,
     build_model_card_text,
-    is_admin_allowed,
 )
 
 from .panel import send_panel
@@ -24,9 +23,12 @@ router = Router(name="admin_start")
 @router.message(CommandStart(), F.chat.type == "private")
 @router.message(Command("panel"), F.chat.type == "private")
 async def cmd_start(message: Message, state: FSMContext, command: CommandObject | None = None) -> None:
-    if not is_admin_allowed(message.from_user.id):
-        await message.answer(t("access_denied"))
-        return
+    admin = await api_client.admin.get_or_create_admin(
+        message.from_user.id,
+        username=message.from_user.username,
+        first_name=message.from_user.first_name,
+        last_name=message.from_user.last_name,
+    )
 
     # Обработка диплинка для открытия карточки анкеты: /start open_model_{code} или open_form_{code}
     if command and command.args and (command.args.startswith("open_model_") or command.args.startswith("open_form_")):
@@ -35,7 +37,7 @@ async def cmd_start(message: Message, state: FSMContext, command: CommandObject 
             await state.clear()
             form = None
             try:
-                form = await api_client.admin.get_form(raw_code)
+                form = await api_client.admin.get_form(raw_code, admin_id=admin.id)
             except Exception as exc:
                 logger.debug("Failed to get form %s: %s", raw_code, exc)
 
@@ -44,9 +46,8 @@ async def cmd_start(message: Message, state: FSMContext, command: CommandObject 
                 kb = kb_model_card(form, form.city_slot)
                 await message.answer(text, parse_mode="HTML", reply_markup=kb)
                 return
-            else:
-                await message.answer(t("va_answer_not_found"))
-                return
+            await message.answer(t("va_answer_not_found"))
+            return
 
     # Обработка диплинка для открытия лога: /start get_log_{id}
     if command and command.args and command.args.startswith("get_log_"):
@@ -62,9 +63,13 @@ async def cmd_start(message: Message, state: FSMContext, command: CommandObject 
 
             client = None
             try:
-                client = await api_client.admin.get_client(log_data.user_id)
+                client = await api_client.admin.get_client(log_data.user_id, admin_id=admin.id)
             except Exception:
                 pass
+
+            if not client:
+                await message.answer(t("client_log_not_found", log_id=log_id))
+                return
 
             text = build_log_detail_text(log_data, client)
             markup = kb_log_detail(user_id=log_data.user_id)
@@ -80,13 +85,13 @@ async def cmd_start(message: Message, state: FSMContext, command: CommandObject 
             await state.clear()
             client = None
             try:
-                client = await api_client.admin.get_client_by_db_id(client_id)
+                client = await api_client.admin.get_client_by_db_id(client_id, admin_id=admin.id)
             except Exception as exc:
                 logger.debug("Failed to get client by db_id %s: %s", client_id, exc)
 
             if not client:
                 try:
-                    client = await api_client.admin.get_client(client_id)
+                    client = await api_client.admin.get_client(client_id, admin_id=admin.id)
                 except Exception as exc:
                     logger.debug("Failed to get client by user_id %s: %s", client_id, exc)
 
@@ -101,9 +106,8 @@ async def cmd_start(message: Message, state: FSMContext, command: CommandObject 
                     ),
                 )
                 return
-            else:
-                await message.answer(t("cf_client_not_found", client_id=client_id))
-                return
+            await message.answer(t("cf_client_not_found", client_id=client_id))
+            return
 
     await state.clear()
     await send_panel(message, state)

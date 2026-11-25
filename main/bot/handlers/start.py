@@ -7,7 +7,11 @@ from aiogram.types import CallbackQuery, Message
 
 from bot.assets.media import get_banner_file
 from bot.assets.texts import btn, t
+from bot.handlers.info import render_info
+from bot.handlers.models_catalog import render_models_catalog
 from bot.handlers.models_shared import get_form_card_payload
+from bot.handlers.profile import render_profile
+from bot.handlers.search_with_code import render_search_code
 from bot.keyboards.common import main_reply_kb
 from bot.keyboards.menu import kb_main_menu
 from bot.keyboards.start import kb_accept_agreement
@@ -24,7 +28,6 @@ from utils.helpers import models_banner_media
 
 logger = logging.getLogger(__name__)
 router = Router(name="start")
-MAIN_MENU_REPLY_TEXT = btn("main_menu_reply")["text"]
 
 
 async def _show_main_menu(event: Message | CallbackQuery, bot: Bot) -> None:
@@ -54,13 +57,14 @@ async def cmd_start(
     bot: Bot,
 ):
     await state.clear()
+    payload = parse_deeplink((command.args or "").strip() if command else "")
     bootstrap = await api_client.clients.bootstrap(
         user_id=msg.from_user.id,
         first_name=msg.from_user.first_name,
         last_name=msg.from_user.last_name,
         username=msg.from_user.username,
+        admin_id=payload.ref_admin_id,
     )
-    payload = parse_deeplink((command.args or "").strip() if command else "")
 
     if bootstrap.client.has_accepted_agreement:
         if payload.action == "open_model" and payload.action_arg:
@@ -142,8 +146,28 @@ async def cb_main_menu(call: CallbackQuery, state: FSMContext, bot: Bot):
     await _show_main_menu(call, bot)
 
 
-@router.message(F.text.in_({MAIN_MENU_REPLY_TEXT, "/menu"}) | F.text.startswith("🦋"))
-async def reply_main_menu(msg: Message, state: FSMContext, bot: Bot):
+@router.message(F.text.in_({btn("reply_models")["text"], "Модель", "Модели"}))
+async def reply_models_handler(msg: Message, state: FSMContext):
+    await render_models_catalog(msg, msg.from_user.id, state, is_edit=False)
+
+
+@router.message(F.text.in_({btn("reply_profile")["text"], "Профиль"}))
+async def reply_profile_handler(msg: Message, state: FSMContext):
+    await render_profile(msg, msg.from_user.id, state, is_edit=False)
+
+
+@router.message(F.text.in_({btn("reply_search_code")["text"], "Поиск по коду"}))
+async def reply_search_code_handler(msg: Message, state: FSMContext):
+    await render_search_code(msg, state, is_edit=False)
+
+
+@router.message(F.text.in_({btn("reply_information")["text"], "Информация (о нас)", "Информация", "О нас"}))
+async def reply_info_handler(msg: Message, state: FSMContext, bot: Bot):
     await state.clear()
-    await msg.answer(text=t("butterfly_emoji"), reply_markup=main_reply_kb(is_admin=False))
-    await answer_banner(msg, t("main_menu_caption"), banner=get_banner_file("main-menu-banner"), reply_markup=kb_main_menu(show_web_app=True))
+    await render_info(msg, msg.from_user.id, bot, is_edit=False)
+
+
+@router.message(F.text == "/menu")
+async def cmd_menu(msg: Message, state: FSMContext, bot: Bot):
+    await state.clear()
+    await _show_main_menu(msg, bot)

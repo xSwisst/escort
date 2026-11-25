@@ -18,6 +18,7 @@ class Order(Base):
 
     id: Mapped[int] = mapped_column(Integer, Identity(start=18245), primary_key=True, index=True)
     user_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("clients.user_id", ondelete="CASCADE"), nullable=False, index=True)
+    admin_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("admins.id", ondelete="SET NULL"), nullable=True, index=True)
     created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), default=now_msk, server_default=func.now())
     updated_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), default=now_msk, onupdate=now_msk, server_default=func.now())
     form_code: Mapped[str | None] = mapped_column(String(64), ForeignKey("forms.code", ondelete="SET NULL"), nullable=True, index=True)
@@ -38,6 +39,7 @@ class Order(Base):
     meeting_place_type: Mapped[str | None] = mapped_column(String(32), nullable=True)
     address_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("addresses.id", ondelete="SET NULL"), nullable=True)
 
+    admin: Mapped["Admin | None"] = relationship("Admin", back_populates="orders")
     client: Mapped["Client"] = relationship("Client", back_populates="orders")
     form: Mapped["Form | None"] = relationship("Form")
     address: Mapped["Address | None"] = relationship("Address", back_populates="orders")

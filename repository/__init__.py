@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from .models import (
     Address,
+    Admin,
     Agreement,
     Card,
     Client,
@@ -24,6 +25,7 @@ from .models import (
 )
 from .repositories import (
     AddressRepository,
+    AdminRepository,
     AgreementRepository,
     CardRepository,
     ClientLogRepository,
@@ -47,6 +49,7 @@ __all__ = [
     "Database",
     # Models
     "Address",
+    "Admin",
     "Agreement",
     "Card",
     "Client",

@@ -1,6 +1,7 @@
 from shared.db import Base
 
 from .addresses import Address
+from .admins import Admin
 from .cards import Card
 from .client_activity_logs import ClientActivityLog
 from .clients import Client
@@ -26,6 +27,7 @@ from .support import SupportMessage, SupportThread
 __all__ = [
     "Base",
     "Address",
+    "Admin",
     "Agreement",
     "Card",
     "Client",

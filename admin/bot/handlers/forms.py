@@ -43,6 +43,21 @@ from bot.states import (
     VANewService,
 )
 from clients.api import ApiNotFoundError, api_client
+
+
+async def _resolve_admin_id(tg_user) -> int:
+    admin = await api_client.admin.get_or_create_admin(
+        tg_user.id,
+        username=tg_user.username,
+        first_name=tg_user.first_name,
+        last_name=tg_user.last_name,
+    )
+    return admin.id
+
+
+async def _resolve_admin_id_by_tg(user_id: int) -> int:
+    admin = await api_client.admin.get_or_create_admin(user_id)
+    return admin.id
 from bot.services import build_model_card_text
 
 router = Router(name="admin_forms")
@@ -117,7 +132,8 @@ async def show_forms_list(call: CallbackQuery, state: FSMContext) -> None:
     city_slot = int(parts[3])
     page = int(parts[4]) if len(parts) > 4 else 1
 
-    forms_resp = await api_client.admin.list_forms(city_slot=city_slot)
+    admin_id = await _resolve_admin_id(call.from_user)
+    forms_resp = await api_client.admin.list_forms(city_slot=city_slot, admin_id=admin_id)
     forms = forms_resp.items
     total = len(forms)
     total_pages = max(1, (total + 5) // 6)
@@ -137,7 +153,8 @@ async def show_model_card(call: CallbackQuery, state: FSMContext, code: str | No
     if not code:
         code = call.data.split(":")[3]
     try:
-        form = await api_client.admin.get_form(code)
+        admin_id = await _resolve_admin_id(call.from_user)
+        form = await api_client.admin.get_form(code, admin_id=admin_id)
     except ApiNotFoundError:
         await call.answer("Анкета не найдена", show_alert=True)
         return
@@ -472,7 +489,8 @@ async def new_model_approve(call: CallbackQuery, state: FSMContext) -> None:
 
     await call.answer("Создание анкеты...")
     try:
-        created = await api_client.admin.create_form(form_data, files=files if files else None)
+        admin_id = await _resolve_admin_id(call.from_user)
+        created = await api_client.admin.create_form(form_data, files=files if files else None, admin_id=admin_id)
         await state.clear()
         await show_model_card(call, state, code=created.code)
     except Exception as exc:
@@ -489,7 +507,8 @@ async def toggle_model_field(call: CallbackQuery, state: FSMContext) -> None:
     field = parts[4]
 
     try:
-        await api_client.admin.toggle_form_field(code, field)
+        admin_id = await _resolve_admin_id(call.from_user)
+        await api_client.admin.toggle_form_field(code, field, admin_id=admin_id)
         await call.answer(t("model_toggled"))
         await show_model_card(call, state, code=code)
     except Exception as exc:
@@ -500,9 +519,10 @@ async def toggle_model_field(call: CallbackQuery, state: FSMContext) -> None:
 async def move_model_city(call: CallbackQuery, state: FSMContext) -> None:
     code = call.data.split(":")[3]
     try:
-        form = await api_client.admin.get_form(code)
+        admin_id = await _resolve_admin_id(call.from_user)
+        form = await api_client.admin.get_form(code, admin_id=admin_id)
         new_slot = 2 if form.city_slot == 1 else 1
-        await api_client.admin.update_form(code, {"city_slot": new_slot})
+        await api_client.admin.update_form(code, {"city_slot": new_slot}, admin_id=admin_id)
         await call.answer(t("model_city_moved", city_slot=new_slot))
         await show_model_card(call, state, code=code)
     except Exception as exc:
@@ -585,7 +605,8 @@ async def edit_model_params_menu(call: CallbackQuery) -> None:
         return f"{val} ₽" if val is not None else "—"
 
     try:
-        form = await api_client.admin.get_form(code)
+        admin_id = await _resolve_admin_id(call.from_user)
+        form = await api_client.admin.get_form(code, admin_id=admin_id)
         text = t(
             "va_model_edit_info",
             name=form.name,
@@ -611,7 +632,8 @@ async def ask_edit_param(call: CallbackQuery, state: FSMContext) -> None:
     param_name = parts[4]
 
     try:
-        form = await api_client.admin.get_form(code)
+        admin_id = await _resolve_admin_id(call.from_user)
+        form = await api_client.admin.get_form(code, admin_id=admin_id)
     except ApiNotFoundError:
         await call.answer("Анкета не найдена", show_alert=True)
         return
@@ -763,7 +785,8 @@ async def approve_edit_param(call: CallbackQuery, state: FSMContext) -> None:
         update_payload[param_name] = parsed_val
 
     try:
-        await api_client.admin.update_form(code, update_payload)
+        admin_id = await _resolve_admin_id(call.from_user)
+        await api_client.admin.update_form(code, update_payload, admin_id=admin_id)
         await call.answer("✅ Изменено")
         if is_default:
             call.data = f"admin:form:edit:{code}"
@@ -810,7 +833,8 @@ async def approve_delete_param(call: CallbackQuery, state: FSMContext) -> None:
         update_payload[param_name] = None
 
     try:
-        await api_client.admin.update_form(code, update_payload)
+        admin_id = await _resolve_admin_id(call.from_user)
+        await api_client.admin.update_form(code, update_payload, admin_id=admin_id)
         await call.answer(t("va_model_param_deleted_answer"))
         await state.clear()
         if param_name in _DEFAULT_PARAMS:
@@ -830,7 +854,8 @@ async def show_form_photos(call: CallbackQuery, state: FSMContext) -> None:
     code = parts[3]
     index = int(parts[4])
 
-    form = await api_client.admin.get_form(code)
+    admin_id = await _resolve_admin_id(call.from_user)
+    form = await api_client.admin.get_form(code, admin_id=admin_id)
     photos = form.photos or []
     count = len(photos)
 
@@ -873,7 +898,8 @@ async def delete_form_photo(call: CallbackQuery, state: FSMContext) -> None:
     index = int(parts[5])
 
     try:
-        await api_client.admin.delete_form_photo(code, index)
+        admin_id = await _resolve_admin_id(call.from_user)
+        await api_client.admin.delete_form_photo(code, index, admin_id=admin_id)
         await call.answer(t("model_photos_deleted"))
     except Exception as exc:
         await call.answer(f"Ошибка удаления: {exc}", show_alert=True)
@@ -917,7 +943,8 @@ async def _flush_add_album(user_id: int, bot: Bot, state: FSMContext):
             await bot.send_message(user_id, f"❌ Ошибка добавления: {exc}")
 
     try:
-        form = await api_client.admin.get_form(code)
+        admin_id = await _resolve_admin_id_by_tg(user_id)
+        form = await api_client.admin.get_form(code, admin_id=admin_id)
         await bot.send_message(
             user_id,
             build_model_card_text(form),
@@ -953,7 +980,8 @@ async def show_reviews(call: CallbackQuery) -> None:
 
     reviews_resp = await api_client.admin.list_reviews(code)
     reviews = reviews_resp.items
-    form = await api_client.admin.get_form(code)
+    admin_id = await _resolve_admin_id(call.from_user)
+    form = await api_client.admin.get_form(code, admin_id=admin_id)
 
     text = t("model_reviews_title", code=code, name=form.name, total=len(reviews))
     await _render_text_menu(call, text, reply_markup=kb_reviews_list(code, reviews, page=page))
@@ -1067,7 +1095,8 @@ async def process_add_review(message: Message, state: FSMContext, bot: Bot) -> N
             await api_client.admin.create_review(code, rev)
         reviews_resp = await api_client.admin.list_reviews(code)
         reviews = reviews_resp.items
-        form = await api_client.admin.get_form(code)
+        admin_id = await _resolve_admin_id(message.from_user)
+        form = await api_client.admin.get_form(code, admin_id=admin_id)
         text = t("model_reviews_title", code=code, name=form.name, total=len(reviews))
         await bot.edit_message_text(
             chat_id=chat_id,
@@ -1099,7 +1128,8 @@ async def show_services(call: CallbackQuery) -> None:
 
     services_resp = await api_client.admin.list_services(code)
     services = services_resp.items
-    form = await api_client.admin.get_form(code)
+    admin_id = await _resolve_admin_id(call.from_user)
+    form = await api_client.admin.get_form(code, admin_id=admin_id)
 
     text = t("model_services_title", code=code, name=form.name, total=len(services))
     await _render_text_menu(call, text, reply_markup=kb_services_list(code, services, page=page))
@@ -1193,7 +1223,8 @@ async def process_add_service(message: Message, state: FSMContext, bot: Bot) -> 
             await api_client.admin.create_service(code, {"name": name})
         services_resp = await api_client.admin.list_services(code)
         services = services_resp.items
-        form = await api_client.admin.get_form(code)
+        admin_id = await _resolve_admin_id(message.from_user)
+        form = await api_client.admin.get_form(code, admin_id=admin_id)
         text = t("model_services_title", code=code, name=form.name, total=len(services))
         await bot.edit_message_text(
             chat_id=chat_id,
@@ -1225,7 +1256,8 @@ async def show_additionals(call: CallbackQuery) -> None:
 
     adds_resp = await api_client.admin.list_additionals(code)
     additionals = adds_resp.items
-    form = await api_client.admin.get_form(code)
+    admin_id = await _resolve_admin_id(call.from_user)
+    form = await api_client.admin.get_form(code, admin_id=admin_id)
 
     text = t("model_additionals_title", code=code, name=form.name, total=len(additionals))
     await _render_text_menu(call, text, reply_markup=kb_additionals_list(code, additionals, page=page))
@@ -1330,7 +1362,8 @@ async def process_add_additional(message: Message, state: FSMContext, bot: Bot) 
             await api_client.admin.create_additional(code, add_item)
         adds_resp = await api_client.admin.list_additionals(code)
         additionals = adds_resp.items
-        form = await api_client.admin.get_form(code)
+        admin_id = await _resolve_admin_id(message.from_user)
+        form = await api_client.admin.get_form(code, admin_id=admin_id)
         text = t("model_additionals_title", code=code, name=form.name, total=len(additionals))
         await bot.edit_message_text(
             chat_id=chat_id,
@@ -1360,7 +1393,8 @@ async def show_positions(call: CallbackQuery) -> None:
     city_slot = int(parts[3])
     page = int(parts[4])
 
-    forms_resp = await api_client.admin.list_forms(city_slot=city_slot)
+    admin_id = await _resolve_admin_id(call.from_user)
+    forms_resp = await api_client.admin.list_forms(city_slot=city_slot, admin_id=admin_id)
     forms = forms_resp.items
 
     await _render_text_menu(call, t("va_positions_header"), reply_markup=kb_positions(forms, city_slot, page=page))
@@ -1373,12 +1407,13 @@ async def pos_up(call: CallbackQuery) -> None:
     city_slot = int(parts[3])
     code = parts[4]
 
-    forms_resp = await api_client.admin.list_forms(city_slot=city_slot)
+    admin_id = await _resolve_admin_id(call.from_user)
+    forms_resp = await api_client.admin.list_forms(city_slot=city_slot, admin_id=admin_id)
     forms = forms_resp.items
     codes = [f.code for f in forms]
     idx = codes.index(code) if code in codes else -1
     if idx > 0:
-        await api_client.admin.swap_positions(codes[idx - 1], code)
+        await api_client.admin.swap_positions(codes[idx - 1], code, admin_id=admin_id)
         await call.answer("⬆️")
     else:
         await call.answer()
@@ -1393,12 +1428,13 @@ async def pos_down(call: CallbackQuery) -> None:
     city_slot = int(parts[3])
     code = parts[4]
 
-    forms_resp = await api_client.admin.list_forms(city_slot=city_slot)
+    admin_id = await _resolve_admin_id(call.from_user)
+    forms_resp = await api_client.admin.list_forms(city_slot=city_slot, admin_id=admin_id)
     forms = forms_resp.items
     codes = [f.code for f in forms]
     idx = codes.index(code) if code in codes else -1
     if 0 <= idx < len(codes) - 1:
-        await api_client.admin.swap_positions(code, codes[idx + 1])
+        await api_client.admin.swap_positions(code, codes[idx + 1], admin_id=admin_id)
         await call.answer("⬇️")
     else:
         await call.answer()
@@ -1413,9 +1449,10 @@ async def pos_down(call: CallbackQuery) -> None:
 async def confirm_delete_model(call: CallbackQuery, state: FSMContext) -> None:
     code = call.data.split(":")[4]
     try:
-        form = await api_client.admin.get_form(code)
+        admin_id = await _resolve_admin_id(call.from_user)
+        form = await api_client.admin.get_form(code, admin_id=admin_id)
         city_slot = form.city_slot
-        await api_client.admin.delete_form(code)
+        await api_client.admin.delete_form(code, admin_id=admin_id)
         await call.answer(t("model_deleted_answer"))
         call.data = f"admin:forms:city:{city_slot}:1"
         await show_forms_list(call, state)
@@ -1427,7 +1464,8 @@ async def confirm_delete_model(call: CallbackQuery, state: FSMContext) -> None:
 async def ask_delete_model(call: CallbackQuery) -> None:
     code = call.data.split(":")[3]
     try:
-        form = await api_client.admin.get_form(code)
+        admin_id = await _resolve_admin_id(call.from_user)
+        form = await api_client.admin.get_form(code, admin_id=admin_id)
     except ApiNotFoundError:
         await call.answer("Анкета не найдена", show_alert=True)
         return

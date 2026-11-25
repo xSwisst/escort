@@ -110,10 +110,21 @@ class FormService:
         form = await self.get_form(form_code, include_private_channel=True)
         return getattr(form, "private_channel", None)
 
-    async def get_form_card(self, user_id: int, form_code: str, discount_amount: int | None = None) -> FormCard | None:
+    async def get_form_card(
+        self,
+        user_id: int,
+        form_code: str,
+        discount_amount: int | None = None,
+        *,
+        client_admin_id: int | None = None,
+        enforce_admin: bool = False,
+    ) -> FormCard | None:
         try:
             form = await self.get_form(form_code)
         except FormNotFoundError:
+            return None
+
+        if enforce_admin and (client_admin_id is None or form.admin_id != client_admin_id):
             return None
 
         reviews = await self.get_reviews(form_code)

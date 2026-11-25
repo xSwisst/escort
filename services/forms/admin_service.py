@@ -34,11 +34,11 @@ class AdminFormService:
 
     # ── Forms ─────────────────────────────────────────────────────────────
 
-    async def get_all_forms(self, city_slot: int | None = None):
+    async def get_all_forms(self, city_slot: int | None = None, *, admin_id: int | None = None):
         """Get all forms for admin panel"""
-        return await self.forms.get_all_admin(city_slot=city_slot)
+        return await self.forms.get_all_admin(city_slot=city_slot, admin_id=admin_id)
 
-    async def get_form(self, code: str):
+    async def get_form(self, code: str, *, admin_id: int | None = None):
         """Get form by code with all relationships"""
         form = await self.forms.get(
             code,
@@ -47,11 +47,11 @@ class AdminFormService:
             include_publication=True,
             include_photos=True,
         )
-        if not form:
+        if not form or (admin_id is not None and form.admin_id != admin_id):
             raise FormNotFoundError(code)
         return form
 
-    async def create_form(self, data: dict):
+    async def create_form(self, data: dict, *, admin_id: int | None = None):
         """Create a new form with generated code"""
         # Generate unique code
         while True:
@@ -84,7 +84,13 @@ class AdminFormService:
             "has_medical_certificate": data.get("has_medical_certificate", False),
         }
 
-        form = await self.forms.create_form(code, profile_data, pricing_data, publication_data)
+        form = await self.forms.create_form(
+            code,
+            profile_data,
+            pricing_data,
+            publication_data,
+            admin_id=admin_id,
+        )
         await self._session.commit()
         return form
 

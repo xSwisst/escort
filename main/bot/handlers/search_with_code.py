@@ -7,23 +7,35 @@ from bot.assets.texts import t
 from bot.handlers.models_shared import get_form_card_payload
 from bot.keyboards.common import kb_back
 from bot.states import SearchCodeState
-from shared.bot.utils.media_banner import bot_edit_banner, bot_edit_photo, edit_banner
+from shared.bot.utils.media_banner import answer_banner, bot_edit_banner, bot_edit_photo, edit_banner
 from utils.helpers import models_banner_media
 
 router = Router(name="search_with_code")
 
 
-@router.callback_query(F.data == "menu:search_code")
-async def start_search(call: CallbackQuery, state: FSMContext):
+async def render_search_code(
+    target: Message,
+    state: FSMContext,
+    *,
+    is_edit: bool = True,
+) -> None:
     await state.clear()
     await state.set_state(SearchCodeState.code)
-    await state.update_data(bot_msg_id=call.message.message_id)
-    await edit_banner(
-        call.message,
-        t("search_code_enter"),
-        banner=get_banner_file("enter-model-code-banner"),
-        reply_markup=kb_back("back_to_main", "menu:main"),
-    )
+    text = t("search_code_enter")
+    banner = get_banner_file("enter-model-code-banner")
+    markup = kb_back("back_to_main", "menu:main")
+    if is_edit:
+        await state.update_data(bot_msg_id=target.message_id)
+        await edit_banner(target, text, banner=banner, reply_markup=markup)
+    else:
+        sent = await answer_banner(target, text, banner=banner, reply_markup=markup)
+        if sent:
+            await state.update_data(bot_msg_id=sent.message_id)
+
+
+@router.callback_query(F.data == "menu:search_code")
+async def start_search(call: CallbackQuery, state: FSMContext):
+    await render_search_code(call.message, state, is_edit=True)
     await call.answer()
 
 

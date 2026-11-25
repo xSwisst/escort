@@ -9,6 +9,7 @@ _SEPARATOR = "__"
 
 @dataclass
 class DeeplinkPayload:
+    ref_admin_id: int | None = None
     action: ActionType = None
     action_arg: str | None = None
 
@@ -18,7 +19,11 @@ def parse_deeplink(args: str | None) -> DeeplinkPayload:
         return DeeplinkPayload()
     payload = DeeplinkPayload()
     for part in args.split(_SEPARATOR):
-        if part.startswith("open_model_"):
+        if part.startswith("r_"):
+            raw_id = part[len("r_"):].strip()
+            if raw_id.isdigit():
+                payload.ref_admin_id = int(raw_id)
+        elif part.startswith("open_model_"):
             payload.action = "open_model"
             payload.action_arg = part[len("open_model_"):]
     return payload

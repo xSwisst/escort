@@ -55,12 +55,16 @@ def _get_active_city(client) -> str:
     return active_city or client.primary_city or client.secondary_city or t("profile_city_not_set")
 
 
-@router.callback_query(F.data == "menu:profile")
-async def show_profile(call: CallbackQuery, state: FSMContext | None = None):
+async def render_profile(
+    target: Message,
+    user_id: int,
+    state: FSMContext | None = None,
+    *,
+    is_edit: bool = True,
+) -> None:
     if state:
         await state.clear()
-        await state.update_data(bot_msg_id=call.message.message_id)
-    client = await api_client.profile.get_profile(call.from_user.id)
+    client = await api_client.profile.get_profile(user_id)
     text = t(
         "profile_caption",
         id=client.id if client.id is not None else client.user_id,
@@ -71,12 +75,21 @@ async def show_profile(call: CallbackQuery, state: FSMContext | None = None):
         promo_status=t("profile_promo_active") if client.promo else t("profile_promo_inactive"),
         registered=format_datetime_ru(client.registered_at),
     )
-    await edit_banner(
-        call.message,
-        text,
-        banner=get_banner_file("profile-banner"),
-        reply_markup=kb_profile(client.primary_city, show_addresses=True),
-    )
+    banner = get_banner_file("profile-banner")
+    markup = kb_profile(client.primary_city, show_addresses=True)
+    if is_edit:
+        await edit_banner(target, text, banner=banner, reply_markup=markup)
+        if state:
+            await state.update_data(bot_msg_id=target.message_id)
+    else:
+        sent = await answer_banner(target, text, banner=banner, reply_markup=markup)
+        if state and sent:
+            await state.update_data(bot_msg_id=sent.message_id)
+
+
+@router.callback_query(F.data == "menu:profile")
+async def show_profile(call: CallbackQuery, state: FSMContext | None = None):
+    await render_profile(call.message, call.from_user.id, state, is_edit=True)
     await call.answer()
 
 
