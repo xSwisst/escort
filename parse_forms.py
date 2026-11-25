@@ -273,18 +273,21 @@ def collect_from_dir(html_dir: Path, base_url: str, *, limit: int) -> list[Parse
     return results
 
 
-async def save_forms(db_url: str, city_name: str, forms: list[ParsedForm]) -> int:
+async def save_forms(db_url: str, city_name: str | None, forms: list[ParsedForm]) -> int:
     db = Database(db_url)
     saved = 0
     try:
         async with db.session() as session:
-            city_repo = CityRepository(session)
-            city = await city_repo.get_by_name(city_name)
-            if city is None:
-                city = City(name=city_name.strip())
-                session.add(city)
-                await session.flush()
-                await session.refresh(city)
+            city_id: int | None = None
+            if city_name:
+                city_repo = CityRepository(session)
+                city = await city_repo.get_by_name(city_name)
+                if city is None:
+                    city = City(name=city_name.strip())
+                    session.add(city)
+                    await session.flush()
+                    await session.refresh(city)
+                city_id = city.id
 
             for idx, item in enumerate(forms, start=1):
                 code = _generate_code()
@@ -308,7 +311,7 @@ async def save_forms(db_url: str, city_name: str, forms: list[ParsedForm]) -> in
                     FormPublication(
                         form_code=code,
                         city_slot=2,
-                        city_id=city.id,
+                        city_id=city_id,
                         is_static=True,
                         is_visible=True,
                         is_verified=True,
@@ -334,7 +337,7 @@ async def save_forms(db_url: str, city_name: str, forms: list[ParsedForm]) -> in
 
 async def async_main() -> None:
     parser = argparse.ArgumentParser(description="Parse static forms into escort_db")
-    parser.add_argument("--city", required=True, help="Target city name in `cities` table (e.g. Москва)")
+    parser.add_argument("--city", default=None, help="Optional target city name in `cities` table")
     parser.add_argument("--url", default=DEFAULT_BASE_URL, help="Target site base URL")
     parser.add_argument("--limit", type=int, default=1000, help="Max forms to parse")
     parser.add_argument("--max-pages", type=int, default=200, help="Max listing pages to scan")

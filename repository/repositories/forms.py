@@ -112,12 +112,16 @@ class FormRepository(BaseRepository[Form]):
             )
         else:
             target_city_id = active_city.city_id if active_city is not None else None
-            if target_city_id is None:
-                return []
-            statement = statement.where(
-                FormPublication.is_static.is_(True),
-                FormPublication.city_id == target_city_id,
-            )
+            if target_city_id is not None:
+                statement = statement.where(
+                    FormPublication.is_static.is_(True),
+                    or_(FormPublication.city_id == target_city_id, FormPublication.city_id.is_(None)),
+                )
+            else:
+                statement = statement.where(
+                    FormPublication.is_static.is_(True),
+                    FormPublication.city_id.is_(None),
+                )
 
         statement = statement.order_by(FormPublication.sort_order.asc(), Form.created_at.asc())
         result = await self._session.execute(statement)
