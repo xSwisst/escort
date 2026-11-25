@@ -261,8 +261,16 @@ async def collect_from_web(
 
 
 def collect_from_dir(html_dir: Path, base_url: str, *, limit: int) -> list[ParsedForm]:
+    if not html_dir.exists():
+        logger.warning("HTML directory does not exist: %s", html_dir)
+        return []
+    files = sorted(html_dir.rglob("*.html"))
+    if not files:
+        logger.warning("No .html files found in %s", html_dir)
+        return []
+    logger.info("Found %s .html files in %s", len(files), html_dir)
+
     results: list[ParsedForm] = []
-    files: Iterable[Path] = sorted(html_dir.rglob("*.html"))
     for path in files:
         if len(results) >= limit:
             break
