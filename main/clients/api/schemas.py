@@ -20,11 +20,18 @@ class ClientIdentity(BaseModel):
     has_accepted_agreement: bool
 
 
+class ClientCityItem(BaseModel):
+    slot: int
+    city_name: str
+    is_active: bool = False
+
+
 class ClientCities(BaseModel):
     primary_city: str | None = None
     secondary_city: str | None = None
     active_city_slot: int = 1
     active_city: str | None = None
+    cities: list[ClientCityItem] = Field(default_factory=list)
 
 
 class StartBootstrapResponse(BaseModel):
@@ -118,6 +125,7 @@ class ProfileResponse(BaseModel):
     secondary_city: str | None = None
     active_city_slot: int = 1
     city: str | None = None
+    cities: list[ClientCityItem] = Field(default_factory=list)
     rating: float = 0.0
     orders: int = 0
     balance: int = 0

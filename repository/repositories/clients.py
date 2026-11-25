@@ -121,8 +121,11 @@ class ClientRepository(BaseRepository[Client]):
         await self.update_by_user_id(user_id, has_accepted_agreement=True, agreement_id=agreement_id)
 
     async def set_city(self, user_id: int, city: str, slot: int = 1) -> None:
-        fields = {"primary_city": city} if slot == 1 else {"secondary_city": city}
-        fields["active_city_slot"] = slot
+        fields: dict[str, object] = {"active_city_slot": slot}
+        if slot == 1:
+            fields["primary_city"] = city
+        elif slot == 2:
+            fields["secondary_city"] = city
         await self.update_by_user_id(user_id, **fields)
 
     async def count_registered(self) -> int:

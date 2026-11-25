@@ -7,6 +7,7 @@ from services.payments import PaymentService
 from shared.bot.session import resolve_session
 from .exceptions import ApiNotFoundError
 from .schemas import (
+    ClientCityItem,
     FavoriteItem,
     FavoritesResponse,
     OrderItem,
@@ -30,6 +31,10 @@ class ProfileApi:
                 secondary_city=p.secondary_city,
                 active_city_slot=p.active_city_slot,
                 city=p.city,
+                cities=[
+                    ClientCityItem(slot=c.slot, city_name=c.city_name, is_active=c.is_active)
+                    for c in (p.cities or [])
+                ],
                 rating=p.rating,
                 orders=p.orders,
                 balance=p.balance,

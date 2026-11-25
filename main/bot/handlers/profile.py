@@ -355,7 +355,12 @@ async def show_city_management(call: CallbackQuery):
         call.message,
         t("profile_city_manage"),
         banner=get_banner_file("choice-city-banner"),
-        reply_markup=kb_city_management(client.primary_city, client.secondary_city, client.active_city_slot),
+        reply_markup=kb_city_management(
+            client.primary_city,
+            client.secondary_city,
+            client.active_city_slot,
+            cities=client.cities,
+        ),
     )
     await call.answer()
 
@@ -367,16 +372,22 @@ async def switch_city(call: CallbackQuery):
     if new_status == client.active_city_slot:
         await call.answer(t("profile_city_already_active"), show_alert=True)
         return
-    target_city = client.primary_city if new_status == 1 else client.secondary_city
+    target_item = next((c for c in (client.cities or []) if c.slot == new_status), None)
+    target_city = target_item.city_name if target_item else (client.primary_city if new_status == 1 else (client.secondary_city if new_status == 2 else None))
     if not target_city:
         await call.answer(t("profile_city_missing"), show_alert=True)
         return
-    client = await api_client.clients.switch_city(call.from_user.id, active_city_slot=new_status)
+    cities_resp = await api_client.clients.switch_city(call.from_user.id, active_city_slot=new_status)
     await edit_banner(
         call.message,
         t("profile_city_manage"),
         banner=get_banner_file("choice-city-banner"),
-        reply_markup=kb_city_management(client.primary_city, client.secondary_city, client.active_city_slot),
+        reply_markup=kb_city_management(
+            cities_resp.primary_city,
+            cities_resp.secondary_city,
+            cities_resp.active_city_slot,
+            cities=cities_resp.cities,
+        ),
     )
     await call.answer(t("profile_city_active_answer", city=target_city))
 
@@ -384,13 +395,15 @@ async def switch_city(call: CallbackQuery):
 @router.callback_query(F.data == "city:add")
 async def add_secondary_city(call: CallbackQuery, state: FSMContext):
     client = await api_client.profile.get_profile(call.from_user.id)
-    if not client.primary_city:
+    existing_slots = [c.slot for c in (client.cities or [])]
+    if existing_slots:
+        slot = max(existing_slots) + 1
+    elif not client.primary_city:
         slot = 1
     elif not client.secondary_city:
         slot = 2
     else:
-        await call.answer("Все слоты городов уже заполнены.", show_alert=True)
-        return
+        slot = 3
 
     await state.set_state(CityState.waiting_city)
     await state.update_data(city_slot=slot, bot_msg_id=call.message.message_id, next_route="menu:profile")

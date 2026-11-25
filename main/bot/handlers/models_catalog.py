@@ -293,6 +293,17 @@ async def process_city(msg: Message, state: FSMContext):
         return
 
     slot = int(data.get("city_slot", 1) or 1)
+    if await api_client.clients.has_city(msg.from_user.id, city_name):
+        await bot_edit_banner(
+            msg.bot,
+            msg.chat.id,
+            data["bot_msg_id"],
+            f"⚠️ Город <b>{escape(city_name)}</b> уже добавлен в ваш список. Введите другой город:",
+            banner=get_banner_file("choice-city-banner"),
+            reply_markup=kb_back("back_to_city", "profile:city"),
+        )
+        return
+
     client = await api_client.clients.set_city(msg.from_user.id, city=city_name, slot=slot)
     await api_client.clients.switch_city(msg.from_user.id, active_city_slot=slot)
     await state.clear()

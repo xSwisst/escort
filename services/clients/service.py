@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -13,6 +13,14 @@ from repository.repositories.clients import ClientRepository
 from repository.repositories.favorites import FavoriteRepository
 from repository.repositories.orders import OrderRepository
 from repository.repositories.promos import PromoRepository
+
+
+@dataclass
+class ClientCityData:
+    slot: int
+    city_name: str
+    city_id: int | None = None
+    is_active: bool = False
 
 
 @dataclass
@@ -29,6 +37,7 @@ class ClientProfile:
     promo: str | None
     promo_code: str | None
     registered_at: datetime
+    cities: list[ClientCityData] = field(default_factory=list)
 
 
 @dataclass
@@ -135,11 +144,25 @@ class ClientService:
             secondary_city = slot2.city_name if slot2 else client.secondary_city
             active_slot = active_link.slot
             active_city = active_link.city_name
+            cities_list = [
+                ClientCityData(
+                    slot=c.slot,
+                    city_name=c.city_name,
+                    city_id=c.city_id,
+                    is_active=bool(c.is_active),
+                )
+                for c in links
+            ]
         else:
             active_slot = int(getattr(client, "active_city_slot", 1) or 1)
             primary_city = client.primary_city
             secondary_city = client.secondary_city
             active_city = secondary_city if active_slot == 2 and secondary_city else primary_city
+            cities_list = []
+            if primary_city:
+                cities_list.append(ClientCityData(slot=1, city_name=primary_city, is_active=(active_slot == 1)))
+            if secondary_city:
+                cities_list.append(ClientCityData(slot=2, city_name=secondary_city, is_active=(active_slot == 2)))
         return ClientProfile(
             id=client.id,
             user_id=client.user_id,
@@ -153,9 +176,31 @@ class ClientService:
             promo=client.promo_code,
             promo_code=client.promo_code,
             registered_at=client.registered_at,
+            cities=cities_list,
         )
 
-    async def set_city(self, user_id: int, city: str, slot: int = 1) -> None:
+    async def has_city(self, user_id: int, city: str) -> bool:
+        target = (city or "").strip().lower()
+        if not target:
+            return False
+        links = await self.client_cities.get_by_client(user_id)
+        if links:
+            return any((c.city_name or "").strip().lower() == target for c in links)
+        client = await self.clients.get(user_id)
+        if not client:
+            return False
+        return any(
+            (val or "").strip().lower() == target
+            for val in (client.primary_city, client.secondary_city)
+            if val
+        )
+
+    async def set_city(self, user_id: int, city: str, slot: int | None = None) -> None:
+        if await self.has_city(user_id, city):
+            raise ValueError("duplicate_city")
+        if slot is None:
+            links = await self.client_cities.get_by_client(user_id)
+            slot = (max((c.slot for c in links), default=0) + 1) if links else 1
         city_id: int | None = None
         if slot >= 2:
             city_obj = await self.cities.get_by_name(city)

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from services.clients.service import ClientService
 from shared.bot.session import resolve_session
-from .schemas import ActionStatusResponse, AgreementInfo, ClientCities, ClientIdentity, StartBootstrapResponse
+from .schemas import ActionStatusResponse, AgreementInfo, ClientCities, ClientCityItem, ClientIdentity, StartBootstrapResponse
 
 
 class ClientApi:
@@ -54,7 +54,16 @@ class ClientApi:
                 secondary_city=profile.secondary_city,
                 active_city_slot=profile.active_city_slot,
                 active_city=profile.city,
+                cities=[
+                    ClientCityItem(slot=c.slot, city_name=c.city_name, is_active=c.is_active)
+                    for c in (profile.cities or [])
+                ],
             )
+
+    async def has_city(self, user_id: int, city: str) -> bool:
+        async with resolve_session() as session:
+            cs = ClientService(session)
+            return await cs.has_city(user_id, city)
 
     async def set_city(self, user_id: int, *, city: str, slot: int) -> ClientCities:
         async with resolve_session() as session:
