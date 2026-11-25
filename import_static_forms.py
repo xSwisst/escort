@@ -171,13 +171,25 @@ async def import_forms(
                     await session.refresh(city)
                 cities.append(city)
 
-            for idx, item in enumerate(items, start=1):
+            city_counts = [random.randint(20, 30) for _ in cities]
+            city_assignments: list[City] = []
+            for city_obj, count in zip(cities, city_counts):
+                city_assignments.extend([city_obj] * count)
+            while len(city_assignments) < total:
+                city_assignments.append(random.choice(cities))
+
+            shuffled_items = list(items)
+            random.shuffle(shuffled_items)
+            per_city_order: dict[int, int] = {}
+
+            for idx, item in enumerate(shuffled_items, start=1):
                 photos = [str(p).strip() for p in (item.get("photos") or []) if str(p).strip()]
                 if not photos:
                     render_progress(idx, total)
                     continue
 
-                target_city = cities[(idx - 1) % len(cities)]
+                target_city = city_assignments[idx - 1]
+                per_city_order[target_city.id] = per_city_order.get(target_city.id, 0) + 1
                 code = _generate_code()
                 prices = generate_prices()
 
@@ -204,7 +216,7 @@ async def import_forms(
                         is_visible=True,
                         is_verified=True,
                         has_medical_certificate=True,
-                        sort_order=(idx - 1) // len(cities) + 1,
+                        sort_order=per_city_order[target_city.id],
                     )
                 )
                 for order_idx, photo_url in enumerate(photos[:10]):

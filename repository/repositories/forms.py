@@ -118,14 +118,16 @@ class FormRepository(BaseRepository[Form]):
                     FormPublication.city_id == target_city_id,
                 )
             else:
-                # Fallback deterministic 25-form slice if client entered a city outside top-40
+                # Fallback deterministic 20-30 form slice if client entered a city outside top-40
                 city_name_str = (active_city.city_name if active_city is not None else "") or ""
-                offset_val = (sum(ord(ch) for ch in city_name_str.lower()) % 40) * 25
+                seed = sum(ord(ch) for ch in city_name_str.lower())
+                limit_val = 20 + (seed % 11)
+                offset_val = (seed % 35) * 25
                 statement = (
                     statement.where(FormPublication.is_static.is_(True))
                     .order_by(Form.id.asc())
                     .offset(offset_val)
-                    .limit(25)
+                    .limit(limit_val)
                 )
                 result = await self._session.execute(statement)
                 return result.scalars().all()
