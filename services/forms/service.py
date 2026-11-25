@@ -18,7 +18,6 @@ class FormCard:
     age: int
     height: int
     bust_size: int
-    weight: int | None = None
     one_hour_price: int | None
     two_hour_price: int | None
     three_hour_price: int | None
@@ -35,6 +34,7 @@ class FormCard:
     has_services: bool
     has_additionals: bool
     has_private_channel: bool
+    weight: int | None = None
     discount_amount: int | None = None
 
 
