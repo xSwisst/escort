@@ -369,7 +369,7 @@ async def import_forms(
                     session.add(
                         FormPublication(
                             form_code=code,
-                            city_slot=2,
+                            city_slot=1,
                             city_id=target_city.id,
                             is_static=True,
                             is_visible=True,

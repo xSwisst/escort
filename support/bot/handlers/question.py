@@ -9,6 +9,7 @@ from bot.assets.texts import t
 from bot.keyboards import kb_user_info
 from clients.api import ApiNotFoundError, api_client
 from bot.services import build_client_info_text, emit_support_info
+from core.settings import settings
 
 router = Router(name="support_question")
 logger = logging.getLogger(__name__)

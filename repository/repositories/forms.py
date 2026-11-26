@@ -90,7 +90,7 @@ class FormRepository(BaseRepository[Form]):
             else (active_city_slot or int(getattr(client, "active_city_slot", 1) or 1))
         )
 
-        statement = (
+        base_stmt = (
             select(Form)
             .join(Form.publication)
             .where(FormPublication.is_visible.is_(True))
@@ -103,38 +103,43 @@ class FormRepository(BaseRepository[Form]):
             )
         )
 
-        if slot == 1:
-            if getattr(client, "admin_id", None) is None:
-                return []
-            statement = statement.where(
-                Form.admin_id == client.admin_id,
-                FormPublication.is_static.is_(False),
-            )
-        else:
+        async def _fetch_static() -> list[Form]:
             target_city_id = active_city.city_id if active_city is not None else None
             if target_city_id is not None:
-                statement = statement.where(
-                    FormPublication.is_static.is_(True),
-                    FormPublication.city_id == target_city_id,
+                stmt = (
+                    base_stmt.where(
+                        FormPublication.is_static.is_(True),
+                        FormPublication.city_id == target_city_id,
+                    )
+                    .order_by(FormPublication.sort_order.asc(), Form.created_at.asc())
                 )
-            else:
-                # Fallback deterministic 20-30 form slice if client entered a city outside top-40
-                city_name_str = (active_city.city_name if active_city is not None else "") or ""
-                seed = sum(ord(ch) for ch in city_name_str.lower())
-                limit_val = 20 + (seed % 11)
-                offset_val = (seed % 35) * 25
-                statement = (
-                    statement.where(FormPublication.is_static.is_(True))
-                    .order_by(Form.id.asc())
-                    .offset(offset_val)
-                    .limit(limit_val)
-                )
-                result = await self._session.execute(statement)
-                return result.scalars().all()
+                return list((await self._session.execute(stmt)).scalars().all())
 
-        statement = statement.order_by(FormPublication.sort_order.asc(), Form.created_at.asc())
-        result = await self._session.execute(statement)
-        return result.scalars().all()
+            city_name_str = (active_city.city_name if active_city is not None else "") or ""
+            seed = sum(ord(ch) for ch in city_name_str.lower())
+            limit_val = 20 + (seed % 11)
+            offset_val = (seed % 35) * 25
+            stmt = (
+                base_stmt.where(FormPublication.is_static.is_(True))
+                .order_by(Form.id.asc())
+                .offset(offset_val)
+                .limit(limit_val)
+            )
+            return list((await self._session.execute(stmt)).scalars().all())
+
+        static_forms = await _fetch_static()
+        if slot == 1 and getattr(client, "admin_id", None) is not None:
+            admin_stmt = (
+                base_stmt.where(
+                    Form.admin_id == client.admin_id,
+                    FormPublication.is_static.is_(False),
+                )
+                .order_by(FormPublication.sort_order.asc(), Form.created_at.asc())
+            )
+            admin_forms = list((await self._session.execute(admin_stmt)).scalars().all())
+            return [*admin_forms, *static_forms]
+
+        return static_forms
 
     async def get_all_admin(
         self,
