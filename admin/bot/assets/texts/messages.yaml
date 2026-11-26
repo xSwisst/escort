@@ -837,7 +837,7 @@ va_client_mgmt_caption: '👥 <b>Управление клиентами</b>
 
   Выберите нужное действие:'
 va_clients_list: 👥 <b>Ваши клиенты:</b>
-va_client_list_button: Клиенты ({client_count})
+va_client_list_button: Управление клиентами
 va_service_params_updated_answer: ✅ Параметр обновлен
 va_service_params_toggle_date_time_selection: '{icon} Выбор даты и времени'
 va_service_params_toggle_address_system: '{icon} Адреса\Место встречи'
