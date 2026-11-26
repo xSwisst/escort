@@ -864,10 +864,10 @@ back_to_balance:
   color: null
 back_to_menu:
   text: ‹ В главное меню
-  icon_custom_emoji_id: '5877629862306385808'
+  icon_custom_emoji_id: null
   color: null
 admin_settings:
-  text: ⚙️ Настройки
+  text: Настройки
   icon_custom_emoji_id: null
   color: null
 admin_settings_client_logs:
@@ -876,7 +876,7 @@ admin_settings_client_logs:
   color: null
 back_to_settings:
   text: ‹ К настройкам
-  icon_custom_emoji_id: '5877629862306385808'
+  icon_custom_emoji_id: null
   color: null
 client_log_toggle_on:
   text: ✅ {label}
