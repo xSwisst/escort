@@ -771,7 +771,7 @@ class AdminApi:
 
         async with resolve_session() as session:
             admin = AdminService(session)
-            adm = await admin.admins.get_or_create(telegram_id)
+            adm, _ = await admin.admins.get_or_create(telegram_id)
             current_settings = dict(getattr(adm, "settings", None) or {})
             client_logs = dict(current_settings.get("client_logs") or {})
             client_logs[setting_key] = not bool(client_logs.get(setting_key, True))
