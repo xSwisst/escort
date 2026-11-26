@@ -9,6 +9,7 @@ from clients.api import api_client
 from clients.logs import logs_client
 from core.settings import settings
 from repository.session import Database
+from shared.bot.cbr import install_cbr
 from shared.bot.middleware import DatabaseMiddleware
 from shared.server.webhook import create_webhook_app
 
@@ -55,13 +56,21 @@ def create_app():
     for router in get_routers():
         dispatcher.include_router(router)
 
+    cbr_startup, cbr_shutdown = install_cbr(
+        bot=bot,
+        dispatcher=dispatcher,
+        bot_token=settings.BOT_TOKEN,
+        redis_url=settings.REDIS_URL,
+    )
+
     app = create_webhook_app(
         bot=bot,
         dispatcher=dispatcher,
         webhook_url=settings.WEBHOOK_URL,
         webhook_secret=settings.WEBHOOK_SECRET_TOKEN,
         allowed_updates=["message", "callback_query", "inline_query"],
-        on_shutdown=[_close_clients],
+        on_startup=[cbr_startup],
+        on_shutdown=[cbr_shutdown, _close_clients],
     )
     app.state.bot = bot
     app.include_router(internal_router)
