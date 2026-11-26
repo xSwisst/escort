@@ -254,7 +254,8 @@ async def view_services(call: CallbackQuery):
 
 @router.callback_query(F.data.startswith("model:photo:"))
 async def cycle_photo(call: CallbackQuery, state: FSMContext):
-    code = call.data.split(":")[2]
+    parts = call.data.split(":")
+    code = parts[2]
     try:
         form = await api_client.forms.get_form_card(user_id=call.from_user.id, form_code=code)
     except ApiNotFoundError:
@@ -269,7 +270,13 @@ async def cycle_photo(call: CallbackQuery, state: FSMContext):
     data = await state.get_data()
     back_target = data.get("model_back_target", "menu:models")
     current_idx = int(data.get(f"photo_idx_{code}", 0) or 0)
-    next_idx = (current_idx + 1) % len(photos)
+    if len(parts) >= 4 and parts[3].isdigit():
+        next_idx = max(0, min(len(photos) - 1, int(parts[3]) - 1))
+    else:
+        next_idx = (current_idx + 1) % len(photos)
+    if next_idx == current_idx:
+        await call.answer()
+        return
     await state.update_data(**{f"photo_idx_{code}": next_idx})
     await _render_model_card(call, code, photo_idx=next_idx, back_target=back_target)
     await call.answer()

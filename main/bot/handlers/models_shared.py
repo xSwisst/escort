@@ -12,8 +12,17 @@ def build_form_card(form, *, cta: bool = False, discount_amount: int | None = No
     return build_form_text(form, cta=cta, discount_amount=discount_amount if discount_amount is not None else getattr(form, "discount_amount", None))
 
 
-def build_form_card_markup(form, code: str, *, back_target: str = "menu:models"):
+def build_form_card_markup(
+    form,
+    code: str,
+    *,
+    photo_idx: int = 0,
+    total_photos: int | None = None,
+    back_target: str = "menu:models",
+):
     actual_code = getattr(form, "code", None) or code
+    total = total_photos if total_photos is not None else len(media_refs(getattr(form, "photos", None) or []))
+    photo_page = (photo_idx % total) + 1 if total > 0 else 1
     return kb_model_card(
         actual_code,
         form.is_favorite,
@@ -24,6 +33,8 @@ def build_form_card_markup(form, code: str, *, back_target: str = "menu:models")
         has_private_channel=has_private_channel(form),
         order_available=True,
         back_target=back_target,
+        photo_page=photo_page,
+        total_photos=total,
     )
 
 
@@ -50,4 +61,8 @@ async def get_form_card_payload(
         media_ref = None
 
     actual_code = getattr(form, "code", None) or code
-    return media_ref, build_form_card(form, cta=False), build_form_card_markup(form, actual_code, back_target=back_target)
+    return (
+        media_ref,
+        build_form_card(form, cta=False),
+        build_form_card_markup(form, actual_code, photo_idx=photo_idx, total_photos=len(refs), back_target=back_target),
+    )

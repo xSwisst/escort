@@ -34,16 +34,15 @@ def kb_model_card(
     has_private_channel: bool = False,
     order_available: bool = True,
     back_target: str = "menu:models",
+    photo_page: int = 1,
+    total_photos: int = 1,
 ):
     builder = InlineKeyboardBuilder()
     if order_available:
         builder.row(InlineKeyboardButton(**btn("order", callback_data=f"model:order:{form_code}")))
 
-
-    media_row = [InlineKeyboardButton(**btn("other_photo", callback_data=f"model:photo:{form_code}"))]
     if has_reviews:
-        media_row.append(InlineKeyboardButton(**btn("view_reviews", callback_data=f"model:reviews:{form_code}")))
-    builder.row(*media_row)
+        builder.row(InlineKeyboardButton(**btn("view_reviews", callback_data=f"model:reviews:{form_code}")))
 
     info_row = []
     if has_services:
@@ -63,6 +62,11 @@ def kb_model_card(
 
     favorite_key = "in_favorites" if is_favorite else "to_favorites"
     builder.row(InlineKeyboardButton(**btn(favorite_key, callback_data=f"model:fav:{form_code}")))
+
+    photo_nav = nav_buttons(photo_page, total_photos, f"model:photo:{form_code}")
+    if photo_nav:
+        builder.row(*photo_nav)
+
     if back_target == "menu:profile":
         builder.row(back_btn("back_to_profile", "menu:profile"))
     else:
