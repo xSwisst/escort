@@ -2756,3 +2756,12 @@ log_detail_place: 'Место встречи: <b>{place}</b>'
 log_detail_code: 'Код: <code>{code}</code>'
 log_detail_message: "Сообщение:\n<blockquote>{message}</blockquote>"
 log_detail_info: 'Информация: <b>{info}</b>'
+
+admin_settings_caption: |-
+  <blockquote>⚙️ <b>Настройки</b></blockquote>
+
+  Выберите раздел:
+admin_settings_client_logs_caption: |-
+  <blockquote>📜 <b>Действия клиентов</b></blockquote>
+
+  Нажмите на тип лога, чтобы включить или выключить уведомления в личные сообщения:

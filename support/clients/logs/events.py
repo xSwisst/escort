@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from shared.logging import resolve_client_meta
 from .base import LogsSection
 from .schemas import LogEventRequest, LogEventResponse
 
@@ -17,12 +18,19 @@ class LogsEventsApi(LogsSection):
         chat_id: int | None = None,
         message_id: int | None = None,
     ) -> LogEventResponse:
+        enriched = dict(payload or {})
+        uid = enriched.get("user_id") or actor_id
+        if uid and (not enriched.get("id") or not enriched.get("admin_id")):
+            meta = await resolve_client_meta(int(uid))
+            for key, value in meta.items():
+                if value is not None and not enriched.get(key):
+                    enriched[key] = value
         return await self.send(
             LogEventRequest(
                 service="support",
                 level="info",
                 event_type=event_type,
-                payload=payload,
+                payload=enriched,
                 actor_id=actor_id,
                 chat_id=chat_id,
                 message_id=message_id,

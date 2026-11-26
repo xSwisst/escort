@@ -23,6 +23,7 @@ def kb_panel(*, client_count: int = 0, is_owner: bool = False) -> InlineKeyboard
     )
     builder.row(
         InlineKeyboardButton(**btn("malling", callback_data="admin:malling:menu")),
+        InlineKeyboardButton(**btn("admin_settings", callback_data="admin:settings:menu")),
     )
     if is_owner:
         builder.row(

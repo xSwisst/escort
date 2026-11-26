@@ -57,6 +57,7 @@ completed_orders: {text: "Завершенные", icon_custom_emoji_id: "577637
 
 
 order: {text: "Оформить модель", icon_custom_emoji_id: "5775937998948404844", color: "green"}
+open_models_list: {text: "Открыть список", icon_custom_emoji_id: "5879785854284599288", color: null}
 view_reviews: {text: "Отзывы", icon_custom_emoji_id: "5764779661028495989", color: null}
 services: {text: "Услуги", icon_custom_emoji_id: "5879785854284599288", color: null}
 blog: {text: "Блог", icon_custom_emoji_id: "5891243564309942507", color: null}

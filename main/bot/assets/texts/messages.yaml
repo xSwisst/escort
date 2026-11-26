@@ -320,6 +320,11 @@ models_catalog: |
 
   Доступные анкеты на данный момент: <b>{count}</b>
 models_list_item: "#{index} {name} ({age})"
+models_inline_total: "Всего {count} моделей"
+models_inline_empty: "Модели не найдены"
+models_inline_title: "{name} ({age})"
+models_inline_desc: "Рост {height} см | Грудь {bust_size}\n1 час: {price}"
+models_inline_price_missing: "—"
 models_reviews_title: "<tg-emoji emoji-id='5278520656529498073'>⭐️</tg-emoji> <b>Отзывы о модели {name}</b> ({count})"
 models_reviews_empty: "<tg-emoji emoji-id='5278520656529498073'>⭐️</tg-emoji> <b>Отзывы о модели {name}</b>\n\nОтзывов пока нет."
 models_review_author_fallback: "Аноним"

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from sqlalchemy import BigInteger, DateTime, Identity, Integer, String, func
+from sqlalchemy import BigInteger, DateTime, Identity, Integer, String, func, text
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from shared.db import Base
@@ -17,6 +18,12 @@ class Admin(Base):
     username: Mapped[str | None] = mapped_column(String(64), nullable=True)
     first_name: Mapped[str | None] = mapped_column(String(64), nullable=True)
     last_name: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    settings: Mapped[dict] = mapped_column(
+        JSONB,
+        default=dict,
+        server_default=text("'{}'::jsonb"),
+        nullable=False,
+    )
     created_at: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True),
         default=now_msk,

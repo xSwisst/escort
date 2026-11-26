@@ -53,6 +53,7 @@ async def process_search(msg: Message, state: FSMContext, bot: Bot):
         msg.from_user.id,
         code,
         fallback_media=models_banner_media(),
+        emit_open_log=True,
     )
 
     if not card:

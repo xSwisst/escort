@@ -32,6 +32,14 @@ class FormsApi:
                         code=f.code,
                         name=f.profile.name if f.profile else f.code,
                         age=int(f.profile.age or 0) if f.profile else 0,
+                        height=int(f.profile.height or 0) if f.profile else 0,
+                        bust_size=int(f.profile.bust_size or 0) if f.profile else 0,
+                        one_hour_price=f.pricing.one_hour_price if f.pricing else None,
+                        photo_url=(
+                            sorted(f.photos, key=lambda p: p.sort_order)[0].storage_key
+                            if getattr(f, "photos", None)
+                            else None
+                        ),
                     )
                     for f in forms
                 ]

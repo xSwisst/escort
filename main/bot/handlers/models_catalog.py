@@ -1,8 +1,14 @@
 from html import escape
 
-from aiogram import F, Router
+from aiogram import Bot, F, Router
 from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import (
+    CallbackQuery,
+    InlineQuery,
+    InlineQueryResultArticle,
+    InputTextMessageContent,
+    Message,
+)
 
 from bot.assets.media import get_banner_file
 from bot.assets.texts import t
@@ -64,6 +70,7 @@ async def _render_model_card(
     *,
     photo_idx: int = 0,
     back_target: str = "menu:models",
+    emit_open_log: bool = False,
 ) -> bool:
     card = await get_form_card_payload(
         call.from_user.id,
@@ -71,6 +78,7 @@ async def _render_model_card(
         photo_idx=photo_idx,
         fallback_media=models_banner_media(),
         back_target=back_target,
+        emit_open_log=emit_open_log,
     )
     if not card:
         await call.answer(t("model_not_found"), show_alert=True)
@@ -136,9 +144,13 @@ async def render_models_catalog(
     banner = get_banner_file("models-banner")
     markup = kb_models_list(forms, page=0)
     if is_edit:
-        await edit_banner(target, text, banner=banner, reply_markup=markup)
+        res = await edit_banner(target, text, banner=banner, reply_markup=markup)
+        msg_id = res.message_id if hasattr(res, "message_id") else target.message_id
+        await state.update_data(bot_msg_id=msg_id)
     else:
-        await answer_banner(target, text, banner=banner, reply_markup=markup)
+        sent = await answer_banner(target, text, banner=banner, reply_markup=markup)
+        if sent:
+            await state.update_data(bot_msg_id=sent.message_id)
 
 
 @router.callback_query(F.data == "menu:models")
@@ -148,12 +160,129 @@ async def show_models(call: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(F.data.regexp(r"^models:\d+$"))
-async def models_page(call: CallbackQuery):
+async def models_page(call: CallbackQuery, state: FSMContext):
     page = int(call.data.split(":")[1]) - 1
     client = await api_client.clients.get_cities(call.from_user.id)
     forms = (await api_client.forms.list_forms(user_id=call.from_user.id, active_city_slot=client.active_city_slot)).items
+    await state.update_data(bot_msg_id=call.message.message_id)
     await call.message.edit_reply_markup(reply_markup=kb_models_list(forms, page=page))
     await call.answer()
+
+
+_INLINE_MODELS_PAGE_SIZE = 20
+
+
+@router.inline_query(F.query.startswith("models_list"))
+async def handle_models_inline(query: InlineQuery) -> None:
+    raw_text = (query.query or "").strip()
+    if "search=" in raw_text:
+        search_text = raw_text.split("search=", 1)[1].strip()
+    else:
+        search_text = raw_text[len("models_list"):].lstrip("?").strip()
+
+    offset_page = int(query.offset) if query.offset and query.offset.isdigit() else 1
+    client = await api_client.clients.get_cities(query.from_user.id)
+    forms = (await api_client.forms.list_forms(user_id=query.from_user.id, active_city_slot=client.active_city_slot)).items
+
+    q = search_text.lower()
+    if q:
+        forms = [f for f in forms if q in (f.name or "").lower() or q in (f.code or "").lower()]
+
+    total = len(forms)
+    if total == 0:
+        await query.answer(
+            [],
+            cache_time=1,
+            is_personal=True,
+            switch_pm_text=t("models_inline_empty"),
+            switch_pm_parameter="models",
+        )
+        return
+
+    start = (offset_page - 1) * _INLINE_MODELS_PAGE_SIZE
+    page_items = forms[start : start + _INLINE_MODELS_PAGE_SIZE]
+    results = []
+    for form in page_items:
+        price_str = f"{form.one_hour_price} ₽" if form.one_hour_price else t("models_inline_price_missing")
+        thumb = form.photo_url if form.photo_url and form.photo_url.startswith(("http://", "https://")) else None
+        results.append(
+            InlineQueryResultArticle(
+                id=f"model:{form.code}",
+                title=t("models_inline_title", name=form.name, age=form.age),
+                description=t(
+                    "models_inline_desc",
+                    height=form.height,
+                    bust_size=form.bust_size,
+                    price=price_str,
+                ),
+                thumbnail_url=thumb,
+                input_message_content=InputTextMessageContent(
+                    message_text=f"get_model_{form.code}",
+                ),
+            )
+        )
+
+    has_next = offset_page * _INLINE_MODELS_PAGE_SIZE < total
+    next_offset = str(offset_page + 1) if has_next else ""
+    await query.answer(
+        results=results,
+        cache_time=0,
+        is_personal=True,
+        next_offset=next_offset,
+        switch_pm_text=t("models_inline_total", count=total),
+        switch_pm_parameter="models",
+    )
+
+
+@router.message(F.chat.type == "private", F.text.regexp(r"^get_model_([A-Za-z0-9_-]+)$"))
+async def open_model_from_inline(message: Message, state: FSMContext, bot: Bot) -> None:
+    code = (message.text or "").replace("get_model_", "", 1).strip()
+    try:
+        await message.delete()
+    except Exception:
+        pass
+    if not code:
+        return
+
+    await state.update_data(model_back_target="menu:models", **{f"photo_idx_{code}": 0})
+    card = await get_form_card_payload(
+        message.from_user.id,
+        code,
+        photo_idx=0,
+        fallback_media=models_banner_media(),
+        back_target="menu:models",
+        emit_open_log=True,
+    )
+    if not card:
+        return
+    selected_photo, text, markup = card
+
+    data = await state.get_data()
+    bot_msg_id = data.get("bot_msg_id") or (message.message_id - 1)
+    if bot_msg_id:
+        try:
+            res = await bot_edit_photo(
+                bot,
+                message.chat.id,
+                bot_msg_id,
+                text,
+                selected_photo,
+                reply_markup=markup,
+            )
+            if res and hasattr(res, "message_id"):
+                await state.update_data(bot_msg_id=res.message_id)
+            return
+        except Exception:
+            pass
+
+    sent = await bot.send_photo(
+        chat_id=message.chat.id,
+        photo=selected_photo,
+        caption=text,
+        reply_markup=markup,
+    )
+    if sent:
+        await state.update_data(bot_msg_id=sent.message_id)
 
 
 @router.callback_query(F.data.startswith("model:view:"))
@@ -162,7 +291,7 @@ async def view_model(call: CallbackQuery, state: FSMContext):
     await state.update_data(**{f"photo_idx_{code}": 0})
     data = await state.get_data()
     back_target = data.get("model_back_target", "menu:models")
-    if await _render_model_card(call, code, photo_idx=0, back_target=back_target):
+    if await _render_model_card(call, code, photo_idx=0, back_target=back_target, emit_open_log=True):
         await call.answer()
 
 

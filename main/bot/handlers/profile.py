@@ -791,6 +791,7 @@ async def handle_get_form_from_inline(message: Message, state: FSMContext, bot: 
         photo_idx=0,
         fallback_media=models_banner_media(),
         back_target="menu:profile",
+        emit_open_log=True,
     )
     if not card:
         return

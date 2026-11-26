@@ -8,6 +8,7 @@ from .forms import router as forms_router
 from .malling import router as malling_router
 from .panel import router as panel_router
 from .promos import router as promos_router
+from .settings import router as settings_router
 from .start import router as start_router
 
 
@@ -15,6 +16,7 @@ def get_routers() -> list[Router]:
     return [
         start_router,
         panel_router,
+        settings_router,
         forms_router,
         client_logs_router,
         clients_router,

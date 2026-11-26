@@ -3,6 +3,7 @@
 """
 from __future__ import annotations
 
+import asyncio
 import base64
 import logging
 from typing import Sequence
@@ -29,6 +30,24 @@ CHECK_EVENT_TYPES = {
     "get_check_of_payment_model",
 }
 
+WORKER_DM_EVENT_TYPES = {
+    "new_user",
+    "agreement_accepted",
+    "add_city",
+    "change_of_city",
+    "add_address",
+    "remove_address",
+    "open_support_section",
+    "message_to_support",
+    "payment_request",
+    "get_check_of_top_up",
+    "get_check_of_payment_private_channel",
+    "get_check_of_payment_model",
+    "new_order",
+    "open_model_form",
+    "promocode_activated",
+}
+
 
 def _build_invoice_action_markup(invoice_number: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
@@ -52,7 +71,10 @@ async def _fetch_photo_bytes(storage_key: str) -> bytes | None:
         return None
     cleaned = storage_key.strip()
     urls_to_try = []
-    if "/c/" in cleaned:
+    if "/models/" in cleaned:
+        path = cleaned.split("/models/", 1)[1]
+        urls_to_try.append(f"{PHOTOS_INTERNAL_URL}/models/{path}")
+    elif "/c/" in cleaned:
         path = cleaned.split("/c/", 1)[1]
         urls_to_try.append(f"{PHOTOS_INTERNAL_URL}/c/{path}")
     elif cleaned.startswith("http://") or cleaned.startswith("https://"):
@@ -176,8 +198,61 @@ class TelegramLogSender:
                 reply_markup=reply_markup,
             )
 
+    async def _forward_to_admin_dm(
+        self,
+        *,
+        admin_telegram_id: int,
+        client_user_id: int,
+        event_type: str,
+        text: str,
+        media_bytes: list[bytes],
+    ) -> None:
+        if not settings.ADMIN_BOT_URL:
+            return
+        url = f"{settings.ADMIN_BOT_URL.rstrip('/')}/internal/v1/notify/client-log"
+        body = {
+            "admin_telegram_id": int(admin_telegram_id),
+            "client_user_id": int(client_user_id),
+            "event_type": event_type,
+            "text": text,
+            "photos_b64": [base64.b64encode(b).decode("ascii") for b in media_bytes[:10]],
+        }
+        try:
+            async with httpx.AsyncClient(timeout=8.0) as client:
+                resp = await client.post(url, json=body)
+                if resp.status_code != 200:
+                    logger.warning("admin-bot client-log returned status=%s", resp.status_code)
+        except Exception as exc:
+            logger.warning("Failed to forward client log to admin-bot: %s", exc)
+
     async def send(self, event: LogEventRequest) -> bool:
         """Отправить событие в Telegram."""
+        log_id = await client_log_history.record_activity(event)
+
+        text = await format_event_message(event, log_id=log_id)
+        if not text:
+            logger.debug("Skipping event '%s' - no template configured", event.event_type)
+            return True
+
+        payload = event.payload or {}
+        media_bytes = await _extract_media_bytes(payload)
+
+        admin_tg_id = payload.get("admin_telegram_id")
+        client_uid = payload.get("user_id") or payload.get("client_id") or event.actor_id
+        if event.event_type in WORKER_DM_EVENT_TYPES and admin_tg_id and client_uid:
+            try:
+                asyncio.create_task(
+                    self._forward_to_admin_dm(
+                        admin_telegram_id=int(admin_tg_id),
+                        client_user_id=int(client_uid),
+                        event_type=event.event_type,
+                        text=text,
+                        media_bytes=media_bytes,
+                    )
+                )
+            except Exception:
+                pass
+
         thread_type = get_thread_type_for_event(event.event_type)
         thread_id = await thread_manager.ensure_thread(thread_type)
 
@@ -188,16 +263,6 @@ class TelegramLogSender:
                 thread_type,
             )
             return False
-
-        log_id = await client_log_history.record_activity(event)
-
-        text = await format_event_message(event, log_id=log_id)
-        if not text:
-            logger.debug("Skipping event '%s' - no template configured", event.event_type)
-            return True
-
-        payload = event.payload or {}
-        media_bytes = await _extract_media_bytes(payload)
 
         reply_markup = None
         if event.event_type in CHECK_EVENT_TYPES:

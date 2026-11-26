@@ -255,3 +255,36 @@ class AdminClientLogDetailResponse(BaseModel):
     payload: dict[str, Any] = Field(default_factory=dict)
     created_at: datetime
 
+
+
+CLIENT_LOG_SETTING_KEYS: tuple[str, ...] = (
+    "open_model_form",
+    "promocode_activated",
+    "payment_request",
+    "payment_checks",
+    "new_order",
+    "message_to_support",
+    "new_user",
+    "agreement_accepted",
+    "cities",
+    "addresses",
+    "open_support_section",
+)
+
+CLIENT_LOG_EVENT_TO_KEY: dict[str, str] = {
+    "open_model_form": "open_model_form",
+    "promocode_activated": "promocode_activated",
+    "payment_request": "payment_request",
+    "get_check_of_top_up": "payment_checks",
+    "get_check_of_payment_private_channel": "payment_checks",
+    "get_check_of_payment_model": "payment_checks",
+    "new_order": "new_order",
+    "message_to_support": "message_to_support",
+    "new_user": "new_user",
+    "agreement_accepted": "agreement_accepted",
+    "add_city": "cities",
+    "change_of_city": "cities",
+    "add_address": "addresses",
+    "remove_address": "addresses",
+    "open_support_section": "open_support_section",
+}

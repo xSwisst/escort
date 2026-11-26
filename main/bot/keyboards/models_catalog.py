@@ -14,6 +14,11 @@ def kb_models_list(forms: list, page: int, per_page: int | None = None):
     page_forms = forms[start:start + per_page]
 
     builder = InlineKeyboardBuilder()
+    builder.row(
+        InlineKeyboardButton(
+            **btn("open_models_list", switch_inline_query_current_chat="models_list?search=")
+        )
+    )
     for i, form in enumerate(page_forms):
         builder.row(InlineKeyboardButton(text=t("models_list_item", index=start + i + 1, name=form.name, age=form.age), callback_data=f"model:view:{form.code}"))
 

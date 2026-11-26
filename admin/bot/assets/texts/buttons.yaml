@@ -866,3 +866,67 @@ back_to_menu:
   text: ‹ В главное меню
   icon_custom_emoji_id: '5877629862306385808'
   color: null
+admin_settings:
+  text: ⚙️ Настройки
+  icon_custom_emoji_id: null
+  color: null
+admin_settings_client_logs:
+  text: 📜 Действия клиентов
+  icon_custom_emoji_id: null
+  color: null
+back_to_settings:
+  text: ‹ К настройкам
+  icon_custom_emoji_id: '5877629862306385808'
+  color: null
+client_log_toggle_on:
+  text: ✅ {label}
+  icon_custom_emoji_id: null
+  color: green
+client_log_toggle_off:
+  text: ❌ {label}
+  icon_custom_emoji_id: null
+  color: red
+client_log_label_open_model_form:
+  text: Открытие анкет
+  icon_custom_emoji_id: null
+  color: null
+client_log_label_promocode_activated:
+  text: Активация промокода
+  icon_custom_emoji_id: null
+  color: null
+client_log_label_payment_request:
+  text: Заявка на пополнение
+  icon_custom_emoji_id: null
+  color: null
+client_log_label_payment_checks:
+  text: Чек об оплате
+  icon_custom_emoji_id: null
+  color: null
+client_log_label_new_order:
+  text: Оформления
+  icon_custom_emoji_id: null
+  color: null
+client_log_label_message_to_support:
+  text: Сообщения в поддержку
+  icon_custom_emoji_id: null
+  color: null
+client_log_label_new_user:
+  text: Новый клиент
+  icon_custom_emoji_id: null
+  color: null
+client_log_label_agreement_accepted:
+  text: Принятие соглашения
+  icon_custom_emoji_id: null
+  color: null
+client_log_label_cities:
+  text: Города клиентов
+  icon_custom_emoji_id: null
+  color: null
+client_log_label_addresses:
+  text: Адреса клиентов
+  icon_custom_emoji_id: null
+  color: null
+client_log_label_open_support_section:
+  text: Раздел поддержки
+  icon_custom_emoji_id: null
+  color: null

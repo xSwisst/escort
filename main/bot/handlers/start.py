@@ -72,6 +72,7 @@ async def cmd_start(
                 msg.from_user.id,
                 payload.action_arg,
                 fallback_media=models_banner_media(),
+                emit_open_log=True,
             )
             if card:
                 media_ref, text, markup = card
@@ -120,6 +121,7 @@ async def accept_agreement(call: CallbackQuery, bot: Bot):
             call.from_user.id,
             pending_arg,
             fallback_media=models_banner_media(),
+            emit_open_log=True,
         )
         if card:
             media_ref, text, markup = card

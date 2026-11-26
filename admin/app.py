@@ -3,6 +3,7 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.fsm.storage.redis import RedisStorage
 from fastapi import Request
 
+from api.routes.internal_logs import router as internal_logs_router
 from bot.handlers import get_routers
 from clients.api import api_client
 from core.settings import settings
@@ -46,7 +47,7 @@ def create_app():
         redis_url=settings.REDIS_URL,
     )
 
-    return create_webhook_app(
+    app = create_webhook_app(
         bot=bot,
         dispatcher=dispatcher,
         webhook_url=settings.WEBHOOK_URL,
@@ -55,6 +56,8 @@ def create_app():
         on_startup=[cbr_startup],
         on_shutdown=[cbr_shutdown, _close_clients],
     )
+    app.include_router(internal_logs_router)
+    return app
 
 
 app = create_app()

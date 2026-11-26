@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     WEBHOOK_URL: str = ""
     WEBHOOK_SECRET_TOKEN: str = ""
 
+    # Внутренний адрес admin-bot для личных логов воркерам
+    ADMIN_BOT_URL: str = "http://admin-bot:8003"
+
     model_config = SettingsConfigDict(case_sensitive=True, extra="ignore")
 
 

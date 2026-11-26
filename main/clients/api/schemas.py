@@ -44,6 +44,10 @@ class FormListItem(BaseModel):
     code: str
     name: str
     age: int
+    height: int = 0
+    bust_size: int = 0
+    one_hour_price: int | None = None
+    photo_url: str | None = None
 
 
 class FormsListResponse(BaseModel):

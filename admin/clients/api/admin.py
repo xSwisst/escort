@@ -738,3 +738,55 @@ class AdminApi:
             admin = AdminService(session)
             await admin.delete_card(card_id)
             return ActionStatusResponse(ok=True)
+
+
+    # ── Admin Settings (Client Logs DM) ──────────────────────────────────────
+
+    _client_log_settings_cache: dict[int, dict[str, bool]] = {}
+
+    @staticmethod
+    def _normalize_client_log_settings(raw_settings: dict | None) -> dict[str, bool]:
+        from .schemas import CLIENT_LOG_SETTING_KEYS
+
+        client_logs = (raw_settings or {}).get("client_logs") or {}
+        return {key: bool(client_logs.get(key, True)) for key in CLIENT_LOG_SETTING_KEYS}
+
+    async def get_client_log_settings(self, telegram_id: int) -> dict[str, bool]:
+        cached = self._client_log_settings_cache.get(telegram_id)
+        if cached is not None:
+            return dict(cached)
+
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            adm = await admin.admins.get_by_telegram_id(telegram_id)
+            normalized = self._normalize_client_log_settings(getattr(adm, "settings", None) if adm else None)
+            self._client_log_settings_cache[telegram_id] = normalized
+            return dict(normalized)
+
+    async def toggle_client_log_setting(self, telegram_id: int, setting_key: str) -> dict[str, bool]:
+        from .schemas import CLIENT_LOG_SETTING_KEYS
+
+        if setting_key not in CLIENT_LOG_SETTING_KEYS:
+            raise ValueError(f"Unknown client log setting key: {setting_key}")
+
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            adm = await admin.admins.get_or_create(telegram_id)
+            current_settings = dict(getattr(adm, "settings", None) or {})
+            client_logs = dict(current_settings.get("client_logs") or {})
+            client_logs[setting_key] = not bool(client_logs.get(setting_key, True))
+            current_settings["client_logs"] = client_logs
+            adm.settings = current_settings
+            await session.flush()
+            normalized = self._normalize_client_log_settings(current_settings)
+            self._client_log_settings_cache[telegram_id] = normalized
+            return dict(normalized)
+
+    async def is_client_log_enabled(self, telegram_id: int, event_type: str) -> bool:
+        from .schemas import CLIENT_LOG_EVENT_TO_KEY
+
+        setting_key = CLIENT_LOG_EVENT_TO_KEY.get(event_type)
+        if not setting_key:
+            return True
+        states = await self.get_client_log_settings(telegram_id)
+        return bool(states.get(setting_key, True))

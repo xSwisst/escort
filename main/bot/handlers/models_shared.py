@@ -1,5 +1,6 @@
 from bot.keyboards.models_catalog import kb_model_card
 from clients.api import ApiNotFoundError, api_client
+from clients.logs import emit_log_event
 from utils.form_text import build_form_text
 from utils.helpers import media_refs
 
@@ -46,6 +47,7 @@ async def get_form_card_payload(
     photo_idx: int = 0,
     fallback_media: str | None = None,
     back_target: str = "menu:models",
+    emit_open_log: bool = False,
 ):
     try:
         form = await api_client.forms.get_form_card(user_id=user_id, form_code=code)
@@ -61,6 +63,25 @@ async def get_form_card_payload(
         media_ref = None
 
     actual_code = getattr(form, "code", None) or code
+    if emit_open_log:
+        await emit_log_event(
+            "open_model_form",
+            user_id,
+            {
+                "user_id": user_id,
+                "form_code": actual_code,
+                "form_id": actual_code,
+                "model_name": form.name,
+                "age": form.age,
+                "height": form.height,
+                "breast": form.bust_size,
+                "price_1h": form.one_hour_price,
+                "price_2h": form.two_hour_price,
+                "price_3h": form.three_hour_price,
+                "price_night": form.overnight_price,
+                "photo": refs[0] if refs else None,
+            },
+        )
     return (
         media_ref,
         build_form_card(form, cta=False),
