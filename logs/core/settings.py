@@ -9,6 +9,11 @@ class Settings(BaseSettings):
     LOGS_SECRET_KEY: str = ""
     API_AUDIENCE: str = "escort_logs"
 
+    # API service (для записи истории логов и подтверждения инвойсов)
+    API_BASE_URL: str = "http://api:8000"
+    API_SECRET_KEY: str = ""
+    API_TARGET_AUDIENCE: str = "escort_api"
+
     # Telegram bot (aiogram) для отправки логов
     BOT_TOKEN: str = ""
     BOT_USERNAME: str = "@escort_logs_bot"
