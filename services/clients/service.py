@@ -201,10 +201,8 @@ class ClientService:
         if slot is None:
             links = await self.client_cities.get_by_client(user_id)
             slot = (max((c.slot for c in links), default=0) + 1) if links else 1
-        city_id: int | None = None
-        if slot >= 2:
-            city_obj = await self.cities.get_by_name(city)
-            city_id = city_obj.id if city_obj is not None else None
+        city_obj = await self.cities.get_by_name(city)
+        city_id: int | None = city_obj.id if city_obj is not None else None
         await self.client_cities.set_city(user_id, city, slot=slot, city_id=city_id, activate=True)
         await self.clients.set_city(user_id, city, slot)
 
