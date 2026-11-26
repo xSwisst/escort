@@ -44,6 +44,15 @@ class AdminClientListResponse(BaseModel):
     query: str | None = None
 
 
+class AdminClientMenuCounts(BaseModel):
+    all: int = 0
+    days7: int = 0
+    month: int = 0
+    support: int = 0
+    paid: int = 0
+    invoices: int = 0
+
+
 class AdminClientDetailResponse(BaseModel):
     id: int | None = None
     user_id: int

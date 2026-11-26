@@ -1,9 +1,11 @@
 from datetime import timedelta
-from sqlalchemy import String, cast, func, or_, select
+from sqlalchemy import String, cast, exists, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from repository.models.clients import Client
+from repository.models.payments import InvoicePurpose, InvoiceStatus, PaymentInvoice
+from repository.models.support import SupportMessage
 from repository.repositories.base import BaseRepository
 from shared.utils.time import now_msk
 
@@ -132,6 +134,28 @@ class ClientRepository(BaseRepository[Client]):
         result = await self._session.execute(select(func.count()).select_from(Client))
         return result.scalar_one()
 
+    @staticmethod
+    def _segment_condition(segment: str | None):
+        if not segment or segment == "all":
+            return None
+        if segment == "7d":
+            return Client.registered_at >= (now_msk() - timedelta(days=7))
+        if segment in {"30d", "month"}:
+            return Client.registered_at >= (now_msk() - timedelta(days=30))
+        if segment == "support":
+            return exists().where(SupportMessage.user_id == Client.user_id)
+        if segment == "paid":
+            return exists().where(
+                PaymentInvoice.user_id == Client.user_id,
+                PaymentInvoice.status == InvoiceStatus.PAID,
+            )
+        if segment == "invoices":
+            return exists().where(
+                PaymentInvoice.user_id == Client.user_id,
+                PaymentInvoice.purpose == InvoicePurpose.DEPOSIT,
+            )
+        return None
+
     async def search(
         self,
         query: str | None,
@@ -139,6 +163,7 @@ class ClientRepository(BaseRepository[Client]):
         page: int = 1,
         per_page: int = 20,
         admin_id: int | None = None,
+        segment: str | None = None,
     ) -> tuple[list[Client], int]:
         page = max(1, int(page or 1))
         per_page = max(1, min(100, int(per_page or 20)))
@@ -149,6 +174,11 @@ class ClientRepository(BaseRepository[Client]):
         if admin_id is not None:
             base_stmt = base_stmt.where(Client.admin_id == admin_id)
             count_stmt = count_stmt.where(Client.admin_id == admin_id)
+
+        seg_cond = self._segment_condition(segment)
+        if seg_cond is not None:
+            base_stmt = base_stmt.where(seg_cond)
+            count_stmt = count_stmt.where(seg_cond)
 
         normalized_query = (query or "").strip()
         if normalized_query:
@@ -168,6 +198,16 @@ class ClientRepository(BaseRepository[Client]):
         items = list((await self._session.execute(base_stmt)).scalars().all())
         total = int((await self._session.execute(count_stmt)).scalar_one())
         return items, total
+
+    async def get_menu_counts_by_admin(self, admin_id: int) -> dict[str, int]:
+        counts: dict[str, int] = {}
+        for seg in ("all", "7d", "30d", "support", "paid", "invoices"):
+            stmt = select(func.count()).select_from(Client).where(Client.admin_id == admin_id)
+            cond = self._segment_condition(seg)
+            if cond is not None:
+                stmt = stmt.where(cond)
+            counts[seg] = int((await self._session.execute(stmt)).scalar_one() or 0)
+        return counts
 
     async def get_stats_by_admin(self, admin_id: int) -> dict[str, int]:
         now = now_msk()

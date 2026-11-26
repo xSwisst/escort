@@ -7,11 +7,43 @@ from bot.assets.texts import btn, t
 from bot.keyboards.common import back_btn, nav_buttons
 
 
-def kb_clients_menu() -> InlineKeyboardMarkup:
+def kb_clients_menu(counts=None) -> InlineKeyboardMarkup:
+    c_all = int(getattr(counts, "all", 0) or 0)
+    c_7d = int(getattr(counts, "days7", 0) or 0)
+    c_month = int(getattr(counts, "month", 0) or 0)
+    c_support = int(getattr(counts, "support", 0) or 0)
+    c_paid = int(getattr(counts, "paid", 0) or 0)
+    c_invoices = int(getattr(counts, "invoices", 0) or 0)
+
     builder = InlineKeyboardBuilder()
-    builder.row(InlineKeyboardButton(text="🔎 Поиск клиента", callback_data="admin:clients:search"))
-    builder.row(InlineKeyboardButton(text="👥 Список клиентов", callback_data="admin:clients:recent:1"))
-    builder.row(back_btn("admin:panel"))
+    builder.row(InlineKeyboardButton(**btn("clients_search_btn", callback_data="admin:clients:search")))
+    builder.row(
+        InlineKeyboardButton(
+            **btn("clients_filter_all", count=c_all, switch_inline_query_current_chat="my_clients?segment=all&search=")
+        )
+    )
+    builder.row(
+        InlineKeyboardButton(
+            **btn("clients_filter_7d", count=c_7d, switch_inline_query_current_chat="my_clients?segment=7d&search=")
+        ),
+        InlineKeyboardButton(
+            **btn("clients_filter_month", count=c_month, switch_inline_query_current_chat="my_clients?segment=30d&search=")
+        ),
+    )
+    builder.row(
+        InlineKeyboardButton(
+            **btn("clients_filter_support", count=c_support, switch_inline_query_current_chat="my_clients?segment=support&search=")
+        ),
+        InlineKeyboardButton(
+            **btn("clients_filter_paid", count=c_paid, switch_inline_query_current_chat="my_clients?segment=paid&search=")
+        ),
+    )
+    builder.row(
+        InlineKeyboardButton(
+            **btn("clients_filter_invoices", count=c_invoices, switch_inline_query_current_chat="my_clients?segment=invoices&search=")
+        )
+    )
+    builder.row(back_btn("admin:panel", text_key="back_to_menu"))
     return builder.as_markup()
 
 

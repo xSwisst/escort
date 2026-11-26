@@ -86,6 +86,21 @@ class AdminApi:
 
     # ── Clients ──────────────────────────────────────────────────────────────
 
+    async def get_client_menu_counts(self, admin_id: int):
+        from .schemas import AdminClientMenuCounts
+
+        async with resolve_session() as session:
+            admin = AdminService(session)
+            counts = await admin.clients.get_menu_counts_by_admin(admin_id)
+            return AdminClientMenuCounts(
+                all=counts.get("all", 0),
+                days7=counts.get("7d", 0),
+                month=counts.get("30d", 0),
+                support=counts.get("support", 0),
+                paid=counts.get("paid", 0),
+                invoices=counts.get("invoices", 0),
+            )
+
     async def list_clients(
         self,
         *,
@@ -93,10 +108,17 @@ class AdminApi:
         page: int = 1,
         per_page: int = 10,
         admin_id: int | None = None,
+        segment: str | None = None,
     ) -> AdminClientListResponse:
         async with resolve_session() as session:
             admin = AdminService(session)
-            items, total = await admin.clients.search(query, page=page, per_page=per_page, admin_id=admin_id)
+            items, total = await admin.clients.search(
+                query,
+                page=page,
+                per_page=per_page,
+                admin_id=admin_id,
+                segment=segment,
+            )
             return AdminClientListResponse(
                 items=[
                     AdminClientItem(

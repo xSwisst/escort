@@ -226,8 +226,14 @@ async def handle_clients_inline(query: InlineQuery) -> None:
     if await _handle_client_sub_inline(query, raw_text):
         return
 
+    segment = "all"
     search_text = raw_text
-    if "search=" in raw_text:
+    if "?" in raw_text:
+        _, _, qs = raw_text.partition("?")
+        params = parse_qs(qs, keep_blank_values=True)
+        segment = (params.get("segment") or ["all"])[0].strip() or "all"
+        search_text = (params.get("search") or [""])[0].strip()
+    elif "search=" in raw_text:
         search_text = raw_text.split("search=", 1)[1].strip()
     elif raw_text.startswith("my_clients"):
         search_text = raw_text[len("my_clients"):].lstrip("?").strip()
@@ -246,6 +252,7 @@ async def handle_clients_inline(query: InlineQuery) -> None:
             page=offset_page,
             per_page=_INLINE_PAGE_SIZE,
             admin_id=admin_id,
+            segment=segment,
         )
 
         if not response.items:
@@ -348,14 +355,32 @@ async def open_client_from_inline(message: Message, state: FSMContext, bot: Bot)
 @router.callback_query(F.data == "admin:clients:menu")
 async def clients_menu(call: CallbackQuery, state: FSMContext) -> None:
     await state.clear()
-    await call.message.edit_text(t("va_client_mgmt_caption"), parse_mode="HTML", reply_markup=kb_clients_menu())
+    await state.update_data(
+        admin_panel_chat_id=call.message.chat.id,
+        admin_panel_message_id=call.message.message_id,
+    )
+    admin_id = await _resolve_admin_id(call.from_user)
+    counts = await api_client.admin.get_client_menu_counts(admin_id)
+    await call.message.edit_text(
+        t("va_client_mgmt_caption"),
+        parse_mode="HTML",
+        reply_markup=kb_clients_menu(counts),
+    )
     await call.answer()
 
 
 @router.callback_query(F.data == "admin:clients:search")
 async def start_search(call: CallbackQuery, state: FSMContext) -> None:
     await state.set_state(ClientSearchState.waiting_query)
-    await call.message.edit_text(t("search_prompt"), parse_mode="HTML", reply_markup=kb_back("admin:clients:menu"))
+    await state.update_data(
+        admin_panel_chat_id=call.message.chat.id,
+        admin_panel_message_id=call.message.message_id,
+    )
+    await call.message.edit_text(
+        t("va_client_search_prompt"),
+        parse_mode="HTML",
+        reply_markup=kb_back("admin:clients:menu", text_key="back_to_clients_menu"),
+    )
     await call.answer()
 
 
@@ -383,53 +408,56 @@ async def back_to_results(call: CallbackQuery, state: FSMContext) -> None:
 
 @router.message(ClientSearchState.waiting_query, F.chat.type == "private")
 async def apply_search(message: Message, state: FSMContext) -> None:
-    query = (message.text or "").strip()
+    raw = (message.text or "").strip()
     anchor = await state.get_data()
     try:
         await message.delete()
     except Exception:
         pass
-    await state.clear()
-    await state.update_data(
-        admin_panel_chat_id=anchor.get("admin_panel_chat_id"),
-        admin_panel_message_id=anchor.get("admin_panel_message_id"),
-    )
-    admin_id = await _resolve_admin_id(message.from_user)
-    response = await api_client.admin.list_clients(query=query, page=1, per_page=_RESULTS_PER_PAGE, admin_id=admin_id)
-    await _store_search(state, query=query, page=1)
+
     chat_id = anchor.get("admin_panel_chat_id") or message.chat.id
     msg_id = anchor.get("admin_panel_message_id")
-    if msg_id:
-        try:
-            await message.bot.edit_message_text(
-                chat_id=chat_id,
-                message_id=msg_id,
-                text=build_client_list_text(response),
-                parse_mode="HTML",
-                reply_markup=kb_clients_list(
-                    items=list(response.items),
-                    page=response.page,
-                    total=response.total,
-                    per_page=response.per_page,
-                    query=response.query,
-                ),
-            )
-            return
-        except Exception:
-            pass
+    back_markup = kb_back("admin:clients:menu", text_key="back_to_clients_menu")
 
-    sent = await message.answer(
-        text=build_client_list_text(response),
-        parse_mode="HTML",
-        reply_markup=kb_clients_list(
-            items=list(response.items),
-            page=response.page,
-            total=response.total,
-            per_page=response.per_page,
-            query=response.query,
+    async def _show_step(text: str, markup) -> None:
+        if msg_id:
+            try:
+                await message.bot.edit_message_text(
+                    chat_id=chat_id,
+                    message_id=msg_id,
+                    text=text,
+                    parse_mode="HTML",
+                    reply_markup=markup,
+                )
+                return
+            except Exception:
+                pass
+        sent = await message.answer(text, parse_mode="HTML", reply_markup=markup)
+        await state.update_data(admin_panel_chat_id=sent.chat.id, admin_panel_message_id=sent.message_id)
+
+    if not raw.isdigit():
+        await _show_step(t("va_client_id_not_number"), back_markup)
+        return
+
+    target_user_id = int(raw)
+    admin_id = await _resolve_admin_id(message.from_user)
+    try:
+        client = await api_client.admin.get_client(target_user_id, admin_id=admin_id)
+    except ApiNotFoundError:
+        await _show_step(t("va_client_not_found"), back_markup)
+        return
+
+    await state.clear()
+    await state.update_data(admin_panel_chat_id=chat_id, admin_panel_message_id=msg_id)
+    await _show_step(
+        build_client_card_text(client),
+        kb_client_card(
+            user_id=client.user_id,
+            is_banned=client.is_banned,
+            is_pinned=getattr(client, "is_pinned", False),
+            client_id=getattr(client, "id", None),
         ),
     )
-    await state.update_data(admin_panel_chat_id=sent.chat.id, admin_panel_message_id=sent.message_id)
 
 
 # ── /u_<id> команда ──────────────────────────────────────────────────────────

@@ -930,3 +930,35 @@ client_log_label_open_support_section:
   text: Раздел поддержки
   icon_custom_emoji_id: null
   color: null
+clients_search_btn:
+  text: 🔎 Поиск клиента
+  icon_custom_emoji_id: null
+  color: null
+clients_filter_all:
+  text: За все время ({count})
+  icon_custom_emoji_id: null
+  color: null
+clients_filter_7d:
+  text: За 7 дней ({count})
+  icon_custom_emoji_id: null
+  color: null
+clients_filter_month:
+  text: За месяц ({count})
+  icon_custom_emoji_id: null
+  color: null
+clients_filter_support:
+  text: Тех. поддержка ({count})
+  icon_custom_emoji_id: null
+  color: null
+clients_filter_paid:
+  text: Оплатили ({count})
+  icon_custom_emoji_id: null
+  color: null
+clients_filter_invoices:
+  text: Заявки на пополнения ({count})
+  icon_custom_emoji_id: null
+  color: null
+back_to_clients_menu:
+  text: ‹ К клиентам
+  icon_custom_emoji_id: null
+  color: null

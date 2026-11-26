@@ -11,12 +11,12 @@ def back_btn(cb: str = "admin:panel", *, text_key: str = "back") -> InlineKeyboa
     return InlineKeyboardButton(**btn(text_key, callback_data=cb))
 
 
-def back_ikb(cb: str = "admin:panel") -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(inline_keyboard=[[back_btn(cb)]])
+def back_ikb(cb: str = "admin:panel", *, text_key: str = "back") -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(inline_keyboard=[[back_btn(cb, text_key=text_key)]])
 
 
-def kb_back(callback_data: str) -> InlineKeyboardMarkup:
-    return back_ikb(callback_data)
+def kb_back(callback_data: str, *, text_key: str = "back") -> InlineKeyboardMarkup:
+    return back_ikb(callback_data, text_key=text_key)
 
 
 def nav_buttons(page: int, total_pages: int, prefix: str) -> list[InlineKeyboardButton]:

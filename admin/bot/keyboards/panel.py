@@ -13,7 +13,7 @@ def kb_panel(*, client_count: int = 0, is_owner: bool = False) -> InlineKeyboard
             **btn(
                 "client_list",
                 text=t("va_client_list_button", client_count=max(0, int(client_count or 0))),
-                switch_inline_query_current_chat="my_clients?search=",
+                callback_data="admin:clients:menu",
             )
         )
     )
